@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/numero_orden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="Orden #0001"
+        android:textColor="@color/green"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/estado_orden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Iniciada"
+        android:textColor="#B59410"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/numero_orden"
+        app:layout_constraintTop_toBottomOf="@+id/numero_orden" />
+
+    <TextView
+        android:id="@+id/materiales_orden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3 Materiales"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/estado_orden"
+        app:layout_constraintTop_toBottomOf="@+id/estado_orden" />
+
+    <TextView
+        android:id="@+id/fecha_orden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="16dp"
+        android:text="27/19/2023"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.073"
+        app:layout_constraintStart_toEndOf="@+id/numero_orden"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tiempo_orden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:text="07:33 hrs"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/fecha_orden"
+        app:layout_constraintTop_toBottomOf="@+id/fecha_orden"
+        app:layout_constraintVertical_bias="0.233" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
