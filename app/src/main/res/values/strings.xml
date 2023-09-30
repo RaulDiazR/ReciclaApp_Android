@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ReciclaApp</string>
+
+
+    <string name="map">Mapa de reciclaje</string>
+    <string name="filter">Filtros</string>
+    <string name="apply_filter">Aplicar</string>
+    <string name="filter_quantity">0</string>
 </resources>

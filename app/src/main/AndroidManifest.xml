@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReciclaApp"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD3JETfOBZ61xk7QcKq0KseGkMsqP1ZBw0"
+        />
+
+        <activity
+            android:name=".MapActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

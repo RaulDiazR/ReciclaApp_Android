@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_rounded_top">
+
+    <androidx.gridlayout.widget.GridLayout
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:background="@drawable/shape_rounded_all"
+        app:columnCount="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.403"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:rowCount="2">
+
+        <androidx.gridlayout.widget.GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="159dp"
+            android:background="@drawable/shape_rounded_all"
+            app:columnCount="4"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"
+            app:rowCount="2">
+
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_gravity="center"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
+                app:srcCompat="@drawable/aciones_municipales" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_gravity="center"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
+                app:srcCompat="@drawable/acopios" />
+
+            <ImageView
+                android:id="@+id/imageVie3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_gravity="center"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
+                app:srcCompat="@drawable/campana" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_gravity="center"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
+                app:srcCompat="@drawable/compra_venta" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_gravity="center"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
+                app:srcCompat="@drawable/reparacion_iconos_categorias" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="30dp"
+                android:layout_height="29dp"
+                app:layout_gravity="center"
+                app:layout_rowWeight="1"
+                app:layout_columnWeight="1"
+                app:srcCompat="@drawable/donacion" />
+
+        </androidx.gridlayout.widget.GridLayout>
+
+        <androidx.gridlayout.widget.GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@color/white"
+            app:columnCount="3"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+
+            app:rowCount="1">
+
+            <TextView
+                android:id="@+id/filter_quantity"
+                android:layout_width="21dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/filter_quantity"
+                android:textSize="18sp"
+                app:layout_columnWeight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.094"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.852"
+                app:layout_gravity="fill"
+                app:layout_rowWeight="1" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="94dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/filter"
+                android:textSize="18sp"
+                app:layout_columnWeight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.233"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.852"
+                app:layout_gravity="fill"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/button"
+                style="@android:style/Widget.Material.Light.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/selector_button_rounded"
+                android:text="@string/apply_filter"
+                app:layout_columnWeight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.834"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.861"
+                app:layout_gravity="center"
+                app:layout_rowWeight="1" />
+
+        </androidx.gridlayout.widget.GridLayout>
+
+    </androidx.gridlayout.widget.GridLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
