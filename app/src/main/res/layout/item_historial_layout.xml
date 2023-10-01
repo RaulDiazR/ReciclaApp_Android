@@ -1,73 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/shape_historial_background"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="16dp"
+    android:elevation="10dp">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="26dp"
+        android:src="@drawable/icon_calendar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numero_orden"
+        android:contentDescription="@string/calendar_image" />
+
+    <View
+        android:id="@+id/estado_orden_color"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="26dp"
+        android:background="@drawable/shape_green_square"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/numero_orden"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:text="Orden #0001"
-        android:textColor="@color/green"
-        android:textSize="20sp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/orden_de_reciclaje"
+        android:textColor="@color/black"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/estado_orden"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Iniciada"
-        android:textColor="#B59410"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/numero_orden"
-        app:layout_constraintTop_toBottomOf="@+id/numero_orden" />
-
-    <TextView
-        android:id="@+id/materiales_orden"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="3 Materiales"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/estado_orden"
-        app:layout_constraintTop_toBottomOf="@+id/estado_orden" />
 
     <TextView
         android:id="@+id/fecha_orden"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="16dp"
-        android:text="27/19/2023"
-        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="4dp"
+        android:text="@string/_07_11_2023"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/numero_orden" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/icon_clock"
+        app:layout_constraintStart_toEndOf="@+id/fecha_orden"
+        app:layout_constraintTop_toBottomOf="@+id/numero_orden"
+        android:contentDescription="@string/clock_image" />
+
+    <TextView
+        android:id="@+id/materiales_orden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="4dp"
+        android:text="@string/_3_materiales"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/estado_orden_texto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancelada"
+        android:textColor="@color/green"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.073"
-        app:layout_constraintStart_toEndOf="@+id/numero_orden"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="6dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/estado_orden_color"
+        app:layout_constraintStart_toStartOf="@+id/estado_orden_color"
+        app:layout_constraintTop_toBottomOf="@+id/estado_orden_color"
+        app:layout_constraintVertical_bias="0.317" />
 
     <TextView
         android:id="@+id/tiempo_orden"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:text="07:33 hrs"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/fecha_orden"
-        app:layout_constraintTop_toBottomOf="@+id/fecha_orden"
-        app:layout_constraintVertical_bias="0.233" />
+        android:text="@string/_07_33_hrs"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/numero_orden" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
