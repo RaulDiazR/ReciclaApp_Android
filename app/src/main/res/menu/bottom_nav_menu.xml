@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Inicio"
+        android:icon="@drawable/baseline_home_24"
+        android:textColor="@color/green" />
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Mapa"
+        android:icon="@drawable/baseline_map_24"
+        android:textColor="@color/green"/>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Reciclaje"
+        android:icon="@drawable/baseline_recycling_24"
+        android:textColor="@color/green"/>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Ajustes"
+        android:icon="@drawable/baseline_settings_24"
+        android:textColor="@color/green"/>
+</menu>
