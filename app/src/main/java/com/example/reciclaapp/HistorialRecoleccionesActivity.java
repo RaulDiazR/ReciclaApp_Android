@@ -39,8 +39,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         // Remove default title for app bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        // Enable the back button (up navigation)
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = findViewById(R.id.recyclerViewHistorial);
 
@@ -58,10 +56,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
         HistorialItem item1 = new HistorialItem(drawable3, "25/09/2023", "11:10","2 materiales","Iniciada", color3);
         HistorialItem item2 = new HistorialItem(drawable4, "25/09/2023", "11:10","3 materiales","En Proceso", color4);
-        HistorialItem item3 = new HistorialItem(drawable, "25/09/2023", "11:10","5 materiales","Completado", color);
-        HistorialItem item4 = new HistorialItem(drawable2, "29/09/2023", "11:08","2 materiales","Cancelado", color2);
-        HistorialItem item5 = new HistorialItem(drawable3, "25/09/2023", "11:10","4 materiales","Completado", color3);
-        HistorialItem item6 = new HistorialItem(drawable, "30/09/2023", "15:08","1 material","Completado", color);
+        HistorialItem item3 = new HistorialItem(drawable, "25/09/2023", "11:10","5 materiales","Completada", color);
+        HistorialItem item4 = new HistorialItem(drawable2, "29/09/2023", "11:08","2 materiales","Cancelada", color2);
+        HistorialItem item5 = new HistorialItem(drawable3, "25/09/2023", "11:10","4 materiales","Completada", color3);
+        HistorialItem item6 = new HistorialItem(drawable, "30/09/2023", "15:08","1 material","Completada", color);
 
         itemList.add(item1);
         itemList.add(item2);
@@ -81,15 +79,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     }
 
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        Intent intent = new Intent(this, MainActivity.class);
+    public void addOrder (View v) {
+        Intent intent = new Intent(this, OrdenHorarioActivity.class);
         startActivity(intent);
-        return true;
     }
-
 
     @Override
     public void onClick(View v, int pos) {
