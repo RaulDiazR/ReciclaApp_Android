@@ -24,4 +24,24 @@
     <string name="en_persona">En persona</string>
     <string name="en_puerta">En puerta</string>
     <string name="forma_de_entrega">Forma de Entrega</string>
+    <string name="ingresar_direcci_n">Ingresar Dirección</string>
+    <string name="c_digo_postal">Código Postal</string>
+    <string name="calle">Calle</string>
+    <string name="n_mero_exterior_interior">Número Exterior/Interior</string>
+    <string name="ingresar_calle">Ingresar Calle</string>
+    <string name="_21">21</string>
+    <string name="ni_os_h_roes">Niños Héroes</string>
+    <string name="colonia">Colonia</string>
+    <string name="atexcac">Atexcac</string>
+    <string name="municipio">Municipio</string>
+    <string name="_72020">72020</string>
+    <string name="san_andr_s_cholula">San Andrés Cholula</string>
+    <string name="ejemplo_telefono">012 345 6789</string>
+    <string name="tel_fono">Teléfono</string>
+    <string name="indicaciones_al_recolector">Indicaciones al Recolector</string>
+    <string name="comentarios">comentarios</string>
+    <string name="localizarme_en_el_mapa">Localizarme en el Mapa</string>
+    <string name="_12_00_hrs">12:00 hrs</string>
+    <string name="vie_14_de_aug_de_2023">vie 14 de Aug de 2023</string>
+    <string name="imagen_de_reciclaje">Imagen de Reciclaje</string>
 </resources>

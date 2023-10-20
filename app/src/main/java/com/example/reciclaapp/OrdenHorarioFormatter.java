@@ -4,7 +4,7 @@ import android.widget.NumberPicker;
 
 import java.util.Locale;
 
-public class HistorialTimeFormatter implements NumberPicker.Formatter {
+public class OrdenHorarioFormatter implements NumberPicker.Formatter {
     @Override
     public String format(int value) {
         // Format the value with a leading zero if it's less than 10

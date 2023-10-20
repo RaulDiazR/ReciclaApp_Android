@@ -14,14 +14,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Locale;
-import java.util.Objects;
 
-public class HistorialTimePickerDialog extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class OrdenHorarioTimePickerDialog extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
     private final Button buttonToUpdate;
     int initialHour, initialMinute;
     int minH, minM;
 
-    public HistorialTimePickerDialog(Button buttonToUpdate, int iniHour, int iniMinute, int minH, int minM) {
+    public OrdenHorarioTimePickerDialog(Button buttonToUpdate, int iniHour, int iniMinute, int minH, int minM) {
         this.buttonToUpdate = buttonToUpdate;
         this.initialHour = iniHour;
         this.initialMinute = iniMinute;
@@ -48,8 +47,8 @@ public class HistorialTimePickerDialog extends DialogFragment implements TimePic
         minutePicker.setValue(initialMinute);
 
         // Set custom formatters to format the numbers with leading zeros
-        hourPicker.setFormatter(new HistorialTimeFormatter());
-        minutePicker.setFormatter(new HistorialTimeFormatter());
+        hourPicker.setFormatter(new OrdenHorarioFormatter());
+        minutePicker.setFormatter(new OrdenHorarioFormatter());
 
         // Create and return the custom dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());

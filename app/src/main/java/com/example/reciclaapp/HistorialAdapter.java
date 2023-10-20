@@ -12,9 +12,10 @@ import java.util.List;
 
 public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyViewHolder> {
 
-    private List<HistorialItem> itemList;
-
+    private final List<HistorialItem> itemList;
     public HistorialItemClickListener clickListener;
+    private static final int TYPE_BUTTON = 0;
+    private static final int TYPE_ITEM = 1;
 
     public void setClickListener(HistorialItemClickListener myListener){
         this.clickListener = myListener;
@@ -31,7 +32,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
 
         View itemView = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.item_historial_layout,parent, false);
+                .inflate(R.layout.item_historial_layout, parent, false);
 
 
         return new MyViewHolder(itemView);
@@ -68,7 +69,6 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             estadoColor = itemView.findViewById(R.id.estado_orden_color);
-
             fecha = itemView.findViewById(R.id.fecha_orden);
             horario = itemView.findViewById(R.id.tiempo_orden);
             materiales = itemView.findViewById(R.id.materiales_orden);

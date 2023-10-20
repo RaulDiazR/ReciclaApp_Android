@@ -201,7 +201,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
 
     // Define the method to show the custom time picker dialog
     private void showCustomTimePickerDialog(Button buttonToUpdate, int hour, int minute, int minH, int minM) {
-        HistorialTimePickerDialog customDialog = new HistorialTimePickerDialog(buttonToUpdate, hour, minute, minH, minM);
+        OrdenHorarioTimePickerDialog customDialog = new OrdenHorarioTimePickerDialog(buttonToUpdate, hour, minute, minH, minM);
         customDialog.show(getSupportFragmentManager(), "historial_time_picker");
     }
     private boolean isTimeDifferenceValid() {
@@ -237,10 +237,10 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         if (isTimeDifferenceValid()) {
             String comentariosText = editTextComentarios.getText().toString(); //Comentarios
             boolean enPersona = selectedRadioButtonId == R.id.entrega_persona; // modo de entregar los desechos
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, DirectionActivity.class);
             startActivity(intent);
             String dateSelected = dateButton.getText().toString(); // fecha de recolección
-            // this.finalTimeIni; // tiempo de inicio de recolección
+            /* this.finalTimeIni; // tiempo de inicio de recolección
             // this.finalTimeEnd; // tiempo de finalización de recolección
             Toast toast = Toast.makeText(this, ""+
                     comentariosText+" -- "+
@@ -250,7 +250,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
                     this.finalTimeIni[1]+" -- "+
                     this.finalTimeEnd[0]+":"+
                     this.finalTimeEnd[1], Toast.LENGTH_LONG);
-            toast.show();
+            toast.show();*/
         }
         else {
             Toast toast = Toast.makeText(this, "El tiempo seleccionado es Inválido", Toast.LENGTH_LONG);
