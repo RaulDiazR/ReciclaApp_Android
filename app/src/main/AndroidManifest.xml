@@ -13,6 +13,14 @@
         android:theme="@style/Theme.ReciclaApp"
         tools:targetApi="31">
         <activity
+            android:name=".MaterialesSelectionActivity"
+            android:exported="false"
+            android:theme="@style/Base.Theme.ReciclaApp.PopMe"/>
+        <activity
+            android:name=".MaterialesActivity"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".DirectionActivity"
             android:exported="false" />
         <activity

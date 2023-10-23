@@ -44,4 +44,10 @@
     <string name="_12_00_hrs">12:00 hrs</string>
     <string name="vie_14_de_aug_de_2023">vie 14 de Aug de 2023</string>
     <string name="imagen_de_reciclaje">Imagen de Reciclaje</string>
+    <string name="elegir_materiales">Elegir Materiales</string>
+    <string name="agregar_material">Agregar Material</string>
+    <string name="bot_n_de_x_para_salir_de_la_pantalla_actual">Botón de X para salir de la pantalla actual</string>
+    <string name="madera">Madera</string>
+    <string name="imagen_de_material">Imagen de Material</string>
+    <string name="materiales_a_reciclar">Materiales a Reciclar</string>
 </resources>

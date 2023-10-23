@@ -14,8 +14,6 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
 
     private final List<HistorialItem> itemList;
     public HistorialItemClickListener clickListener;
-    private static final int TYPE_BUTTON = 0;
-    private static final int TYPE_ITEM = 1;
 
     public void setClickListener(HistorialItemClickListener myListener){
         this.clickListener = myListener;
@@ -32,7 +30,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
 
         View itemView = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.item_historial_layout, parent, false);
+                .inflate(R.layout.historial_item, parent, false);
 
 
         return new MyViewHolder(itemView);
@@ -80,7 +78,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
         @Override
         public void onClick(View v) {
             if (clickListener != null) {
-                clickListener.onClick(v, getAdapterPosition());
+                clickListener.onClick(v, getBindingAdapterPosition());
             }
         }
     }

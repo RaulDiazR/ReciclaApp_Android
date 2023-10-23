@@ -148,6 +148,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="26dp"
             android:autofillHints="texto"
             android:background="@drawable/button_variant_white"

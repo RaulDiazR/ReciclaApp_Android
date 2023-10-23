@@ -44,22 +44,24 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
         itemList = new ArrayList<>();
         Resources res = getResources();
-        Drawable drawable = ResourcesCompat.getDrawable(res, R.drawable.shape_green_square, null);
-        Drawable drawable2 = ResourcesCompat.getDrawable(res, R.drawable.shape_red_square, null);
-        Drawable drawable3 = ResourcesCompat.getDrawable(res, R.drawable.shape_gray_square, null);
-        Drawable drawable4 = ResourcesCompat.getDrawable(res, R.drawable.shape_gold_square, null);
+        Drawable green_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
+        Drawable red_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_red, null);
+        Drawable gray_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_gray, null);
+        Drawable gold_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_gold, null);
+        Drawable blue_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_blue, null);
 
-        int color = ResourcesCompat.getColor(res, R.color.green, null);
-        int color2 = ResourcesCompat.getColor(res, R.color.red, null);
-        int color3 = ResourcesCompat.getColor(res, R.color.gray, null);
-        int color4 = ResourcesCompat.getColor(res, R.color.pink, null);
+        int green = ResourcesCompat.getColor(res, R.color.green, null);
+        int red = ResourcesCompat.getColor(res, R.color.red, null);
+        int gray = ResourcesCompat.getColor(res, R.color.gray, null);
+        int gold = ResourcesCompat.getColor(res, R.color.golden, null);
+        int blue = ResourcesCompat.getColor(res, R.color.blue, null);
 
-        HistorialItem item1 = new HistorialItem(drawable3, "25/09/2023", "11:10","2 materiales","Iniciada", color3);
-        HistorialItem item2 = new HistorialItem(drawable4, "25/09/2023", "11:10","3 materiales","En Proceso", color4);
-        HistorialItem item3 = new HistorialItem(drawable, "25/09/2023", "11:10","5 materiales","Completada", color);
-        HistorialItem item4 = new HistorialItem(drawable2, "29/09/2023", "11:08","2 materiales","Cancelada", color2);
-        HistorialItem item5 = new HistorialItem(drawable3, "25/09/2023", "11:10","4 materiales","Completada", color3);
-        HistorialItem item6 = new HistorialItem(drawable, "30/09/2023", "15:08","1 material","Completada", color);
+        HistorialItem item1 = new HistorialItem(gray_square, "25/09/2023", "14:10","2 materiales","Pendiente", gray);
+        HistorialItem item2 = new HistorialItem(gold_square, "25/09/2023", "16:10","3 materiales","Iniciada", gold);
+        HistorialItem item3 = new HistorialItem(blue_square, "25/09/2023", "10:10","5 materiales","En Proceso", blue);
+        HistorialItem item4 = new HistorialItem(green_square, "29/09/2023", "09:08","2 materiales","Completada", green);
+        HistorialItem item5 = new HistorialItem(red_square, "25/09/2023", "15:10","4 materiales","Cancelada", red);
+        HistorialItem item6 = new HistorialItem(green_square, "30/09/2023", "13:08","1 material","Completada", green);
 
         itemList.add(item1);
         itemList.add(item2);
@@ -88,6 +90,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     public void onClick(View v, int pos) {
         Toast.makeText(this,
                 "You choose this: " + itemList.get(pos).getEstado(),
-                Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_LONG).show();
     }
 }

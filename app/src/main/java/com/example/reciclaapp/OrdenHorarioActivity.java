@@ -150,8 +150,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
-        Intent intent = new Intent(this, HistorialRecoleccionesActivity.class);
-        startActivity(intent);
+        finish();
         return true;
     }
 

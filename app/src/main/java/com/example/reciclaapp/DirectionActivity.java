@@ -63,7 +63,7 @@ public class DirectionActivity extends AppCompatActivity {
     public void localizar_en_mapa(View view) {
         // Check if the form is valid
         if (isFormValid()) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MaterialesActivity.class);
             startActivity(intent);
         }
     }
@@ -71,8 +71,7 @@ public class DirectionActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
-        Intent intent = new Intent(this, OrdenHorarioActivity.class);
-        startActivity(intent);
+        finish();
         return true;
     }
 
