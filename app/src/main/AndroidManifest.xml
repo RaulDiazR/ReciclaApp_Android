@@ -13,6 +13,51 @@
         android:theme="@style/Theme.ReciclaApp"
         tools:targetApi="31">
         <activity
+            android:name=".RecoleccionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MapaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NewsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CuentaActivada"
+            android:exported="false" />
+        <activity
+            android:name=".ActivatuCuenta"
+            android:exported="false" />
+        <activity
+            android:name=".ConfirmarRegistro"
+            android:exported="false" />
+        <activity
+            android:name=".Contrasenaincorrrecta"
+            android:exported="false" />
+        <activity
+            android:name=".GuardarCambios"
+            android:exported="false" />
+        <activity
+            android:name=".TutorialActivity5"
+            android:exported="false" />
+        <activity
+            android:name=".TutorialActivity4"
+            android:exported="false" />
+        <activity
+            android:name=".TutorialActivity3"
+            android:exported="false" />
+        <activity
+            android:name=".TutorialActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".TutorialActivity1"
+            android:exported="false" />
+        <activity
+            android:name=".InicioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false" />
+        <activity
             android:name=".UpdatePasswordActivity"
             android:exported="false" />
         <activity
@@ -41,13 +86,7 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

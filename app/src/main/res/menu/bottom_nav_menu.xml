@@ -2,27 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/inicio"
         android:title="Inicio"
-        android:icon="@drawable/baseline_home_24"
-        android:textColor="@color/green" />
+        android:icon="@drawable/baseline_home_24" />
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/mapa"
         android:title="Mapa"
-        android:icon="@drawable/baseline_map_24"
-        android:textColor="@color/green"/>
+        android:icon="@drawable/baseline_map_24" />
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/reciclaje"
         android:title="Reciclaje"
-        android:icon="@drawable/baseline_recycling_24"
-        android:textColor="@color/green"/>
+        android:icon="@drawable/baseline_recycling_24" />
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/ajustes"
         android:title="Ajustes"
-        android:icon="@drawable/baseline_settings_24"
-        android:textColor="@color/green"/>
+        android:icon="@drawable/baseline_settings_24" />
 </menu>

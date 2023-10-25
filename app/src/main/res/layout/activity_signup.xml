@@ -15,7 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="63dp"
+            android:layout_height="70dp"
             android:background="@drawable/shape_rounded"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/currPassword"
+            android:id="@+id/nombres"
             android:layout_width="255dp"
             android:layout_height="46dp"
             android:layout_marginTop="8dp"
@@ -76,10 +76,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.245"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/nombres" />
 
         <EditText
-            android:id="@+id/newPassword"
+            android:id="@+id/apellidos"
             android:layout_width="255dp"
             android:layout_height="46dp"
             android:layout_marginTop="8dp"
@@ -107,10 +107,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.302"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/apellidos" />
 
         <EditText
-            android:id="@+id/newPasswordC"
+            android:id="@+id/mail"
             android:layout_width="255dp"
             android:layout_height="46dp"
             android:layout_marginTop="8dp"
@@ -138,7 +138,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.232"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newPasswordC" />
+            app:layout_constraintTop_toBottomOf="@+id/mail" />
 
         <EditText
             android:id="@+id/phone"
@@ -162,12 +162,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Fecha de Nacimiento"
+            android:text="Fecha de Nacimiento (DD/MM/AAAA)"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.329"
+            app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/phone" />
 
@@ -203,7 +203,7 @@
             app:layout_constraintTop_toBottomOf="@+id/birthday" />
 
         <EditText
-            android:id="@+id/passwordR"
+            android:id="@+id/password"
             android:layout_width="255dp"
             android:layout_height="46dp"
             android:layout_marginTop="8dp"
@@ -231,7 +231,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.341"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/passwordR" />
+            app:layout_constraintTop_toBottomOf="@+id/password" />
 
         <EditText
             android:id="@+id/cpassword"
@@ -251,7 +251,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/checkBox1"
             android:layout_width="255dp"
             android:layout_height="72dp"
             android:layout_marginTop="24dp"
@@ -274,7 +274,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.300"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+            app:layout_constraintTop_toBottomOf="@+id/checkBox1" />
 
         <Button
             android:id="@+id/buttonIS"
@@ -291,10 +291,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.741"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+            app:layout_constraintTop_toBottomOf="@+id/checkBox1" />
 
         <Button
-            android:id="@+id/buttonCrear"
+            android:id="@+id/buttonContinuarRegistro"
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_marginTop="32dp"

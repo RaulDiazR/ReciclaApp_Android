@@ -10,7 +10,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="63dp"
+        android:layout_height="70dp"
         android:background="@drawable/shape_rounded"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +95,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/variant2"
         android:drawableRight="@drawable/facebook"
-        android:onClick="Continuar"
+        android:onClick="ContinuarFacebook"
         android:paddingEnd="10dp"
         android:text="    Continuar con Facebook"
         android:textAlignment="viewStart"
@@ -115,7 +115,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/variant1"
         android:drawableRight="@drawable/google"
-        android:onClick="Continuar"
+        android:onClick="ContinuarGoogle"
         android:paddingEnd="10dp"
         android:text="     Continuar con Google"
         android:textAlignment="viewStart"
@@ -160,7 +160,7 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonCG" />
 
     <Button
-        android:id="@+id/buttonCrear"
+        android:id="@+id/buttonContinuar"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginTop="24dp"

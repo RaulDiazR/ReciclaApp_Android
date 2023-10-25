@@ -15,7 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="63dp"
+            android:layout_height="70dp"
             android:background="@drawable/shape_rounded"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/currPassword"
+            android:id="@+id/nombres"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -74,10 +74,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.245"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/nombres" />
 
         <EditText
-            android:id="@+id/newPassword"
+            android:id="@+id/apellidos"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -101,10 +101,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.302"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/apellidos" />
 
         <EditText
-            android:id="@+id/newPasswordC"
+            android:id="@+id/mail"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -129,7 +129,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.232"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newPasswordC" />
+            app:layout_constraintTop_toBottomOf="@+id/mail" />
 
         <EditText
             android:id="@+id/phone"
@@ -221,13 +221,13 @@
             app:layout_constraintTop_toBottomOf="@+id/button_actCon" />
 
         <Button
-            android:id="@+id/buttonCrear"
+            android:id="@+id/buttonGC"
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/variant3"
-            android:onClick="goToSettings"
-            android:text="Continuar"
+            android:onClick="GuardarCambios"
+            android:text="Guardar Cambios"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/white"
