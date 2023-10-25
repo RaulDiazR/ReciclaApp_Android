@@ -50,4 +50,12 @@
     <string name="madera">Madera</string>
     <string name="imagen_de_material">Imagen de Material</string>
     <string name="materiales_a_reciclar">Materiales a Reciclar</string>
+    <string name="_10">10</string>
+    <string name="bot_n_para_restar_unidades">Botón para restar unidades</string>
+    <string name="bot_n_para_a_adir_unidades">Botón para añadir unidades</string>
+    <string name="cantidad">Cantidad:</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="tomar_foto">Tomar Foto</string>
+    <string name="_0">0</string>
+    <string name="_1">1</string>
 </resources>

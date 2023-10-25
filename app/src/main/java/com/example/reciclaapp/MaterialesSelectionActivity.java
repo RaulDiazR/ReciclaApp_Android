@@ -21,7 +21,8 @@ public class MaterialesSelectionActivity extends AppCompatActivity implements Ma
     List<MaterialesSelectionItem> itemList;
 
     // 3- Adapter
-    MaterialesSelectionAdapter PopupAdapter;
+    MaterialesSelectionAdapter selectionAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,15 +59,14 @@ public class MaterialesSelectionActivity extends AppCompatActivity implements Ma
         // create and set the linear layout manager so the recycler view works properly like a scrolling view
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        PopupAdapter = new MaterialesSelectionAdapter(this, itemList);
-        recyclerView.setAdapter(PopupAdapter);
+        selectionAdapter = new MaterialesSelectionAdapter(this, itemList);
+        recyclerView.setAdapter(selectionAdapter);
 
-        PopupAdapter.setClickListener(this);
+        selectionAdapter.setClickListener(this);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
         finish();
         return true;
     }
@@ -76,7 +76,7 @@ public class MaterialesSelectionActivity extends AppCompatActivity implements Ma
         Intent intent = new Intent(this, MaterialesActivity.class);
         intent.putExtra("imageResource", itemList.get(position).getImageResource());
         intent.putExtra("text", itemList.get(position).getText());
-        startActivity(intent);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

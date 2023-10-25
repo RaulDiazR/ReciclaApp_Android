@@ -1,8 +1,5 @@
 package com.example.reciclaapp;
 
-import static android.app.PendingIntent.getActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,16 +9,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MaterialesHeaderAdapter extends RecyclerView.Adapter<MaterialesHeaderAdapter.HeaderViewHolder> {
     private final Context context;
     private final MaterialesHeaderItem headerData;
+    private final ActivityResultLauncher<Intent> MaterialesActivityResultLauncher;
 
-    public MaterialesHeaderAdapter(Context context, MaterialesHeaderItem headerData) {
+    public MaterialesHeaderAdapter(Context context, MaterialesHeaderItem headerData, ActivityResultLauncher<Intent> materialesActivityResultLauncher) {
         this.context = context;
         this.headerData = headerData;
+        MaterialesActivityResultLauncher = materialesActivityResultLauncher;
     }
 
     @NonNull
@@ -38,8 +38,8 @@ public class MaterialesHeaderAdapter extends RecyclerView.Adapter<MaterialesHead
         holder.tiempoOrdenTextView.setText(headerData.getTiempoOrden());
         holder.buttonCrear.setOnClickListener(v -> {
             Intent intent = new Intent(context, MaterialesSelectionActivity.class);
-            context.startActivity(intent);
-            ((Activity)(context)).finish();
+            MaterialesActivityResultLauncher.launch(intent);
+            //((Activity)(context)).finish();
         });
     }
 
