@@ -1,7 +1,10 @@
 package com.example.reciclaapp;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,9 +24,9 @@ import java.util.List;
 
 public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.MaterialesViewHolder> {
     private final Context context;
-    private final List<MaterialesItem> itemList; // Replace 'YourItemData' with the actual data type for your items.
+    private final List<MaterialesItem> itemList;
     private OnItemRemovedListener itemRemovedListener;
-    // Interface for communicating item removal
+    private final CameraIntentHelper cameraIntentHelper;
 
     public interface OnItemRemovedListener {
         void onItemRemoved(int position);
@@ -31,10 +35,10 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
     public MaterialesAdapter(Context context, List<MaterialesItem> itemList) {
         this.context = context;
         this.itemList = itemList;
+        cameraIntentHelper = new CameraIntentHelper((Activity) context);
     }
 
     public static class MaterialesViewHolder extends RecyclerView.ViewHolder {
-        // Define your views here
         public Spinner spinner;
         public ImageButton minusButton;
         public TextView quantity;
@@ -44,10 +48,11 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         public TextView textView;
         public Button tomarFoto;
         public Button eliminarMaterial;
+        public String lastTakenPhotoPath;
+        public boolean isPhotoTaken;
 
         public MaterialesViewHolder(View view) {
             super(view);
-            // Initialize your views here
             spinner = view.findViewById(R.id.spinner);
             minusButton = view.findViewById(R.id.minusButton);
             quantity = view.findViewById(R.id.materialQuantity);
@@ -57,6 +62,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
             textView = view.findViewById(R.id.text);
             tomarFoto = view.findViewById(R.id.tomarFoto);
             eliminarMaterial = view.findViewById(R.id.eliminarMaterial);
+            lastTakenPhotoPath = "";
         }
     }
 
@@ -76,41 +82,47 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         holder.minusButton.setOnClickListener(v -> {
             int number = Integer.parseInt(holder.quantity.getText().toString());
             if (number > 1) {
-                number --;
+                number--;
                 holder.quantity.setText(String.valueOf(number));
-            }
-            else {
+            } else {
                 holder.quantity.setText("1");
             }
         });
 
         holder.plusButton.setOnClickListener(v -> {
             int number = Integer.parseInt(holder.quantity.getText().toString());
-            number ++;
+            number++;
             holder.quantity.setText(String.valueOf(number));
-
         });
 
         holder.eliminarMaterial.setOnClickListener(v -> {
-            int itemPosition = holder.getBindingAdapterPosition(); // Get the item's position
+            int itemPosition = holder.getBindingAdapterPosition();
             if (itemPosition != RecyclerView.NO_POSITION) {
-                // Remove the item from the list
                 itemList.remove(itemPosition);
-                // Notify the adapter that an item has been removed
                 notifyItemRemoved(itemPosition);
-
                 if (itemRemovedListener != null) {
                     itemRemovedListener.onItemRemoved(itemPosition);
                 }
             }
         });
 
-
         holder.tomarFoto.setOnClickListener(v -> {
+            if (holder.isPhotoTaken) {
+                // Show the taken photo
+                // Load and display the photo using the lastTakenPhotoPath
+                if (!TextUtils.isEmpty(holder.lastTakenPhotoPath)) {
+                    holder.imageView.setImageURI(Uri.parse(holder.lastTakenPhotoPath));
+                }
 
+                holder.tomarFoto.setText(R.string.ver_foto);
+            } else {
+                Toast.makeText(context,
+                        "Valor: "+holder.isPhotoTaken,
+                        Toast.LENGTH_LONG).show();
+                holder.tomarFoto.setText(R.string.tomar_foto);
+                cameraIntentHelper.dispatchTakePictureIntent(holder);
+            }
         });
-
-
 
         // Create an array of items to populate the Spinner
         String[] items = {"Bolsas", "Cajas", "Kilos"};
@@ -137,4 +149,5 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         return itemList.size();
     }
 }
+
 

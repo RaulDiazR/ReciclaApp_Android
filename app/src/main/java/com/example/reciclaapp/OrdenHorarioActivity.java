@@ -25,17 +25,25 @@ public class OrdenHorarioActivity extends AppCompatActivity {
     private Button timeEnd;
     int hourIni, minuteIni;
     int hourEnd, minuteEnd;
+    // Check if the user's time is after the finishing time of 7pm
     boolean isDayOver;
+    // Check if the user's time is before the starting time of 7am
+    boolean isBeforeDayStart;
     // guarda la hora y minuto que seleccionó el usuario para el inicio de la recolección
     int[] finalTimeIni = new int[2];
     // guarda la hora y minuto que seleccionó el usuario para el final de la recolección
     int[] finalTimeEnd  = new int[2];
+    // guarda la fecha que seleccionó el usuario para el final de la recolección
+    int[] finalDate  = new int[3];
     String curDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orden_horario);
+        this.finalDate[0] = 0;
+        this.finalDate[1] = 0;
+        this.finalDate[2] = 0;
 
         // Find the Toolbar by its ID and set the Toolbar as the app bar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -47,9 +55,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
 
         int curHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
-        if (curHour >= 19) {
-            isDayOver = true;
-        }
+        isDayOver = curHour >= 19;
+        isBeforeDayStart = curHour < 7;
+
         initDatePicker();
         dateButton = findViewById(R.id.fecha);
         dateButton.setText(getTodaysDate());
@@ -67,7 +75,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         int hourIni = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int minuteIni = Calendar.getInstance().get(Calendar.MINUTE);
 
-        if (isDayOver) {
+        if (this.isDayOver || this.isBeforeDayStart) {
             hourIni = 7;
             minuteIni = 0;
         }
@@ -80,7 +88,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         int hourEnd = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int minuteEnd = Calendar.getInstance().get(Calendar.MINUTE);
 
-        if (isDayOver) {
+        if (this.isDayOver || this.isBeforeDayStart) {
             hourEnd = 8;
             minuteEnd = 0;
         } else {
@@ -106,6 +114,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         if (isDayOver) {
             day = day + 1;
         }
+        this.finalDate[0] = day;
+        this.finalDate[1] = month;
+        this.finalDate[2] = year;
         this.curDate = formatDate(day, month, year);
         return curDate;
     }
@@ -113,6 +124,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
     private void initDatePicker() {
         DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
             month = month + 1;
+            this.finalDate[0] = day;
+            this.finalDate[1] = month;
+            this.finalDate[2] = year;
             String formattedDate = formatDate(day, month, year);
             // Date changes
             dateButton.setText(formattedDate);
@@ -165,7 +179,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         String[] startTimeParts = startTimeText.split(":");
         int startHour = Integer.parseInt(startTimeParts[0]);
         int startMinute = Integer.parseInt(startTimeParts[1]);
-        if(notSameDay()) {
+        if(notSameDay() || this.isBeforeDayStart) {
             minH = 7;
             minM = 0;
         }
@@ -184,13 +198,14 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         String[] endTimeParts = endTimeText.split(":");
         int endHour = Integer.parseInt(endTimeParts[0]);
         int endMinute = Integer.parseInt(endTimeParts[1]);
-        if(notSameDay()) {
+        if(notSameDay() || this.isBeforeDayStart) {
             minH = 8;
             minM = 0;
         }
         showCustomTimePickerDialog(timeEnd, endHour, endMinute, minH, minM);
     }
 
+    // checks if the user's selected date is different from the current phone's date
     private boolean notSameDay() {
         String curDate = this.curDate;
         String dateSelected = dateButton.getText().toString();
@@ -202,6 +217,8 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         OrdenHorarioTimePickerDialog customDialog = new OrdenHorarioTimePickerDialog(buttonToUpdate, hour, minute, minH, minM);
         customDialog.show(getSupportFragmentManager(), "historial_time_picker");
     }
+
+    // Checks if the user's delected time range is valid
     private boolean isTimeDifferenceValid() {
         // Parse the selected time from timeEnd button
         String endTimeText = timeEnd.getText().toString();
@@ -236,14 +253,19 @@ public class OrdenHorarioActivity extends AppCompatActivity {
             String comentariosText = editTextComentarios.getText().toString(); //Comentarios
             boolean enPersona = selectedRadioButtonId == R.id.entrega_persona; // modo de entregar los desechos
             Intent intent = new Intent(this, DirectionActivity.class);
+            intent.putExtra("fecha", this.finalDate);
+            intent.putExtra("tiempoIni", this.finalTimeIni);
+            intent.putExtra("tiempoEnd", this.finalTimeEnd);
+            intent.putExtra("comentarios", comentariosText);
+            intent.putExtra("enPersona", enPersona);
             startActivity(intent);
-            String dateSelected = dateButton.getText().toString(); // fecha de recolección
-            /* this.finalTimeIni; // tiempo de inicio de recolección
+
+            // this.finalTimeIni; // tiempo de inicio de recolección
             // this.finalTimeEnd; // tiempo de finalización de recolección
-            Toast toast = Toast.makeText(this, ""+
+            /*Toast toast = Toast.makeText(this, ""+
                     comentariosText+" -- "+
                     enPersona+" -- "+
-                    dateSelected+" -- "+
+                    this.finalDate[0]+", "+this.finalDate[1]+", "+this.finalDate[2]+" -- "+
                     this.finalTimeIni[0]+":"+
                     this.finalTimeIni[1]+" -- "+
                     this.finalTimeEnd[0]+":"+

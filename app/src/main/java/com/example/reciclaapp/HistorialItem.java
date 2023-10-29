@@ -6,14 +6,24 @@ public class HistorialItem {
     Drawable backgroundDrawable; // New variable for background
     String fecha, horario, materiales, estado;
     int estadoColor;
+    boolean isRated;
 
-    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String materiales, String estado, int estadoColor) {
+    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String materiales, String estado, int estadoColor, boolean isRated) {
         this.backgroundDrawable = backgroundDrawable;
         this.fecha = fecha;
         this.horario = horario;
         this.materiales = materiales;
         this.estado = estado;
         this.estadoColor = estadoColor;
+        this.isRated = isRated;
+    }
+
+    public boolean getIsRated() {
+        return isRated;
+    }
+
+    public void setIsRated(boolean rated) {
+        isRated = rated;
     }
 
     public Drawable getBackgroundDrawable() {

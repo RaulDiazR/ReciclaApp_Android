@@ -7,6 +7,7 @@
         <item name="android:fontFamily">@font/plex_sans_condensed</item>
     </style>
 
+    // used for Date Picker in OrdenHorarioActivity
     <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/green</item>
         <item name="colorControlActivated">@color/green</item>
@@ -14,15 +15,28 @@
         <item name="colorControlHighlight">@color/green</item>
     </style>
 
-
+    // used for Time Pickers in OrdenHorarioActivity
     <style name="TimePickerStyle" parent="Base.Theme.ReciclaApp">
         <item name="colorControlNormal">@color/green</item>
     </style>
-    
+
     <style name="Base.Theme.ReciclaApp.PopMe">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
+
+    // used for Popup in MaterialesActivity
+    <style name="CustomAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/shape_historial_background</item>
+    </style>
+
+    // used for Rating Bar in HistorialRecoleccionesActivity
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/gray</item>
+        <item name="colorControlActivated">@color/green</item>
+    </style>
+
+
 
     <style name="Theme.ReciclaApp" parent="Base.Theme.ReciclaApp" />
 </resources>

@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/fecha_orden"
-            android:layout_width="170dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:breakStrategy="balanced"
             android:gravity="center"

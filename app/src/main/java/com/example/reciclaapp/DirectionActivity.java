@@ -61,9 +61,28 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     public void localizar_en_mapa(View view) {
+        String calleText = calleTextView.getText().toString();
+        String numeroText = numeroTextView.getText().toString();
+        String coloniaText = coloniaTextView.getText().toString();
+        String municipioText = municipioTextView.getText().toString();
+        String codigoPostalText = codigoPostalTextView.getText().toString();
+        String telefonoText = telefonoTextView.getText().toString();
+
         // Check if the form is valid
         if (isFormValid()) {
             Intent intent = new Intent(this, MaterialesActivity.class);
+            intent.putExtra("calle", calleText);
+            intent.putExtra("numero", numeroText);
+            intent.putExtra("colonia", coloniaText);
+            intent.putExtra("municipio", municipioText);
+            intent.putExtra("codigoPostal", codigoPostalText);
+            intent.putExtra("telefono", telefonoText);
+
+            // Se pasa la información de la actividad previa
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                intent.putExtras(bundle);
+            }
             startActivity(intent);
         }
     }

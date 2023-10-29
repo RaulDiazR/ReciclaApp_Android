@@ -1,15 +1,17 @@
 <resources>
     <string name="app_name">ReciclaApp</string>
+    <string name="iniciada">Iniciada</string>
+    <string name="enProceso">En Proceso</string>
+    <string name="completada">Completada</string>
+    <string name="cancelada">Cancelada</string>
     <string name="background_image">Background Image</string>
     <string name="reciclaje">Reciclaje</string>
-    <string name="cancelada">Cancelada</string>
     <string name="fecha">07/11/2023</string>
     <string name="imagen_calendario">imagen de un calendario</string>
     <string name="imagen_reloj">imagen de un reloj</string>
     <string name="conteo_materiales">3 Materiales</string>
     <string name="orden_de_reciclaje">Orden de Reciclaje</string>
     <string name="hora">07:33</string>
-    <string name="completada">Completada</string>
     <string name="bot_n_para_a_adir_orden">Botón para añadir orden</string>
     <string name="nueva_recolecci_n">Nueva recolección</string>
     <string name="continuar">Continuar</string>
@@ -42,7 +44,7 @@
     <string name="comentarios">comentarios</string>
     <string name="localizarme_en_el_mapa">Localizarme en el Mapa</string>
     <string name="_12_00_hrs">12:00 hrs</string>
-    <string name="vie_14_de_aug_de_2023">vie 14 de Aug de 2023</string>
+    <string name="vie_14_de_aug_de_2023">vie. 14 de Aug de 2023</string>
     <string name="imagen_de_reciclaje">Imagen de Reciclaje</string>
     <string name="elegir_materiales">Elegir Materiales</string>
     <string name="agregar_material">Agregar Material</string>
@@ -56,6 +58,21 @@
     <string name="cantidad">Cantidad:</string>
     <string name="eliminar">Eliminar</string>
     <string name="tomar_foto">Tomar Foto</string>
+    <string name="ver_foto">Ver Foto</string>
     <string name="_0">0</string>
     <string name="_1">1</string>
+    <string name="deseas_confirmar_la_orden">¿Deseas confirmar la orden?</string>
+    <string name="confirmar_orden">Confirmar Orden</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="tu_orden_ha_sido_registrada_n_nte_enviaremos_una_notificaci_n_cuando_encontremos_un_recolector">Tu orden ha sido registrada.\n\nTe enviaremos una notificación cuando encontremos un recolector.</string>
+    <string name="recolector">Recolector:</string>
+    <string name="juan_ramirez_ramirez">Juan Ramirez Ramirez</string>
+    <string name="permanezca_cerca_del_celular_por_cualquier_notificaci_n">Permanezca cerca del celular por cualquier notificación.</string>
+    <string name="lo_sentimos_a_n_no_se_ha_encontrado_un_recolector_le_notificaremos_tan_r_pido_como_encontremos_uno">Lo sentimos, aún no se ha encontrado un Recolector, le notificaremos tan rápido como encontremos uno.</string>
+    <string name="cancelar_orden">Cancelar Orden</string>
+    <string name="deseas_cancelar_la_orden">¿Deseas Cancelar la Orden?</string>
+    <string name="ver_centros">Ver Centros</string>
+    <string name="lamentablemente_no_encontramos_un_recolector_o_se_cancel_su_orden_puede_intentar_otro_horario_o_visitar_un_centro_de_acopio_cercano">Lamentablemente, no encontramos un recolector o se canceló su orden. Puede intentar otro horario o visitar un centro de acopio cercano.</string>
+    <string name="felicidades_su_orden_ha_sido_completada_gracias_por_ayudar_a_cuidar_el_medio_ambiente">“Felicidades! Su orden ha sido completada, gracias por ayudar a cuidar el medio ambiente.</string>
 </resources>

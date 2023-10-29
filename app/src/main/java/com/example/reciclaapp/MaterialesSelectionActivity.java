@@ -43,7 +43,7 @@ public class MaterialesSelectionActivity extends AppCompatActivity implements Ma
         };
 
         String[] textArray = {
-                "Aceite de Auto","Aceite Usado","Árbol","Baterías","Bicicletas","Botellas","Cartón","Electrónicos","Escombros","Materiales Industriales","Juguetes","Libros","Llantas","Madera","Medicinas","Metal","Orgánico","Pallets","Papel","Pilas","Plásticos","Ropa","Tapitas","Tetra Pack","Toner","Voluminoso"
+                "Aceite de Auto","Aceite Usado","Árbol","Baterías","Bicicletas","Botellas","Cartón","Electrónicos","Escombros","Industriales","Juguetes","Libros","Llantas","Madera","Medicinas","Metal","Orgánico","Pallets","Papel","Pilas","Plásticos","Ropa","Tapitas","Tetra Pack","Toner","Voluminoso"
         };
 
         // 2- DataSource
