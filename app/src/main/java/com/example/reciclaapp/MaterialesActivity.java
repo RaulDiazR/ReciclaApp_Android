@@ -22,11 +22,18 @@ import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reciclaapp.models.McqMaterial;
+import com.example.reciclaapp.models.McqRecoleccion;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class MaterialesActivity extends AppCompatActivity implements MaterialesAdapter.OnItemRemovedListener {
@@ -43,16 +50,27 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private CameraIntentHelper cameraIntentHelper;
 
+    Intent receivedIntent;
+
+    DatabaseReference myRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_materiales);
-
         // Find the Toolbar by its ID and set the Toolbar as the app bar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Remove default title for the app bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        // creates intent to receive data from past activities
+        this.receivedIntent = getIntent();
+
+        // Se accede a la base de datos
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("recolecciones");
+
         // Get result from MaterialesSelectionActivity
         ActivityResultLauncher<Intent> materialesActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -102,7 +120,7 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
     }
 
     private String[] getInfoFromIntent() {
-        Intent receivedIntent = getIntent();
+        receivedIntent = getIntent();
         int[] fecha = receivedIntent.getIntArrayExtra("fecha");
         int day, month, year;
         assert fecha != null;
@@ -124,7 +142,6 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE d 'de' MMM 'de' yyyy", new Locale("es", "MX"));
         return dateFormat.format(cal.getTime());
     }
-
 
     @Override
     public void onItemRemoved(int position) {
@@ -181,6 +198,7 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         // Logic for Confirm
         btnConfirmar.setOnClickListener(v -> {
             mostrarConfirmacion(v);
+            sendDataToDB();
             alertDialog.dismiss();
         });
 
@@ -239,6 +257,72 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         // Add the background view and show the dialog
         FrameLayout rootView = findViewById(android.R.id.content);
         rootView.addView(backgroundView);
+    }
+
+    private void sendDataToDB() {
+        receivedIntent = getIntent();
+
+        // se extrae la fecha y se le da un formato simple de dd/mm/aa
+        int[] fecha = receivedIntent.getIntArrayExtra("fecha");
+        int day, month, year;
+        assert fecha != null;
+        day = fecha[0];
+        month = fecha[1];
+        year = fecha[2];
+        String fechaStr = ""+day+"/"+month+"/"+year;
+
+        // Se extraen los tiempos de inicio y final de la recolección
+        int[] tiempoEnd = receivedIntent.getIntArrayExtra("tiempoEnd");
+        assert tiempoEnd != null;
+        String timeEnd = String.format(Locale.getDefault(),"%02d", tiempoEnd[0]) + ":" + String.format(Locale.getDefault(),"%02d", tiempoEnd[1]);
+        int[] tiempoIni = receivedIntent.getIntArrayExtra("tiempoIni");
+        assert tiempoIni != null;
+        String timeIni = String.format(Locale.getDefault(),"%02d", tiempoIni[0]) + ":" + String.format(Locale.getDefault(),"%02d", tiempoIni[1]);
+
+        // se extraen los comentarios
+        String comentarios = receivedIntent.getStringExtra("comentarios");
+        assert comentarios != null;
+
+        boolean enPersona = receivedIntent.getBooleanExtra("enPersona", true);
+
+        // se genera un id único para la recolección
+        String uid = myRef.push().getKey();
+
+        McqRecoleccion recoleccion = new McqRecoleccion();
+        recoleccion.setRid(uid);
+        recoleccion.setIdUsuarioCliente("user_id_1");
+        recoleccion.setIdRecolector("user_id_2");
+        recoleccion.setFechaRecoleccion(fechaStr);
+        recoleccion.setHoraRecoleccionInicio(timeIni);
+        recoleccion.setHoraRecoleccionFinal(timeEnd);
+        recoleccion.setComentarios(comentarios);
+        recoleccion.setEnPersona(enPersona);
+        recoleccion.setRated(false);
+        recoleccion.setEstado("Iniciada");
+
+// Create a map to hold material data
+        Map<String, McqMaterial> materiales = new HashMap<>();
+        int count = 0;
+        for (MaterialesItem materialesItem : itemList) {
+            McqMaterial material1 = new McqMaterial();
+            material1.setNombre(materialesItem.getText());
+            material1.setUnidad(materialesItem.getMaterialUnit());
+            material1.setCantidad(materialesItem.materialQuantity);
+            material1.setFotoEvidencia("base64_encoded_image_"+count);
+            materiales.put("material_"+count, material1);
+            count++;
+        }
+
+        recoleccion.setMateriales(materiales);
+
+        // Write a message to the database
+        assert uid != null;
+        myRef.child(uid).setValue(recoleccion).addOnCompleteListener(task -> {
+            if(!task.isSuccessful()){
+                Toast.makeText(MaterialesActivity.this, "Lo sentimos, no se pudo procesar su orden. Por favor, inténtelo de nuevo.",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void finishOrder() {

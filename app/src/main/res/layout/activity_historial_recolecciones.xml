@@ -10,12 +10,12 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/shape_title_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/white"
-        android:layout_marginBottom="16dp">
+        app:titleTextColor="@color/white">
         <!-- app:navigationIcon="@drawable/icon_regresar" -->
 
         <!-- Centered Title TextView -->
@@ -48,13 +48,24 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/button_main_circle"
-        android:src="@drawable/icon_plus"
-        android:scaleType="centerInside"
+        android:contentDescription="@string/bot_n_para_a_adir_orden"
         android:elevation="20dp"
+        android:onClick="addOrder"
+        android:scaleType="centerInside"
+        android:src="@drawable/icon_plus"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ImageContrastCheck"
-        android:contentDescription="@string/bot_n_para_a_adir_orden"
-        android:onClick="addOrder"/>
+        tools:ignore="ImageContrastCheck" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:indeterminateTint="@color/green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

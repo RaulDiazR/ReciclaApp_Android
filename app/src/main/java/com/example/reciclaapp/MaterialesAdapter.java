@@ -78,6 +78,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         MaterialesItem item = itemList.get(position);
         holder.imageView.setImageResource(item.getImageResource());
         holder.textView.setText(item.getText());
+        item.setMaterialQuantity(1);
 
         holder.minusButton.setOnClickListener(v -> {
             int number = Integer.parseInt(holder.quantity.getText().toString());
@@ -87,12 +88,14 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
             } else {
                 holder.quantity.setText("1");
             }
+            item.setMaterialQuantity(number);
         });
 
         holder.plusButton.setOnClickListener(v -> {
             int number = Integer.parseInt(holder.quantity.getText().toString());
             number++;
             holder.quantity.setText(String.valueOf(number));
+            item.setMaterialQuantity(number);
         });
 
         holder.eliminarMaterial.setOnClickListener(v -> {
@@ -137,6 +140,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
                 } else {
                     view.setBackgroundResource(R.drawable.spinner_background_materiales);
                 }
+                item.setMaterialUnit(String.valueOf(holder.spinner.getSelectedItem()));
                 return view;
             }
         };

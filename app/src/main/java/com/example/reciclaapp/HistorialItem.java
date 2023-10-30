@@ -7,8 +7,9 @@ public class HistorialItem {
     String fecha, horario, materiales, estado;
     int estadoColor;
     boolean isRated;
+    String id;
 
-    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String materiales, String estado, int estadoColor, boolean isRated) {
+    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String materiales, String estado, int estadoColor, boolean isRated, String id) {
         this.backgroundDrawable = backgroundDrawable;
         this.fecha = fecha;
         this.horario = horario;
@@ -16,6 +17,15 @@ public class HistorialItem {
         this.estado = estado;
         this.estadoColor = estadoColor;
         this.isRated = isRated;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public boolean getIsRated() {

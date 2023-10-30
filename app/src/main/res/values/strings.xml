@@ -65,7 +65,7 @@
     <string name="confirmar_orden">Confirmar Orden</string>
     <string name="confirmar">Confirmar</string>
     <string name="cancelar">Cancelar</string>
-    <string name="tu_orden_ha_sido_registrada_n_nte_enviaremos_una_notificaci_n_cuando_encontremos_un_recolector">Tu orden ha sido registrada.\n\nTe enviaremos una notificación cuando encontremos un recolector.</string>
+    <string name="tu_orden_ha_sido_registrada_n_nte_enviaremos_una_notificaci_n_cuando_encontremos_un_recolector">Tu orden está siendo procesada.\n\nTe enviaremos una notificación cuando encontremos un recolector.</string>
     <string name="recolector">Recolector:</string>
     <string name="juan_ramirez_ramirez">Juan Ramirez Ramirez</string>
     <string name="permanezca_cerca_del_celular_por_cualquier_notificaci_n">Permanezca cerca del celular por cualquier notificación.</string>

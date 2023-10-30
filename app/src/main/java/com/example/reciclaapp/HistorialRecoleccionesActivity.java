@@ -1,7 +1,6 @@
 package com.example.reciclaapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -15,14 +14,25 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.reciclaapp.models.McqRecoleccion;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +55,8 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     String completada = "Completada";
     String cancelada = "Cancelada";
 
+    DatabaseReference myRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,42 +68,117 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         // Remove default title for app bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        initializeRecyclerView();
+        retrieveAndCreateHistorialItems();
+
+    }
+
+    private void initializeRecyclerView() {
+        // Create and set the linear layout manager so the RecyclerView works properly.
         recyclerView = findViewById(R.id.recyclerViewHistorial);
-
         itemList = new ArrayList<>();
-        Resources res = getResources();
-        Drawable green_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
-        Drawable red_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_red, null);
-        Drawable gold_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_gold, null);
-        Drawable blue_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_blue, null);
-
-        int green = ResourcesCompat.getColor(res, R.color.green, null);
-        int red = ResourcesCompat.getColor(res, R.color.red, null);
-        int gold = ResourcesCompat.getColor(res, R.color.golden, null);
-        int blue = ResourcesCompat.getColor(res, R.color.blue, null);
-
-        HistorialItem item2 = new HistorialItem(gold_square, "25/09/2023", "16:10","3 materiales",this.iniciada, gold, false);
-        HistorialItem item3 = new HistorialItem(blue_square, "25/09/2023", "10:10","5 materiales",this.enProceso, blue, false);
-        HistorialItem item4 = new HistorialItem(green_square, "29/09/2023", "09:08","2 materiales",this.completada, green, false);
-        HistorialItem item5 = new HistorialItem(red_square, "25/09/2023", "15:10","4 materiales",this.cancelada, red, false);
-        HistorialItem item6 = new HistorialItem(green_square, "29/09/2023", "09:08","2 materiales",this.completada, green, true);
-
-
-        itemList.add(item2);
-        itemList.add(item3);
-        itemList.add(item4);
-        itemList.add(item5);
-        itemList.add(item6);
-
-        // create and set the linear layout manager so the recycler view works properly like a scrolling view
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        // Initialize your RecyclerView with the itemList that now contains data from Firebase.
         historialAdapter = new HistorialAdapter(itemList);
         recyclerView.setAdapter(historialAdapter);
 
         historialAdapter.setClickListener(this);
+    }
 
+    private void retrieveAndCreateHistorialItems() {
+        ProgressBar progressBar = findViewById(R.id.progressBar); // Replace with the ID of your ProgressBar in XML
+        progressBar.setVisibility(View.VISIBLE);
+
+        String idUsuarioClienteToFilter = "user_id_1"; // Replace with the actual user ID you want to filter by
+
+        // Get a reference to your Firebase Database
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        // Create a query to filter recolecciones by idUsuarioCliente
+        Query query = databaseReference.child("recolecciones")
+                .orderByChild("idUsuarioCliente")
+                .equalTo(idUsuarioClienteToFilter);
+        // Assuming 'query' is a Firebase query to filter by idUsuarioCliente
+        query.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                itemList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    McqRecoleccion recoleccion = snapshot.getValue(McqRecoleccion.class);
+                    assert recoleccion != null;
+                    String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
+
+                    // Process and create a new HistorialItem for each recolección
+                    String date = recoleccion.getFechaRecoleccion();
+                    String time = recoleccion.getHoraRecoleccionFinal();
+                    String materialsInfo = ""+recoleccion.getMateriales().size()+materialesQuantityText; // Modify based on your data
+                    String estado = recoleccion.getEstado();
+                    int color = getColorForEstado(estado); // Implement getColorForEstado function
+                    boolean isRated = recoleccion.getIsRated(); // Modify based on your data
+                    Drawable squareDrawable = getDrawableForEstado(estado); // Implement getDrawableForEstado function
+                    String id = recoleccion.getRid();
+
+                    HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id);
+                    itemList.add(0,newItem);
+                }
+
+                // Notify the adapter to update the RecyclerView with the new data
+                historialAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(HistorialRecoleccionesActivity.this,"Lo sentimos, parece que hubo un error, inténtelo más tarde.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // Implement a function to map estado to color
+    private int getColorForEstado(String estado) {
+        Resources res = getResources();
+        // Implement your logic to map estado to a color here
+        if (estado.equals(this.iniciada)) {
+            return ResourcesCompat.getColor(res, R.color.golden, null);
+        }
+        else if (estado.equals(this.enProceso)) {
+            return ResourcesCompat.getColor(res, R.color.blue, null);
+        }
+        else if (estado.equals(this.completada)) {
+            return ResourcesCompat.getColor(res, R.color.green, null);
+        }
+        else if (estado.equals(this.cancelada)) {
+            return ResourcesCompat.getColor(res, R.color.red, null);
+        }
+        else {
+            return ResourcesCompat.getColor(res, R.color.green, null);
+        }
+    }
+
+    // Implement a function to map estado to Drawable
+    private Drawable getDrawableForEstado(String estado) {
+        Resources res = getResources();
+        // Implement your logic to map estado to a color here
+        if (estado.equals(this.iniciada)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_gold, null);
+        }
+        else if (estado.equals(this.enProceso)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_blue, null);
+        }
+        else if (estado.equals(this.completada)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
+        }
+        else if (estado.equals(this.cancelada)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_red, null);
+        }
+        else {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
+        }
     }
 
     public void addOrder (View v) {

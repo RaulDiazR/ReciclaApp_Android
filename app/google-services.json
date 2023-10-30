@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "901697229886",
+    "firebase_url": "https://pueblareciclaapp-default-rtdb.firebaseio.com",
+    "project_id": "pueblareciclaapp",
+    "storage_bucket": "pueblareciclaapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901697229886:android:b6940a8a183f75cfa32d6f",
+        "android_client_info": {
+          "package_name": "com.example.reciclaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWtFdrIsOaLEN3q9iZeukgClUJKq2IpXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901697229886:android:aeb6af47ae5df99aa32d6f",
+        "android_client_info": {
+          "package_name": "com.reciclaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWtFdrIsOaLEN3q9iZeukgClUJKq2IpXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
