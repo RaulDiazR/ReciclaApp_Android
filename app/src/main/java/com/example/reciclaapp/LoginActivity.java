@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             correoText = correoField.getText().toString();
             contrasenaText = contrasenaField.getText().toString();
             if (correoText.equals("useradmin@gmail.com") && contrasenaText.equals("useradmin123")){
-                Intent intent = new Intent(this, SettingsActivity.class);
+                Intent intent = new Intent(this, NewsActivity.class);
                 startActivity(intent);
             }
             else{
@@ -102,12 +102,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void ContinuarFacebook (View v){
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, NewsActivity.class);
         startActivity(intent);
     }
 
     public void ContinuarGoogle (View v){
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, NewsActivity.class);
         startActivity(intent);
     }
 

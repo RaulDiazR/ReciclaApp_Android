@@ -13,6 +13,18 @@
         android:theme="@style/Theme.ReciclaApp"
         tools:targetApi="31">
         <activity
+            android:name=".CuentaEliminada"
+            android:exported="false" />
+        <activity
+            android:name=".EliminaTuCuenta"
+            android:exported="false" />
+        <activity
+            android:name=".EliminarCuenta"
+            android:exported="false" />
+        <activity
+            android:name=".CerrarSesion"
+            android:exported="false" />
+        <activity
             android:name=".RecoleccionActivity"
             android:exported="false" />
         <activity

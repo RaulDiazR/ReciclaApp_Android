@@ -28,9 +28,7 @@ public class FQAActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+        finish();
         return true;
     }
 }

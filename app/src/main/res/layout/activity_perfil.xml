@@ -238,18 +238,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_logout" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="808dp"
-            android:background="@color/white"
-            app:itemIconTint="@drawable/selector_menu_tint"
-            app:itemTextColor="@drawable/selector_menu_tint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/bottom_nav_menu" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

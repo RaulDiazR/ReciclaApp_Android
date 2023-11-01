@@ -84,9 +84,7 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        finish();
         return true;
     }
 
