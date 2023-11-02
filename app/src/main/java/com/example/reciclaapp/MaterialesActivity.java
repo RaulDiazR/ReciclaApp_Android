@@ -1,11 +1,14 @@
 package com.example.reciclaapp;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -26,7 +29,10 @@ import com.example.reciclaapp.models.McqMaterial;
 import com.example.reciclaapp.models.McqRecoleccion;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,14 +51,11 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
     MaterialesHeaderAdapter headerAdapter;
     MaterialesAdapter materialesAdapter; // Add MaterialesAdapter
     ConcatAdapter concatAdapter; // Add ConcatAdapter
-    // Replace this line with the request code for camera capture
-    // You can use any unique value
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private CameraIntentHelper cameraIntentHelper;
 
     Intent receivedIntent;
+    DatabaseReference fbRecoleccionesRef;
 
-    DatabaseReference myRef;
+    public static int lastItemPosPhotoTaken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,36 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
 
         // Se accede a la base de datos
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("recolecciones");
+        fbRecoleccionesRef = database.getReference("recolecciones");
+
+        FirebaseStorage fbStorage = FirebaseStorage.getInstance();
+        StorageReference fbStorageReference = fbStorage.getReference();
+        System.out.print(fbStorageReference);
+
+        /*
+        // -------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
+        DatabaseReference recolectoresRef = database.getReference("recolectores");
+        // se genera un id único para la recolección
+        String uid = recolectoresRef.push().getKey();
+
+        McqRecolector recolector = new McqRecolector();
+        recolector.setId(uid);
+        recolector.setApellidos("Alden Armstrong");
+        recolector.setTelefono("999 999 9999");
+        recolector.setNombre("Neil");
+
+        // Write a message to the database
+        if (uid != null) {
+            recolectoresRef.child(uid).setValue(recolector).addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(MaterialesActivity.this, "Lo sentimos, no se pudo procesar su recolector JAJAJJAJAJJA!",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        } */
 
         // Get result from MaterialesSelectionActivity
         ActivityResultLauncher<Intent> materialesActivityResultLauncher = registerForActivityResult(
@@ -78,20 +110,20 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
                         Intent data = result.getData();
-                        assert data != null;
-                        int imageResource = data.getIntExtra("imageResource", 0);
-                        String text = data.getStringExtra("text");
+                        if (data != null) {
+                            int imageResource = data.getIntExtra("imageResource", 0);
+                            String text = data.getStringExtra("text");
 
-                        // Add the chosen material to your data source
-                        itemList.add(new MaterialesItem(imageResource, text));
 
-                        // Notify the adapter that an item has been inserted at the last position
-                        int insertedPosition = itemList.size() - 1;
-                        materialesAdapter.notifyItemInserted(insertedPosition);
+                            // Add the chosen material to your data source
+                            itemList.add(new MaterialesItem(imageResource, text));
+
+                            // Notify the adapter that an item has been inserted at the last position
+                            int insertedPosition = itemList.size() - 1;
+                            materialesAdapter.notifyItemInserted(insertedPosition);
+                        }
                     }
                 });
-
-        cameraIntentHelper = new CameraIntentHelper(this);
 
         recyclerView = findViewById(R.id.recyclerViewMateriales);
 
@@ -103,9 +135,53 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         headerAdapter = new MaterialesHeaderAdapter(this, headerData, materialesActivityResultLauncher);
 
         itemList = new ArrayList<>();
-        // Add the chosen material to your data source
+
+        // Se inicializa el ActivityResultLaunches para la actividad de tomar una foto
+        ActivityResultLauncher<Intent> takePhotoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK) {
+                if (result.getData() != null) {
+                    Bundle extras = result.getData().getExtras();
+                    if (extras != null) {
+                        Bitmap photoBitmap = (Bitmap) extras.get("data");
+                        // Retrieve the item position from the intent's extra
+                        Log.d("CameraResult", "Extras: " + Objects.requireNonNull(result.getData().getExtras()));
+                        int itemPos = lastItemPosPhotoTaken;
+
+                        if (itemPos != -1 && photoBitmap != null) {
+                            itemList.get(itemPos).setFotoMaterial(photoBitmap);
+                            materialesAdapter.notifyItemChanged(itemPos);
+                        }
+                    }
+                }
+            }
+        });
+
+        // Se inicializa el ActivityResultLaunches para la actividad de escoger una foto de la galería
+        ActivityResultLauncher<Intent> openGallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            try {
+                if (result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    if (imageUri != null) {
+                        Bitmap photoBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                        int itemPos = lastItemPosPhotoTaken;
+
+                        if (itemPos != -1 && photoBitmap != null) {
+                            itemList.get(itemPos).setFotoMaterial(photoBitmap);
+                            materialesAdapter.notifyItemChanged(itemPos);
+
+                        }
+                    }
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(this, "No se seleccionó ninguna Imagen", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        FrameLayout rootView = findViewById(android.R.id.content);
         itemList.add(new MaterialesItem(R.drawable.material_madera, "Madera"));
-        materialesAdapter = new MaterialesAdapter(this, itemList);
+        materialesAdapter = new MaterialesAdapter(this, itemList, takePhotoLauncher, openGallery, rootView);
 
         // Create a ConcatAdapter and add the headerAdapter and materialesAdapter
         concatAdapter = new ConcatAdapter(headerAdapter, materialesAdapter);
@@ -122,16 +198,21 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
     private String[] getInfoFromIntent() {
         receivedIntent = getIntent();
         int[] fecha = receivedIntent.getIntArrayExtra("fecha");
+        String fechaStr;
         int day, month, year;
-        assert fecha != null;
-        day = fecha[0];
-        month = fecha[1];
-        year = fecha[2];
-        String fechaStr = formatDate(day, month, year);
-
         int[] tiempoEnd = receivedIntent.getIntArrayExtra("tiempoEnd");
-        assert tiempoEnd != null;
-        String formattedTime = String.format(Locale.getDefault(),"%02d", tiempoEnd[0]) + ":" + String.format(Locale.getDefault(),"%02d", tiempoEnd[1]);
+        String formattedTime;
+        if (fecha != null && tiempoEnd != null) {
+            day = fecha[0];
+            month = fecha[1];
+            year = fecha[2];
+            fechaStr = formatDate(day, month, year);
+            formattedTime = String.format(Locale.getDefault(), "%02d", tiempoEnd[0]) + ":" + String.format(Locale.getDefault(), "%02d", tiempoEnd[1]);
+        }
+        else {
+            fechaStr = getString(R.string.fecha);
+            formattedTime = getString(R.string._12_00_hrs);
+        }
 
         return new String[]{fechaStr, formattedTime};
     }
@@ -261,42 +342,50 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
 
     private void sendDataToDB() {
         receivedIntent = getIntent();
+        McqRecoleccion recoleccion = new McqRecoleccion();
 
         // se extrae la fecha y se le da un formato simple de dd/mm/aa
         int[] fecha = receivedIntent.getIntArrayExtra("fecha");
         int day, month, year;
-        assert fecha != null;
-        day = fecha[0];
-        month = fecha[1];
-        year = fecha[2];
-        String fechaStr = ""+day+"/"+month+"/"+year;
+        if (fecha != null) {
+            day = fecha[0];
+            month = fecha[1];
+            year = fecha[2];
+            String fechaStr = "" + day + "/" + month + "/" + year;
+            recoleccion.setFechaRecoleccion(fechaStr);
+        }
 
         // Se extraen los tiempos de inicio y final de la recolección
         int[] tiempoEnd = receivedIntent.getIntArrayExtra("tiempoEnd");
-        assert tiempoEnd != null;
-        String timeEnd = String.format(Locale.getDefault(),"%02d", tiempoEnd[0]) + ":" + String.format(Locale.getDefault(),"%02d", tiempoEnd[1]);
+        if (tiempoEnd != null) {
+        String timeEnd = String.format(Locale.getDefault(), "%02d", tiempoEnd[0]) + ":" + String.format(Locale.getDefault(), "%02d", tiempoEnd[1]);
+            recoleccion.setHoraRecoleccionFinal(timeEnd);
+        }
+
         int[] tiempoIni = receivedIntent.getIntArrayExtra("tiempoIni");
-        assert tiempoIni != null;
-        String timeIni = String.format(Locale.getDefault(),"%02d", tiempoIni[0]) + ":" + String.format(Locale.getDefault(),"%02d", tiempoIni[1]);
+        if (tiempoIni != null) {
+            String timeIni = String.format(Locale.getDefault(), "%02d", tiempoIni[0]) + ":" + String.format(Locale.getDefault(), "%02d", tiempoIni[1]);
+            recoleccion.setHoraRecoleccionInicio(timeIni);
+        }
 
         // se extraen los comentarios
         String comentarios = receivedIntent.getStringExtra("comentarios");
-        assert comentarios != null;
-
-        boolean enPersona = receivedIntent.getBooleanExtra("enPersona", true);
+        if (comentarios != null) {
+            boolean enPersona = receivedIntent.getBooleanExtra("enPersona", true);
+            recoleccion.setEnPersona(enPersona);
+        }
 
         // se genera un id único para la recolección
-        String uid = myRef.push().getKey();
+        String uid = fbRecoleccionesRef.push().getKey();
 
-        McqRecoleccion recoleccion = new McqRecoleccion();
+
+        // Add a timestamp for when the data was sent
+        Long timeStamp = System.currentTimeMillis(); // Get the current timestamp
+        recoleccion.setTimeStamp(timeStamp); // Add the timestamp to your data
         recoleccion.setRid(uid);
-        recoleccion.setIdUsuarioCliente("user_id_1");
-        recoleccion.setIdRecolector("user_id_2");
-        recoleccion.setFechaRecoleccion(fechaStr);
-        recoleccion.setHoraRecoleccionInicio(timeIni);
-        recoleccion.setHoraRecoleccionFinal(timeEnd);
+        recoleccion.setIdUsuarioCliente("user_id_1"); // cambiar por el id del usuario
+        recoleccion.setIdRecolector(""); // se pone vacío, pues al principio la recolección no tiene recolector
         recoleccion.setComentarios(comentarios);
-        recoleccion.setEnPersona(enPersona);
         recoleccion.setRated(false);
         recoleccion.setEstado("Iniciada");
 
@@ -305,7 +394,7 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         int count = 0;
         for (MaterialesItem materialesItem : itemList) {
             McqMaterial material1 = new McqMaterial();
-            material1.setNombre(materialesItem.getText());
+            material1.setNombre(materialesItem.getName());
             material1.setUnidad(materialesItem.getMaterialUnit());
             material1.setCantidad(materialesItem.materialQuantity);
             material1.setFotoEvidencia("base64_encoded_image_"+count);
@@ -316,13 +405,14 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         recoleccion.setMateriales(materiales);
 
         // Write a message to the database
-        assert uid != null;
-        myRef.child(uid).setValue(recoleccion).addOnCompleteListener(task -> {
-            if(!task.isSuccessful()){
-                Toast.makeText(MaterialesActivity.this, "Lo sentimos, no se pudo procesar su orden. Por favor, inténtelo de nuevo.",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+        if (uid != null) {
+            fbRecoleccionesRef.child(uid).setValue(recoleccion).addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(MaterialesActivity.this, "Lo sentimos, no se pudo procesar su orden. Por favor, inténtelo de nuevo.",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void finishOrder() {
@@ -334,22 +424,7 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
             intent.putExtras(bundle);
         }
 
-        //intent.pu
-
         startActivity(intent);
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (resultCode == RESULT_OK) {
-                cameraIntentHelper.onActivityResult(requestCode, resultCode, data);
-                materialesAdapter.notifyDataSetChanged();
-            }
-        }
     }
 
 }

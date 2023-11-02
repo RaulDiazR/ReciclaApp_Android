@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ReciclaApp</string>
+    <string name="app_name">Recicla App</string>
     <string name="iniciada">Iniciada</string>
     <string name="enProceso">En Proceso</string>
     <string name="completada">Completada</string>
@@ -38,7 +38,7 @@
     <string name="municipio">Municipio</string>
     <string name="_72020">72020</string>
     <string name="san_andr_s_cholula">San Andrés Cholula</string>
-    <string name="ejemplo_telefono">012 345 6789</string>
+    <string name="ejemplo_telefono">55 12345678</string>
     <string name="tel_fono">Teléfono</string>
     <string name="indicaciones_al_recolector">Indicaciones al Recolector</string>
     <string name="comentarios">comentarios</string>
@@ -75,4 +75,8 @@
     <string name="ver_centros">Ver Centros</string>
     <string name="lamentablemente_no_encontramos_un_recolector_o_se_cancel_su_orden_puede_intentar_otro_horario_o_visitar_un_centro_de_acopio_cercano">Lamentablemente, no encontramos un recolector o se canceló su orden. Puede intentar otro horario o visitar un centro de acopio cercano.</string>
     <string name="felicidades_su_orden_ha_sido_completada_gracias_por_ayudar_a_cuidar_el_medio_ambiente">“Felicidades! Su orden ha sido completada, gracias por ayudar a cuidar el medio ambiente.</string>
+    <string name="tel_fono_del_recolector">Teléfono del Recolector:</string>
+    <string name="foto_de_material">Foto de Material</string>
+    <string name="foto_seleccionada_por_el_usuario_para_el_material_seleccionado">Foto seleccionada por el usuario para el material seleccionado</string>
+    <string name="ver_galer_a">Ver Galería</string>
 </resources>

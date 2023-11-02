@@ -74,7 +74,6 @@ public class CameraIntentHelper {
             // Photo capture was successful
             if (photoFile != null) {
                 // Update the last taken photo path and set the flag
-                this.curHolder.lastTakenPhotoPath = currentPhotoPath;
                 this.curHolder.isPhotoTaken = true;
             }
         }

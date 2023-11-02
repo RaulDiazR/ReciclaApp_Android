@@ -13,10 +13,19 @@ public class McqRecoleccion {
     private boolean enPersona;
     private boolean isRated;
     private String estado;
+    private Long timeStamp;
 
     private Map<String, McqMaterial> materiales;
 
     public McqRecoleccion() {
+    }
+
+    public Long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(Long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public boolean getIsRated() {

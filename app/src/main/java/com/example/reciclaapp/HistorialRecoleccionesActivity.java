@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reciclaapp.models.McqRecoleccion;
+import com.example.reciclaapp.models.McqRecolector;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,7 +56,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     String completada = "Completada";
     String cancelada = "Cancelada";
 
-    DatabaseReference myRef;
+    // DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,48 +94,67 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
         String idUsuarioClienteToFilter = "user_id_1"; // Replace with the actual user ID you want to filter by
 
-        // Get a reference to your Firebase Database
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        // Create a query to filter recolecciones by idUsuarioCliente
-        Query query = databaseReference.child("recolecciones")
+        Query queryRecolecciones = databaseReference.child("recolecciones")
                 .orderByChild("idUsuarioCliente")
-                .equalTo(idUsuarioClienteToFilter);
-        // Assuming 'query' is a Firebase query to filter by idUsuarioCliente
-        query.addValueEventListener(new ValueEventListener() {
+                .equalTo(idUsuarioClienteToFilter).limitToLast(50);
+
+        queryRecolecciones.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 itemList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     McqRecoleccion recoleccion = snapshot.getValue(McqRecoleccion.class);
-                    assert recoleccion != null;
-                    String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
 
-                    // Process and create a new HistorialItem for each recolección
-                    String date = recoleccion.getFechaRecoleccion();
-                    String time = recoleccion.getHoraRecoleccionFinal();
-                    String materialsInfo = ""+recoleccion.getMateriales().size()+materialesQuantityText; // Modify based on your data
-                    String estado = recoleccion.getEstado();
-                    int color = getColorForEstado(estado); // Implement getColorForEstado function
-                    boolean isRated = recoleccion.getIsRated(); // Modify based on your data
-                    Drawable squareDrawable = getDrawableForEstado(estado); // Implement getDrawableForEstado function
-                    String id = recoleccion.getRid();
+                    if (recoleccion != null) {
+                        String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
+                        String date = recoleccion.getFechaRecoleccion();
+                        String time = recoleccion.getHoraRecoleccionFinal();
+                        String materialsInfo = "" + recoleccion.getMateriales().size() + materialesQuantityText;
+                        String estado = recoleccion.getEstado();
+                        int color = getColorForEstado(estado);
+                        boolean isRated = recoleccion.getIsRated();
+                        Drawable squareDrawable = getDrawableForEstado(estado);
+                        String id = recoleccion.getRid();
+                        String idRecolector = recoleccion.getIdRecolector();
+                        Long timeStamp = recoleccion.getTimeStamp();
 
-                    HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id);
-                    itemList.add(0,newItem);
+                        // Directly query the recolectores node for the specific recolector by id
+                        Query queryRecolector = databaseReference.child("recolectores").child(idRecolector);
+
+                        queryRecolector.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot recolectorSnapshot) {
+                                McqRecolector recolector = recolectorSnapshot.getValue(McqRecolector.class);
+                                if (recolector != null) {
+                                    // Create a new HistorialItem with Recolector data
+                                    HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp);
+                                    itemList.add(newItem);
+                                    itemList.sort((item1, item2) -> {
+                                        // Compare the timestamps in descending order
+                                        long timestamp1 = item1.getTimeStamp(); // Replace with the actual method to get the timestamp
+                                        long timestamp2 = item2.getTimeStamp(); // Replace with the actual method to get the timestamp
+                                        return Long.compare(timestamp2, timestamp1);
+                                    });
+                                    historialAdapter.notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                // Handle any errors or exceptions here
+                            }
+                        });
+                    }
                 }
-
-                // Notify the adapter to update the RecyclerView with the new data
-                historialAdapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
-
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(HistorialRecoleccionesActivity.this,"Lo sentimos, parece que hubo un error, inténtelo más tarde.", Toast.LENGTH_LONG).show();
+                Toast.makeText(HistorialRecoleccionesActivity.this, "Lo sentimos, parece que hubo un error, inténtelo más tarde.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -281,8 +301,13 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             alertDialog.show();
 
+            // Se agrega el nombre del recolector
             TextView recolector = dialogView.findViewById(R.id.recolector);
-            recolector.setText(R.string.juan_ramirez_ramirez);
+            recolector.setText(itemList.get(itemPos).getRecolector().generarNombreCompleto());
+
+            // Se agrega el teléfono del recolector
+            TextView recolectorTelefono = dialogView.findViewById(R.id.recolectorTelefono);
+            recolectorTelefono.setText(itemList.get(itemPos).getRecolector().getTelefono());
 
             // Configure button actions
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
@@ -331,6 +356,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             }
 
             alertDialog.show();
+
+            // Set the correct name for the recolector
+            TextView recolector = dialogView.findViewById(R.id.recolector);
+            recolector.setText(itemList.get(itemPos).getRecolector().generarNombreCompleto());
 
             // Configure button actions
             LinearLayout linearLayoutRatingSection = dialogView.findViewById(R.id.linearLayoutRating);
@@ -429,7 +458,28 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             rootView.addView(backgroundView);
         }
 
+    }
 
+    private void updateRecoleccionEstado(String recoleccionIdToUpdate, String newEstado) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference recoleccionRef = databaseReference.child("recolecciones");
+        // Obtain the reference to the specific recolección using its unique 'rid'
+        Query query = recoleccionRef.orderByChild("rid").equalTo(recoleccionIdToUpdate);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Update the 'estado' field with the new value
+                    snapshot.getRef().child("estado").setValue(newEstado);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+            }
+        });
     }
 
     public void confirmarCancelarOrden(int itemPos) {
@@ -467,12 +517,8 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         btnConfirmar.setOnClickListener(v -> {
             // Logic for Confirm
             if (itemPos != RecyclerView.NO_POSITION) {
-                Resources res = getResources();
-                itemList.get(itemPos).setEstado(this.cancelada);
-                itemList.get(itemPos).setEstadoColor(ResourcesCompat.getColor(res, R.color.red, null));
-                Drawable red_square = ResourcesCompat.getDrawable(res, R.drawable.shape_square_red, null);
-                itemList.get(itemPos).setBackgroundDrawable(red_square);
-                historialAdapter.notifyItemChanged(itemPos);
+                String itemId = itemList.get(itemPos).getId();
+                updateRecoleccionEstado(itemId, this.cancelada);
             }
             alertDialog.dismiss();
             FrameLayout rootView = findViewById(android.R.id.content);

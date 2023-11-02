@@ -2,14 +2,18 @@ package com.example.reciclaapp;
 
 import android.graphics.drawable.Drawable;
 
+import com.example.reciclaapp.models.McqRecolector;
+
 public class HistorialItem {
     Drawable backgroundDrawable; // New variable for background
     String fecha, horario, materiales, estado;
     int estadoColor;
     boolean isRated;
     String id;
+    McqRecolector recolector;
+    Long timeStamp;
 
-    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String materiales, String estado, int estadoColor, boolean isRated, String id) {
+    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String materiales, String estado, int estadoColor, boolean isRated, String id, McqRecolector recolector, Long timeStamp) {
         this.backgroundDrawable = backgroundDrawable;
         this.fecha = fecha;
         this.horario = horario;
@@ -18,6 +22,24 @@ public class HistorialItem {
         this.estadoColor = estadoColor;
         this.isRated = isRated;
         this.id = id;
+        this.recolector = recolector;
+        this.timeStamp = timeStamp;
+    }
+
+    public Long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(Long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public McqRecolector getRecolector() {
+        return recolector;
+    }
+
+    public void setRecolector(McqRecolector recolector) {
+        this.recolector = recolector;
     }
 
     public String getId() {

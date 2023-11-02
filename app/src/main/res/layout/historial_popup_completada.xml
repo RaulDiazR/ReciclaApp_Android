@@ -33,7 +33,7 @@
             android:id="@+id/subTitle1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:text="@string/felicidades_su_orden_ha_sido_completada_gracias_por_ayudar_a_cuidar_el_medio_ambiente"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -85,7 +85,7 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="16dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/img_person"
+                android:src="@drawable/img_person2"
                 app:roundPercent="1" />
 
             <RatingBar

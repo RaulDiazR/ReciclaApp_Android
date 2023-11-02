@@ -218,7 +218,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         customDialog.show(getSupportFragmentManager(), "historial_time_picker");
     }
 
-    // Checks if the user's delected time range is valid
+    // Checks if the user's selected time range is valid
     private boolean isTimeDifferenceValid() {
         // Parse the selected time from timeEnd button
         String endTimeText = timeEnd.getText().toString();
@@ -238,8 +238,32 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         int timeDifference = endTimeInMinutes - startTimeInMinutes;
 
         // Check if the time difference is positive
-        return timeDifference > 0;
+        if (timeDifference < 0) {
+            Toast.makeText(this, "El tiempo seleccionado es Inválido", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        // Check if the time difference is at least 30 minutes
+        else if (timeDifference < 40) {
+            Toast.makeText(this, "La recolección debe tener al menos 40 minutos de tiempo disponible", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
     }
+
+
+    public boolean checkComentarios(EditText comentarios) {
+        int currentLength = comentarios.getText().length();
+
+        if (currentLength > 300) {
+            comentarios.setError("Máximo de 300 caracteres");
+            return false; // Return false to indicate that the input is invalid
+        } else {
+            comentarios.setError(null); // Clear any previous error message
+            return true; // Return true to indicate that the input is valid
+        }
+    }
+
 
     public void finishTimeSelection (View v) {
         // Retrieve text from the EditText
@@ -249,7 +273,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         // Get the ID of the selected RadioButton
         int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
 
-        if (isTimeDifferenceValid()) {
+        if (isTimeDifferenceValid() && checkComentarios(editTextComentarios)) {
             String comentariosText = editTextComentarios.getText().toString(); //Comentarios
             boolean enPersona = selectedRadioButtonId == R.id.entrega_persona; // modo de entregar los desechos
             Intent intent = new Intent(this, DirectionActivity.class);
@@ -271,10 +295,6 @@ public class OrdenHorarioActivity extends AppCompatActivity {
                     this.finalTimeEnd[0]+":"+
                     this.finalTimeEnd[1], Toast.LENGTH_LONG);
             toast.show();*/
-        }
-        else {
-            Toast toast = Toast.makeText(this, "El tiempo seleccionado es Inválido", Toast.LENGTH_LONG);
-            toast.show();
         }
     }
 
