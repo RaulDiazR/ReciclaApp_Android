@@ -1,12 +1,15 @@
 package com.example.reciclaapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,8 +22,10 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,29 +38,42 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
-public class MaterialesActivity extends AppCompatActivity implements MaterialesAdapter.OnItemRemovedListener {
+public class MaterialesActivity extends AppCompatActivity{
+    private static final int CAMERA_PERMISSION_REQUEST = 1001;
+    private static final int PICK_FROM_GALLERY = 1;
     // 1- AdapterView
     RecyclerView recyclerView;
     // 2- DataSource
-    List<MaterialesItem> itemList;
+    private List<MaterialesItem> itemList;
     // 3- Adapters
     MaterialesHeaderAdapter headerAdapter;
-    MaterialesAdapter materialesAdapter; // Add MaterialesAdapter
+    private MaterialesAdapter materialesAdapter; // Add MaterialesAdapter
     ConcatAdapter concatAdapter; // Add ConcatAdapter
+    // intent with data from previous activities
+    private Intent receivedIntent;
+    // reference to the realtime database
+    private DatabaseReference fbRecoleccionesRef;
+    private StorageReference storageReference;
 
-    Intent receivedIntent;
-    DatabaseReference fbRecoleccionesRef;
+    // Se usan para activar la cámara y la galería
+    ActivityResultLauncher<Intent> takePhotoLauncher;
+    ActivityResultLauncher<Intent> openGallery;
 
     public static int lastItemPosPhotoTaken;
+
+    public static String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +88,14 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         // creates intent to receive data from past activities
         this.receivedIntent = getIntent();
 
-        // Se accede a la base de datos
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        fbRecoleccionesRef = database.getReference("recolecciones");
+        // Se accede a la base de datos de tiempo real
+        fbRecoleccionesRef = FirebaseDatabase.getInstance().getReference("recolecciones");
 
-        FirebaseStorage fbStorage = FirebaseStorage.getInstance();
-        StorageReference fbStorageReference = fbStorage.getReference();
-        System.out.print(fbStorageReference);
+        // Se accede a Firebase Storage para acceder a las imágenes
+        // referente to firebase storage for images
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        System.out.print(storageReference);
 
         /*
         // -------------------------------------------------------------------------------
@@ -137,36 +156,29 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         itemList = new ArrayList<>();
 
         // Se inicializa el ActivityResultLaunches para la actividad de tomar una foto
-        ActivityResultLauncher<Intent> takePhotoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        takePhotoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
-                if (result.getData() != null) {
-                    Bundle extras = result.getData().getExtras();
-                    if (extras != null) {
-                        Bitmap photoBitmap = (Bitmap) extras.get("data");
-                        // Retrieve the item position from the intent's extra
-                        Log.d("CameraResult", "Extras: " + Objects.requireNonNull(result.getData().getExtras()));
-                        int itemPos = lastItemPosPhotoTaken;
+                int itemPos = lastItemPosPhotoTaken;
+                File f = new File(currentPhotoPath);
+                Uri imgUri = Uri.fromFile(f);
+                if (itemPos != -1) {
+                    itemList.get(itemPos).setFotoMaterial(imgUri);
+                    materialesAdapter.notifyItemChanged(itemPos);
 
-                        if (itemPos != -1 && photoBitmap != null) {
-                            itemList.get(itemPos).setFotoMaterial(photoBitmap);
-                            materialesAdapter.notifyItemChanged(itemPos);
-                        }
-                    }
                 }
             }
         });
 
         // Se inicializa el ActivityResultLaunches para la actividad de escoger una foto de la galería
-        ActivityResultLauncher<Intent> openGallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        openGallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             try {
                 if (result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
-                        Bitmap photoBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                         int itemPos = lastItemPosPhotoTaken;
 
-                        if (itemPos != -1 && photoBitmap != null) {
-                            itemList.get(itemPos).setFotoMaterial(photoBitmap);
+                        if (itemPos != -1) {
+                            itemList.get(itemPos).setFotoMaterial(imageUri);
                             materialesAdapter.notifyItemChanged(itemPos);
 
                         }
@@ -224,11 +236,6 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         return dateFormat.format(cal.getTime());
     }
 
-    @Override
-    public void onItemRemoved(int position) {
-        // Handle item removal here (e.g., update your data model)
-    }
-
     public void finishMaterialSelection(View v) {
         if (materialesAdapter.getItemCount() > 0) {
             confirmarOrden(v);
@@ -278,8 +285,8 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
 
         // Logic for Confirm
         btnConfirmar.setOnClickListener(v -> {
-            mostrarConfirmacion(v);
             sendDataToDB();
+            mostrarConfirmacion(v);
             alertDialog.dismiss();
         });
 
@@ -386,21 +393,30 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         recoleccion.setIdUsuarioCliente("user_id_1"); // cambiar por el id del usuario
         recoleccion.setIdRecolector(""); // se pone vacío, pues al principio la recolección no tiene recolector
         recoleccion.setComentarios(comentarios);
-        recoleccion.setRated(false);
+        recoleccion.setCalificado(false);
         recoleccion.setEstado("Iniciada");
 
-// Create a map to hold material data
+        // Create a map to hold material data
         Map<String, McqMaterial> materiales = new HashMap<>();
-        int count = 0;
-        for (MaterialesItem materialesItem : itemList) {
-            McqMaterial material1 = new McqMaterial();
-            material1.setNombre(materialesItem.getName());
-            material1.setUnidad(materialesItem.getMaterialUnit());
-            material1.setCantidad(materialesItem.materialQuantity);
-            material1.setFotoEvidencia("base64_encoded_image_"+count);
-            materiales.put("material_"+count, material1);
-            count++;
+        for (int count = 0; count < itemList.size(); count++) {
+            MaterialesItem materialesItem = itemList.get(count);
+
+            McqMaterial material = new McqMaterial();
+            material.setNombre(materialesItem.getName());
+            material.setUnidad(materialesItem.getMaterialUnit());
+            material.setCantidad(materialesItem.materialQuantity);
+
+            // Upload the image to Firebase Storage and set the URL
+            if (materialesItem.getFotoMaterial() != null) {
+                uploadPictureToFirebase(materialesItem.getFotoMaterial(), count, uid);
+            }
+            else {
+                material.setFotoUrl("");
+            }
+
+            materiales.put("material_" + count, material);
         }
+
 
         recoleccion.setMateriales(materiales);
 
@@ -415,6 +431,55 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
         }
     }
 
+
+    private void uploadPictureToFirebase(Uri imageUri, int count, String uid) {
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference imagesRef = storageReference.child("fotosMateriales/" + randomKey);
+
+        imagesRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            String imageURL = uri.toString();
+            setFotoEvidenciaForItem(count, imageURL, uid); // Set the URL after it's obtained
+            // You can also save the material to the database here if needed
+        })).addOnFailureListener(e -> Log.d("Firebase", "No se pudo subir la foto" + imageUri));
+    }
+
+    private void setFotoEvidenciaForItem(int count, String imageURL, String uid) {
+        if (count >= 0 && count < itemList.size()) {
+            itemList.get(count).setUrlFotoMaterial(imageURL);
+            materialesAdapter.notifyItemChanged(count);
+            // Save the material to the database here if needed
+            saveMaterialToDatabase(imageURL, uid, count);
+        }
+    }
+
+    private void saveMaterialToDatabase(String imageURL, String uid, int count) {
+
+        // Save the McqMaterial object to the Real-time Database
+        if (uid != null) {
+            fbRecoleccionesRef.child(uid).child("materiales").child("material_" + count).child("fotoUrl").setValue(imageURL).addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Log.d("Firebase", "Con este ID de recolección: "+ uid + " - Y con este id de material: " + "material"+count +" ---- No se pudo subir la foto" + imageURL);
+                }
+            });
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     private void finishOrder() {
         // Logic for Confirm
         Intent intent = new Intent(MaterialesActivity.this, HistorialRecoleccionesActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -426,5 +491,74 @@ public class MaterialesActivity extends AppCompatActivity implements MaterialesA
 
         startActivity(intent);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, you can now launch the camera intent.
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    }
+                    catch (IOException ex) {
+                        // Error occurred while creating the File
+                    ex.printStackTrace();
+                    }
+
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(this,
+                                "com.example.reciclaapp.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        takePhotoLauncher.launch(takePictureIntent);
+                    }
+                }
+            }
+        }
+
+        else if (requestCode == PICK_FROM_GALLERY) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Gallery permission has been granted, you can now launch the gallery intent.
+                Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                openGallery.launch(openGalleryIntent);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        ArrayList<MaterialesItem> itemListToSave = new ArrayList<>(itemList);
+        outState.putParcelableArrayList("itemList", itemListToSave);
+    }
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        ArrayList<MaterialesItem> restoredItemList = savedInstanceState.getParcelableArrayList("itemList");
+        if (restoredItemList != null) {
+            itemList.clear();
+            itemList.addAll(restoredItemList);
+            // Notify the adapter if needed
+            if (materialesAdapter != null) {
+                materialesAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+
 
 }

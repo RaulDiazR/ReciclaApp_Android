@@ -36,7 +36,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class HistorialRecoleccionesActivity extends AppCompatActivity implements HistorialItemClickListener {
@@ -98,13 +100,14 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
         Query queryRecolecciones = databaseReference.child("recolecciones")
                 .orderByChild("idUsuarioCliente")
-                .equalTo(idUsuarioClienteToFilter).limitToLast(50);
+                .equalTo(idUsuarioClienteToFilter).limitToLast(30);
 
         queryRecolecciones.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                itemList.clear();
+                Map<String, HistorialItem> updatedItems = new HashMap<>();
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     McqRecoleccion recoleccion = snapshot.getValue(McqRecoleccion.class);
 
@@ -115,7 +118,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                         String materialsInfo = "" + recoleccion.getMateriales().size() + materialesQuantityText;
                         String estado = recoleccion.getEstado();
                         int color = getColorForEstado(estado);
-                        boolean isRated = recoleccion.getIsRated();
+                        boolean isRated = recoleccion.getCalificado();
                         Drawable squareDrawable = getDrawableForEstado(estado);
                         String id = recoleccion.getRid();
                         String idRecolector = recoleccion.getIdRecolector();
@@ -131,14 +134,26 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                                 if (recolector != null) {
                                     // Create a new HistorialItem with Recolector data
                                     HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp);
-                                    itemList.add(newItem);
-                                    itemList.sort((item1, item2) -> {
-                                        // Compare the timestamps in descending order
-                                        long timestamp1 = item1.getTimeStamp(); // Replace with the actual method to get the timestamp
-                                        long timestamp2 = item2.getTimeStamp(); // Replace with the actual method to get the timestamp
-                                        return Long.compare(timestamp2, timestamp1);
-                                    });
-                                    historialAdapter.notifyDataSetChanged();
+                                    updatedItems.put(newItem.getId(), newItem);
+                                    for (HistorialItem updatedItem : updatedItems.values()) {
+                                        int index = findItemIndexById(updatedItem.getId());
+                                        if (index >= 0) {
+                                            // Update the existing item
+                                            itemList.set(index, updatedItem);
+                                            historialAdapter.notifyItemChanged(index);
+                                        } else {
+                                            // Add the new item if it doesn't exist in itemList
+                                            itemList.add(updatedItem);
+                                            itemList.sort((item1, item2) -> {
+                                                // Compare the timestamps in descending order
+                                                long timestamp1 = item1.getTimeStamp();
+                                                long timestamp2 = item2.getTimeStamp();
+                                                return Long.compare(timestamp2, timestamp1);
+                                            });
+                                            historialAdapter.notifyDataSetChanged();
+                                        }
+                                        progressBar.setVisibility(View.GONE);
+                                    }
                                 }
                             }
 
@@ -149,7 +164,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                         });
                     }
                 }
-                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -157,6 +171,16 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 Toast.makeText(HistorialRecoleccionesActivity.this, "Lo sentimos, parece que hubo un error, inténtelo más tarde.", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    // Find the index of an item by ID
+    private int findItemIndexById(String id) {
+        for (int i = 0; i < itemList.size(); i++) {
+            if (itemList.get(i).getId().equals(id)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     // Implement a function to map estado to color

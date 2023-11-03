@@ -243,8 +243,8 @@ public class OrdenHorarioActivity extends AppCompatActivity {
             return false;
         }
         // Check if the time difference is at least 30 minutes
-        else if (timeDifference < 40) {
-            Toast.makeText(this, "La recolección debe tener al menos 40 minutos de tiempo disponible", Toast.LENGTH_LONG).show();
+        else if (timeDifference < 30) {
+            Toast.makeText(this, "La recolección debe tener al menos 30 minutos de tiempo disponible", Toast.LENGTH_LONG).show();
             return false;
         }
 

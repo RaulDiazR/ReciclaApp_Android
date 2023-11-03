@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,24 +25,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.MaterialesViewHolder> {
-    private static final int PICK_FROM_GALLERY = 1;
     private final Context context;
     private final List<MaterialesItem> itemList;
     private final OnItemRemovedListener itemRemovedListener;
     private final ActivityResultLauncher<Intent> takePhotoLauncher;
     private final ActivityResultLauncher<Intent> openGallery;
     private static final int CAMERA_PERMISSION_REQUEST = 1001;
+    private static final int PICK_FROM_GALLERY = 1;
     private final FrameLayout rootView;
 
     public interface OnItemRemovedListener {
@@ -169,7 +176,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
                 holder.tomarFoto.setText(R.string.tomar_foto);
             } else {
                 holder.tomarFoto.setText(R.string.ver_foto);
-                imgFotoMaterial.setImageBitmap(item.getFotoMaterial());
+                imgFotoMaterial.setImageURI(item.getFotoMaterial());
                 imgFotoMaterial.setVisibility(View.VISIBLE);
             }
 
@@ -191,8 +198,6 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
 
                 alertDialog.dismiss();
                 this.rootView.removeView(backgroundView); // Remove the background
-                alertDialog.dismiss();
-                this.rootView.removeView(backgroundView); // Remove the background
             });
 
             btnTomarFoto.setOnClickListener(v -> {
@@ -200,7 +205,27 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 MaterialesActivity.lastItemPosPhotoTaken = holder.getBindingAdapterPosition();
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                    takePhotoLauncher.launch(takePictureIntent);
+                    // Ensure that there's a camera activity to handle the intent
+                    if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+                        // Create the File where the photo should go
+                        File photoFile = null;
+                        try {
+                            photoFile = createImageFile();
+                        }
+                        catch (IOException ex) {
+                            // Error occurred while creating the File
+                            ex.printStackTrace();
+                        }
+
+                        // Continue only if the File was successfully created
+                        if (photoFile != null) {
+                            Uri photoURI = FileProvider.getUriForFile(context,
+                                    "com.example.reciclaapp.fileprovider",
+                                    photoFile);
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            takePhotoLauncher.launch(takePictureIntent);
+                        }
+                    }
                 }
                 else {
                     // If the permission is not granted, request it from the user
@@ -222,8 +247,6 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         });
 
 
-
-
         // Create an array of items to populate the Spinner
         String[] items = {"Bolsas", "Bote", "Cajas", "Kilos", "Piezas"};
         // Create a custom adapter to bind the array to the Spinner
@@ -243,6 +266,22 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         };
         // Set the adapter for the Spinner
         holder.spinner.setAdapter(adapter);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        MaterialesActivity.currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override

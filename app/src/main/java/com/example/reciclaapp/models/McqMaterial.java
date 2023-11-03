@@ -3,7 +3,7 @@ package com.example.reciclaapp.models;
 public class McqMaterial {
     private String unidad;
     private int cantidad;
-    private String fotoEvidencia;
+    private String fotoUrl;
     private String nombre;
 
     public McqMaterial() {
@@ -33,11 +33,11 @@ public class McqMaterial {
         this.cantidad = cantidad;
     }
 
-    public String getFotoEvidencia() {
-        return fotoEvidencia;
+    public String getFotoUrl() {
+        return fotoUrl;
     }
 
-    public void setFotoEvidencia(String fotoEvidencia) {
-        this.fotoEvidencia = fotoEvidencia;
+    public void setFotoUrl(String fotoEvidencia) {
+        this.fotoUrl = fotoEvidencia;
     }
 }

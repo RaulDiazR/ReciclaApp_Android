@@ -11,7 +11,7 @@ public class McqRecoleccion {
     private String horaRecoleccionFinal;
     private String comentarios;
     private boolean enPersona;
-    private boolean isRated;
+    private boolean calificado;
     private String estado;
     private Long timeStamp;
 
@@ -28,12 +28,12 @@ public class McqRecoleccion {
         this.timeStamp = timeStamp;
     }
 
-    public boolean getIsRated() {
-        return isRated;
+    public boolean getCalificado() {
+        return calificado;
     }
 
-    public void setRated(boolean rated) {
-        isRated = rated;
+    public void setCalificado(boolean rated) {
+        calificado = rated;
     }
 
     public String getEstado() {
