@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.utils.widget.ImageFilterView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -328,6 +329,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             // Se agrega el nombre del recolector
             TextView recolector = dialogView.findViewById(R.id.recolector);
             recolector.setText(itemList.get(itemPos).getRecolector().generarNombreCompleto());
+
+            // Se agrega la imagen del recolector
+            ImageFilterView recolectorImg = dialogView.findViewById(R.id.recolectorImg);
+
 
             // Se agrega el teléfono del recolector
             TextView recolectorTelefono = dialogView.findViewById(R.id.recolectorTelefono);

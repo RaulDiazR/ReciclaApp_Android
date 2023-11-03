@@ -6,6 +6,7 @@ public class McqRecolector {
     String apellidos;
     String telefono;
 
+
     public McqRecolector() {
     }
 
