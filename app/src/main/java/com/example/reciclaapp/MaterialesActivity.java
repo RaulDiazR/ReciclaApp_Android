@@ -390,8 +390,9 @@ public class MaterialesActivity extends AppCompatActivity{
         // Add all the remaining values which are constants
         Long timeStamp = System.currentTimeMillis(); // Get the current timestamp
         recoleccionData.put("timeStamp",timeStamp); // Add the timestamp to your data
-        recoleccionData.put("idUsuarioCliente", "user_id_1"); // cambiar por el id del usuario
-        recoleccionData.put("idRecolector", ""); // se pone vacío, pues al principio la recolección no tiene recolector
+        recoleccionData.put("idUsuarioCliente", "user_id_1"); // id del usuario
+        // Se ponen valores fijos debido a que posteriormente cambiaran
+        recoleccionData.put("recolectada", false);
         recoleccionData.put("calificado", false);
         recoleccionData.put("estado", "Iniciada");
 
@@ -430,10 +431,18 @@ public class MaterialesActivity extends AppCompatActivity{
             String materialId = "material_" + count;
             materialesMap.put(materialId, materialData);
         }
-
         recoleccionData.put("materiales", materialesMap);
 
 
+        // Create a map with recolector data
+        Map<String, Object> recolectorData = new HashMap<>();
+        recolectorData.put("nombre", "Neil Alden");
+        recolectorData.put("apellidos", "Armstrong");
+        recolectorData.put("telefono", "(800) 555-0100");
+        recolectorData.put("cantidad_reseñas", 5);
+        recolectorData.put("suma_reseñas", 23);
+
+        recoleccionData.put("recolector", recolectorData);
         // Add a new recolección document to the "recolecciones" collection
         firestore.collection("recolecciones")
                 .add(recoleccionData)
@@ -453,7 +462,6 @@ public class MaterialesActivity extends AppCompatActivity{
                     // Handle failure.
                 });
     }
-
 
     private void uploadPictureToFirebase(Uri imageUri, int count, String recoleccionId) {
         final String randomKey = UUID.randomUUID().toString();
@@ -494,7 +502,6 @@ public class MaterialesActivity extends AppCompatActivity{
                     Log.d("FirebaseFailureUpdateImageMaterial", "Image could not be uploaded");
                 });
     }
-
 
     private File createImageFile() throws IOException {
         // Create an image file name

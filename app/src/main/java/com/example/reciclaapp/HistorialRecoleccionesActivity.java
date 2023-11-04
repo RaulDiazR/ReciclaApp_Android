@@ -20,8 +20,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
@@ -31,21 +29,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reciclaapp.models.McqRecoleccion;
 import com.example.reciclaapp.models.McqRecolector;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -98,6 +86,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         historialAdapter = new HistorialAdapter(itemList);
         recyclerView.setAdapter(historialAdapter);
 
+
         historialAdapter.setClickListener(this);
     }
 
@@ -105,207 +94,97 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     private void retrieveAndCreateHistorialItems() {
         ProgressBar progressBar = findViewById(R.id.progressBar); // Replace with the ID of your ProgressBar in XML
         progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
 
         String idUsuarioClienteToFilter = "user_id_1"; // Replace with the actual user ID you want to filter by
 
         CollectionReference recoleccionesCollection = firestore.collection("recolecciones");
 
-        recoleccionesCollection.whereEqualTo("idUsuarioCliente", idUsuarioClienteToFilter).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        recoleccionesCollection.whereEqualTo("idUsuarioCliente", idUsuarioClienteToFilter).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30).addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                Log.d("firestorageErrorGet", "Error: " + e);
+                return;
+            }
 
+            itemList.clear();
 
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.d("firestorageErrorGet", "Error: " + e);
-                    return;
-                }
+            if (queryDocumentSnapshots != null) {
+                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                    McqRecoleccion recoleccion = snapshot.toObject(McqRecoleccion.class);
 
-                // Inside your addSnapshotListener callback
-                if (queryDocumentSnapshots != null) {
-                    for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                        switch (dc.getType()) {
-                            case ADDED:
-                                // Handle the addition of a new document
-                                // Create a HistorialItem for the new document and add it to your UI
-                                HistorialItem newItemAdded = createHistorialItemFromRecoleccion(dc.getDocument());
-                                itemList.add(newItemAdded);
-                                historialAdapter.notifyDataSetChanged();
-                                break;
-                            case MODIFIED:
-                                // Handle the modification of an existing document
-                                // Update the corresponding HistorialItem in your UI
-                                updateHistorialItemFromRecoleccion(dc.getDocument());
-                                break;
-                            case REMOVED:
-                                // Handle the removal of a document
-                                String removedItemId = dc.getDocument().getId();
-                                int removedItemIndex = findItemIndexById(removedItemId);
-                                if (removedItemIndex != -1) {
-                                    itemList.remove(removedItemIndex);
-                                    historialAdapter.notifyDataSetChanged();
-                                }
-                                break;
-                        }
-                    }
-                }
+                    String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
+                    String date = recoleccion.getFechaRecoleccion();
+                    String time = recoleccion.getHoraRecoleccionFinal();
+                    String materialsInfo = "" + recoleccion.getMateriales().size() + materialesQuantityText;
+                    String estado = recoleccion.getEstado();
+                    int color = getColorForEstado(estado);
+                    boolean isRated = recoleccion.getCalificado();
+                    Drawable squareDrawable = getDrawableForEstado(estado);
+                    String id = snapshot.getId(); // Use the document ID as the unique identifier
+                    String idRecolector = recoleccion.getIdRecolector();
+                    Long timeStamp = recoleccion.getTimeStamp();
 
-                itemList.clear();
+                    if (!Objects.equals(idRecolector, "")) {
+                        // Directly query the recolectores node for the specific recolector by id
+                        DocumentReference recolectorRef = firestore.collection("recolectores").document(idRecolector);
 
-                if (queryDocumentSnapshots != null) {
-                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                        McqRecoleccion recoleccion = snapshot.toObject(McqRecoleccion.class);
-
-                        String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
-                        String date = recoleccion.getFechaRecoleccion();
-                        String time = recoleccion.getHoraRecoleccionFinal();
-                        String materialsInfo = "" + recoleccion.getMateriales().size() + materialesQuantityText;
-                        String estado = recoleccion.getEstado();
-                        int color = getColorForEstado(estado);
-                        boolean isRated = recoleccion.getCalificado();
-                        Drawable squareDrawable = getDrawableForEstado(estado);
-                        String id = snapshot.getId(); // Use the document ID as the unique identifier
-                        String idRecolector = recoleccion.getIdRecolector();
-                        Long timeStamp = recoleccion.getTimeStamp();
-
-                        if (!Objects.equals(idRecolector, "")) {
-                            // Directly query the recolectores node for the specific recolector by id
-                            DocumentReference recolectorRef = firestore.collection("recolectores").document(idRecolector);
-
-                            recolectorRef.get().addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.exists()) {
-                                        // The document exists; you can safely retrieve its data
-                                        McqRecolector recolector = document.toObject(McqRecolector.class);
-                                        if (recolector != null) {
-                                            // Create a new HistorialItem with Recolector data
-                                            HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp);
-                                            itemList.add(newItem);
-                                            historialAdapter.notifyDataSetChanged();
-                                            progressBar.setVisibility(View.GONE);
-                                        }
-                                    } else {
-
+                        recolectorRef.get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // The document exists; you can safely retrieve its data
+                                    McqRecolector recolector = document.toObject(McqRecolector.class);
+                                    if (recolector != null) {
                                         // Create a new HistorialItem with Recolector data
-                                        HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, null, timeStamp);
-
+                                        HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp);
                                         itemList.add(newItem);
+                                        itemList.sort((item1, item2) -> {
+                                            // Compare the timestamps in descending order
+                                            long timestamp1 = item1.getTimeStamp();
+                                            long timestamp2 = item2.getTimeStamp();
+                                            return Long.compare(timestamp2, timestamp1);
+                                        });
                                         historialAdapter.notifyDataSetChanged();
                                         progressBar.setVisibility(View.GONE);
+                                        recyclerView.setVisibility(View.VISIBLE);
+
+                                    }
+                                    else {
+                                        Log.d("firebaseStoreDocument", "No se pudo transformar al recolector de FB a .class");
                                     }
                                 } else {
-                                    // Handle any errors or exceptions related to retrieving the document
-                                    Log.d("firestorageRecolectorError", "Couldn't access fireStorage DB");
+
+                                    Log.d("firebaseStoreDocument", "No se pudo encontrar este documento de recolector: "+document);
+                                    // Create a new HistorialItem with Recolector data
+                                    HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, new McqRecolector(), timeStamp);
+
+                                    itemList.add(newItem);
+                                    itemList.sort((item1, item2) -> {
+                                        // Compare the timestamps in descending order
+                                        long timestamp1 = item1.getTimeStamp();
+                                        long timestamp2 = item2.getTimeStamp();
+                                        return Long.compare(timestamp2, timestamp1);
+                                    });
+                                    historialAdapter.notifyDataSetChanged();
                                 }
-                            });
-                        }
-                        else {
+                            } else {
+                                // Handle any errors or exceptions related to retrieving the document
+                                Log.d("firestorageRecolectorError", "Couldn't access fireStorage DB");
+                            }
+                        });
+                    }
+                    else {
 
 
-                            // Create a new HistorialItem with Recolector data
-                            HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, null, timeStamp);
-                            itemList.add(newItem);
-                            historialAdapter.notifyDataSetChanged();
-                            progressBar.setVisibility(View.GONE);
-                        }
+                        // Create a new HistorialItem with Recolector data
+                        HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, null, timeStamp);
+                        itemList.add(newItem);
+                        historialAdapter.notifyDataSetChanged();
                     }
                 }
             }
-
-
         });
 
-    }
-
-    private HistorialItem createHistorialItemFromRecoleccion(DocumentSnapshot recoleccionSnapshot) {
-        McqRecoleccion recoleccion = recoleccionSnapshot.toObject(McqRecoleccion.class);
-
-        if (recoleccion != null) {
-            String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
-            String date = recoleccion.getFechaRecoleccion();
-            String time = recoleccion.getHoraRecoleccionFinal();
-            String materialsInfo = "" + recoleccion.getMateriales().size() + materialesQuantityText;
-            String estado = recoleccion.getEstado();
-            int color = getColorForEstado(estado);
-            boolean isRated = recoleccion.getCalificado();
-            Drawable squareDrawable = getDrawableForEstado(estado);
-            String id = recoleccionSnapshot.getId(); // Use the document ID as the unique identifier
-            Long timeStamp = recoleccion.getTimeStamp();
-
-            return new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, null, timeStamp);
-        }
-        else {
-            return new HistorialItem();
-        }
-    }
-
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void updateHistorialItemFromRecoleccion(DocumentSnapshot recoleccionSnapshot) {
-        McqRecoleccion recoleccion = recoleccionSnapshot.toObject(McqRecoleccion.class);
-
-        if (recoleccion != null) {
-            String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
-            String date = recoleccion.getFechaRecoleccion();
-            String time = recoleccion.getHoraRecoleccionFinal();
-            String materialsInfo = "" + recoleccion.getMateriales().size() + materialesQuantityText;
-            String estado = recoleccion.getEstado();
-            int color = getColorForEstado(estado);
-            boolean isRated = recoleccion.getCalificado();
-            Drawable squareDrawable = getDrawableForEstado(estado);
-            String id = recoleccionSnapshot.getId(); // Use the document ID as the unique identifier
-            String idRecolector = recoleccion.getIdRecolector();
-            Long timeStamp = recoleccion.getTimeStamp();
-
-            if (!Objects.equals(idRecolector, "")) {
-                // Directly query the recolectores node for the specific recolector by id
-                DocumentReference recolectorRef = firestore.collection("recolectores").document(idRecolector);
-
-                recolectorRef.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            // The document exists; you can safely retrieve its data
-                            McqRecolector recolector = document.toObject(McqRecolector.class);
-                            if (recolector != null) {
-                                // Create a new HistorialItem with Recolector data
-                                HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp);
-                                itemList.add(newItem);
-                                historialAdapter.notifyDataSetChanged();
-                            }
-                        } else {
-
-                            // Create a new HistorialItem with Recolector data
-                            HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, null, timeStamp);
-
-                            itemList.add(newItem);
-                            historialAdapter.notifyDataSetChanged();
-                        }
-                    } else {
-                        // Handle any errors or exceptions related to retrieving the document
-                        Log.d("firestorageRecolectorError", "Couldn't access fireStorage DB");
-                    }
-                });
-            } else {
-
-
-                // Create a new HistorialItem with Recolector data
-                HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, null, timeStamp);
-                itemList.add(newItem);
-                historialAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-
-    // Find the index of an item by ID
-    private int findItemIndexById(String id) {
-        for (int i = 0; i < itemList.size(); i++) {
-            if (itemList.get(i).getId().equals(id)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     // Implement a function to map estado to color
@@ -366,9 +245,9 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
 
     public void showCorrectPopup(String estado, int itemPos) {
+        HistorialItem curItem = itemList.get(itemPos);
 
         if(estado.equals(this.iniciada)) {
-
             // Create a view for the semitransparent background
             final View backgroundView = new View(this);
             backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -451,17 +330,17 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             // Se agrega el nombre del recolector
             TextView recolector = dialogView.findViewById(R.id.recolector);
-            recolector.setText(itemList.get(itemPos).getRecolector().generarNombreCompleto());
+            recolector.setText(curItem.getRecolector().generarNombreCompleto());
 
             // Se agrega la imagen del recolector
             ImageFilterView recolectorImg = dialogView.findViewById(R.id.recolectorImg);
-            String url = "https://storage.cloud.google.com/artifactory-images/old_fashioned_ring.PNG";
-            Picasso.get().load(url).into(recolectorImg);
+            String url = curItem.getRecolector().getFotoUrl();
+            Picasso.get().load(url).placeholder(R.drawable.icon_user_gray).error(R.drawable.icon_user_gray).into(recolectorImg);
 
 
             // Se agrega el teléfono del recolector
             TextView recolectorTelefono = dialogView.findViewById(R.id.recolectorTelefono);
-            recolectorTelefono.setText(itemList.get(itemPos).getRecolector().getTelefono());
+            recolectorTelefono.setText(curItem.getRecolector().getTelefono());
 
             // Configure button actions
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
@@ -513,20 +392,26 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             // Set the correct name for the recolector
             TextView recolector = dialogView.findViewById(R.id.recolector);
-            recolector.setText(itemList.get(itemPos).getRecolector().generarNombreCompleto());
+            recolector.setText(curItem.getRecolector().generarNombreCompleto());
 
             // Configure button actions
             LinearLayout linearLayoutRatingSection = dialogView.findViewById(R.id.linearLayoutRating);
             RatingBar ratingBar = dialogView.findViewById(R.id.ratingBar);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
 
-            if (itemList.get(itemPos).getIsRated()) {
+            // Se agrega la imagen del recolector
+            ImageFilterView recolectorImg = dialogView.findViewById(R.id.recolectorImg);
+            String url = curItem.getRecolector().getFotoUrl();
+            Picasso.get().load(url).placeholder(R.drawable.icon_user_gray).error(R.drawable.icon_user_gray).into(recolectorImg);
+
+            if (curItem.getIsRated()) {
                 linearLayoutRatingSection.setVisibility(View.GONE);
                 Resources res = getResources();
                 Drawable button_variant_green = ResourcesCompat.getDrawable(res, R.drawable.button_variant_green, null);
                 btnContinuar.setBackground(button_variant_green);
                 btnContinuar.setEnabled(true);
             }
+
 
             ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
                 Resources res = getResources();
@@ -536,7 +421,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             });
 
             btnContinuar.setOnClickListener(v -> {
-                if (!itemList.get(itemPos).getIsRated()) {
+                if (!curItem.getIsRated()) {
                     Toast.makeText(this,
                             "DB changed!!!",
                             Toast.LENGTH_LONG).show();
@@ -615,6 +500,15 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     }
 
     private void updateRecoleccionEstado(String recoleccionIdToUpdate, String newEstado) {
+
+        // Initialize a Firestore DocumentReference for the recolección document
+        firestore.collection("recolecciones").document(recoleccionIdToUpdate).update("estado", newEstado).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()){
+                Toast.makeText(HistorialRecoleccionesActivity.this, "Lo sentimos, ocurrió un error, inténtelo de nuevo más tarde", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        /*
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference recoleccionRef = databaseReference.child("recolecciones");
         // Obtain the reference to the specific recolección using its unique 'rid'
@@ -633,7 +527,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle errors
             }
-        });
+        });*/
     }
 
     public void confirmarCancelarOrden(int itemPos) {

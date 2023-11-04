@@ -1,7 +1,6 @@
 package com.example.reciclaapp.models;
 
 public class McqRecolector {
-    String id;
     String nombre;
     String apellidos;
     String telefono;
@@ -20,14 +19,6 @@ public class McqRecolector {
 
     public String generarNombreCompleto(){
         return nombre + " " + apellidos;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getNombre() {
