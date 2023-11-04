@@ -5,9 +5,17 @@ public class McqRecolector {
     String nombre;
     String apellidos;
     String telefono;
-
+    String fotoUrl;
 
     public McqRecolector() {
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 
     public String generarNombreCompleto(){

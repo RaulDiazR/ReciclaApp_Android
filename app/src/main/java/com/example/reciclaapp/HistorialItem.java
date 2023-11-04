@@ -26,6 +26,9 @@ public class HistorialItem {
         this.timeStamp = timeStamp;
     }
 
+    public HistorialItem() {
+    }
+
     public Long getTimeStamp() {
         return timeStamp;
     }

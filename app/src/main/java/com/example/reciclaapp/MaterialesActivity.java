@@ -34,6 +34,9 @@ import com.example.reciclaapp.models.McqMaterial;
 import com.example.reciclaapp.models.McqRecoleccion;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -63,8 +66,9 @@ public class MaterialesActivity extends AppCompatActivity{
     ConcatAdapter concatAdapter; // Add ConcatAdapter
     // intent with data from previous activities
     private Intent receivedIntent;
-    // reference to the realtime database
+    // reference to the FireStore database and the Storage
     private DatabaseReference fbRecoleccionesRef;
+    private FirebaseFirestore firestore;
     private StorageReference storageReference;
 
     // Se usan para activar la cámara y la galería
@@ -88,7 +92,8 @@ public class MaterialesActivity extends AppCompatActivity{
         // creates intent to receive data from past activities
         this.receivedIntent = getIntent();
 
-        // Se accede a la base de datos de tiempo real
+        // Se accede a la base de datos de FireStore
+        firestore = FirebaseFirestore.getInstance();
         fbRecoleccionesRef = FirebaseDatabase.getInstance().getReference("recolecciones");
 
         // Se accede a Firebase Storage para acceder a las imágenes
@@ -349,7 +354,8 @@ public class MaterialesActivity extends AppCompatActivity{
 
     private void sendDataToDB() {
         receivedIntent = getIntent();
-        McqRecoleccion recoleccion = new McqRecoleccion();
+
+        Map<String, Object> recoleccionData = new HashMap<>();
 
         // se extrae la fecha y se le da un formato simple de dd/mm/aa
         int[] fecha = receivedIntent.getIntArrayExtra("fecha");
@@ -359,43 +365,38 @@ public class MaterialesActivity extends AppCompatActivity{
             month = fecha[1];
             year = fecha[2];
             String fechaStr = "" + day + "/" + month + "/" + year;
-            recoleccion.setFechaRecoleccion(fechaStr);
+            recoleccionData.put("fechaRecoleccion", fechaStr);
         }
-
         // Se extraen los tiempos de inicio y final de la recolección
         int[] tiempoEnd = receivedIntent.getIntArrayExtra("tiempoEnd");
         if (tiempoEnd != null) {
         String timeEnd = String.format(Locale.getDefault(), "%02d", tiempoEnd[0]) + ":" + String.format(Locale.getDefault(), "%02d", tiempoEnd[1]);
-            recoleccion.setHoraRecoleccionFinal(timeEnd);
+            recoleccionData.put("horaRecoleccionFinal",timeEnd);
         }
-
         int[] tiempoIni = receivedIntent.getIntArrayExtra("tiempoIni");
         if (tiempoIni != null) {
             String timeIni = String.format(Locale.getDefault(), "%02d", tiempoIni[0]) + ":" + String.format(Locale.getDefault(), "%02d", tiempoIni[1]);
-            recoleccion.setHoraRecoleccionInicio(timeIni);
+            recoleccionData.put("horaRecoleccionInicio",timeIni);
         }
-
         // se extraen los comentarios
         String comentarios = receivedIntent.getStringExtra("comentarios");
         if (comentarios != null) {
-            boolean enPersona = receivedIntent.getBooleanExtra("enPersona", true);
-            recoleccion.setEnPersona(enPersona);
+            recoleccionData.put("comentarios", comentarios);
         }
+        // Se extrae el valor booleano de si el pedido es en puerte o no
+        boolean enPersona = receivedIntent.getBooleanExtra("enPersona", true);
+        recoleccionData.put("enPersona",enPersona);
 
-        // se genera un id único para la recolección
-        String uid = fbRecoleccionesRef.push().getKey();
-
-
-        // Add a timestamp for when the data was sent
+        // Add all the remaining values which are constants
         Long timeStamp = System.currentTimeMillis(); // Get the current timestamp
-        recoleccion.setTimeStamp(timeStamp); // Add the timestamp to your data
-        recoleccion.setRid(uid);
-        recoleccion.setIdUsuarioCliente("user_id_1"); // cambiar por el id del usuario
-        recoleccion.setIdRecolector(""); // se pone vacío, pues al principio la recolección no tiene recolector
-        recoleccion.setComentarios(comentarios);
-        recoleccion.setCalificado(false);
-        recoleccion.setEstado("Iniciada");
+        recoleccionData.put("timeStamp",timeStamp); // Add the timestamp to your data
+        recoleccionData.put("idUsuarioCliente", "user_id_1"); // cambiar por el id del usuario
+        recoleccionData.put("idRecolector", ""); // se pone vacío, pues al principio la recolección no tiene recolector
+        recoleccionData.put("calificado", false);
+        recoleccionData.put("estado", "Iniciada");
 
+        // crear Map de materiales viejo
+        /*
         // Create a map to hold material data
         Map<String, McqMaterial> materiales = new HashMap<>();
         for (int count = 0; count < itemList.size(); count++) {
@@ -415,54 +416,85 @@ public class MaterialesActivity extends AppCompatActivity{
             }
 
             materiales.put("material_" + count, material);
+        } */
+        Map<String, Map<String, Object>> materialesMap = new HashMap<>();
+
+        for (int count = 0; count < itemList.size(); count++) {
+            MaterialesItem materialesItem = itemList.get(count);
+            Map<String, Object> materialData = new HashMap<>();
+            materialData.put("nombre", materialesItem.getName());
+            materialData.put("unidad", materialesItem.getMaterialUnit());
+            materialData.put("cantidad", materialesItem.getMaterialQuantity());
+            materialData.put("fotoUrl", "");
+
+            String materialId = "material_" + count;
+            materialesMap.put(materialId, materialData);
         }
 
+        recoleccionData.put("materiales", materialesMap);
 
-        recoleccion.setMateriales(materiales);
 
-        // Write a message to the database
-        if (uid != null) {
-            fbRecoleccionesRef.child(uid).setValue(recoleccion).addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(MaterialesActivity.this, "Lo sentimos, no se pudo procesar su orden. Por favor, inténtelo de nuevo.",
-                            Toast.LENGTH_LONG).show();
-                }
-            });
-        }
+        // Add a new recolección document to the "recolecciones" collection
+        firestore.collection("recolecciones")
+                .add(recoleccionData)
+                .addOnSuccessListener(documentReference -> {
+                    // Handle success, documentReference.getId() is the unique ID of the added document.
+                    String recoleccionId = documentReference.getId();
+
+                    // After the recolección document is added, you can update it with the photo URL.
+                    for (int count = 0; count < itemList.size(); count++) {
+                        MaterialesItem materialesItem = itemList.get(count);
+                        if (materialesItem.getFotoMaterial() != null) {
+                            uploadPictureToFirebase(materialesItem.getFotoMaterial(), count, recoleccionId);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure.
+                });
     }
 
 
-    private void uploadPictureToFirebase(Uri imageUri, int count, String uid) {
+    private void uploadPictureToFirebase(Uri imageUri, int count, String recoleccionId) {
         final String randomKey = UUID.randomUUID().toString();
         StorageReference imagesRef = storageReference.child("fotosMateriales/" + randomKey);
 
         imagesRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
             String imageURL = uri.toString();
-            setFotoEvidenciaForItem(count, imageURL, uid); // Set the URL after it's obtained
+            setFotoEvidenciaForItem(imageURL, count, recoleccionId); // Set the URL after it's obtained
             // You can also save the material to the database here if needed
         })).addOnFailureListener(e -> Log.d("Firebase", "No se pudo subir la foto" + imageUri));
     }
 
-    private void setFotoEvidenciaForItem(int count, String imageURL, String uid) {
+    private void setFotoEvidenciaForItem(String imageURL, int count, String recoleccionId) {
         if (count >= 0 && count < itemList.size()) {
             itemList.get(count).setUrlFotoMaterial(imageURL);
             materialesAdapter.notifyItemChanged(count);
             // Save the material to the database here if needed
-            saveMaterialToDatabase(imageURL, uid, count);
+            updateMaterialWithFotoUrl(imageURL, count, recoleccionId);
         }
     }
 
-    private void saveMaterialToDatabase(String imageURL, String uid, int count) {
+    private void updateMaterialWithFotoUrl(String imageURL, int count, String recoleccionId) {
 
-        // Save the McqMaterial object to the Real-time Database
-        if (uid != null) {
-            fbRecoleccionesRef.child(uid).child("materiales").child("material_" + count).child("fotoUrl").setValue(imageURL).addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Log.d("Firebase", "Con este ID de recolección: "+ uid + " - Y con este id de material: " + "material"+count +" ---- No se pudo subir la foto" + imageURL);
-                }
-            });
-        }
+        // Initialize a Firestore DocumentReference for the recolección document
+        DocumentReference recoleccionRef = firestore.collection("recolecciones").document(recoleccionId);
+
+        // Update a specific material (e.g., "material_0") within the recolección document
+        String materialKey = "material_"+count; // Replace with the actual material key
+
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("materiales." + materialKey + ".fotoUrl", imageURL);
+
+        recoleccionRef.update(updateData)
+                .addOnSuccessListener(aVoid -> {
+                    // The "unidad" field of the specific material has been successfully updated.
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("FirebaseFailureUpdateImageMaterial", "Image could not be uploaded");
+                });
     }
+
 
     private File createImageFile() throws IOException {
         // Create an image file name
