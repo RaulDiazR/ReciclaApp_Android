@@ -248,7 +248,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
 
 
         // Create an array of items to populate the Spinner
-        String[] items = {"Bolsas", "Bote", "Cajas", "Kilos", "Piezas"};
+        String[] items = {"Bolsas", "Bote", "Cajas", "Kilos"};
         // Create a custom adapter to bind the array to the Spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.spinner_materiales_item, items) {
             @NonNull

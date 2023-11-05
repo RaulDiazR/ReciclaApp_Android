@@ -27,17 +27,19 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reciclaapp.models.McqMaterial;
 import com.example.reciclaapp.models.McqRecoleccion;
 import com.example.reciclaapp.models.McqRecolector;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class HistorialRecoleccionesActivity extends AppCompatActivity implements HistorialItemClickListener {
@@ -92,11 +94,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     @SuppressLint("NotifyDataSetChanged")
     private void retrieveAndCreateHistorialItems() {
-        ProgressBar progressBar = findViewById(R.id.progressBar); // Replace with the ID of your ProgressBar in XML
+        ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
 
-        String idUsuarioClienteToFilter = "user_id_1"; // Replace with the actual user ID you want to filter by
+        String idUsuarioClienteToFilter = "user_id_2"; // Replace with the actual user ID you want to filter by
 
         CollectionReference recoleccionesCollection = firestore.collection("recolecciones");
 
@@ -112,6 +113,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                     McqRecoleccion recoleccion = snapshot.toObject(McqRecoleccion.class);
 
+                    Log.d("fireStoreErrorTag", "1");
                     String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
                     String date = recoleccion.getFechaRecoleccion();
                     String time = recoleccion.getHoraRecoleccionFinal();
@@ -121,128 +123,65 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     boolean isRated = recoleccion.getCalificado();
                     Drawable squareDrawable = getDrawableForEstado(estado);
                     String id = snapshot.getId(); // Use the document ID as the unique identifier
-                    String idRecolector = recoleccion.getIdRecolector();
                     Long timeStamp = recoleccion.getTimeStamp();
+                    boolean enPersona = recoleccion.getEnPersona();
 
-                    if (!Objects.equals(idRecolector, "")) {
-                        // Directly query the recolectores node for the specific recolector by id
-                        DocumentReference recolectorRef = firestore.collection("recolectores").document(idRecolector);
+                    Log.d("fireStoreErrorTag", "22");
+                    // Access the recolector data from the recoleccion document
+                    Map<String, Object> recolectorData = recoleccion.getRecolector();
 
-                        recolectorRef.get().addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    // The document exists; you can safely retrieve its data
-                                    McqRecolector recolector = document.toObject(McqRecolector.class);
-                                    if (recolector != null) {
-                                        // Create a new HistorialItem with Recolector data
-                                        HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp);
-                                        itemList.add(newItem);
-                                        itemList.sort((item1, item2) -> {
-                                            // Compare the timestamps in descending order
-                                            long timestamp1 = item1.getTimeStamp();
-                                            long timestamp2 = item2.getTimeStamp();
-                                            return Long.compare(timestamp2, timestamp1);
-                                        });
-                                        historialAdapter.notifyDataSetChanged();
-                                        progressBar.setVisibility(View.GONE);
-                                        recyclerView.setVisibility(View.VISIBLE);
+                    Log.d("fireStoreErrorTag", "333");
+                    // Now, you can access fields within recolectorData
+                    String recolectorNombre = (String) recolectorData.get("nombre");
+                    String recolectorApellidos = (String) recolectorData.get("apellidos");
+                    String recolectorTelefono = (String) recolectorData.get("telefono");
+                    String recolectorFoto = (String) recolectorData.get("fotoUrl");
 
-                                    }
-                                    else {
-                                        Log.d("firebaseStoreDocument", "No se pudo transformar al recolector de FB a .class");
-                                    }
-                                } else {
+                    Log.d("fireStoreErrorTag", "4444");
+                    Long recolectorCantidadResenas = (Long) recolectorData.get("cantidad_reseñas");
+                    Long recolectorSumaResenas = (Long) recolectorData.get("suma_reseñas");
 
-                                    Log.d("firebaseStoreDocument", "No se pudo encontrar este documento de recolector: "+document);
-                                    // Create a new HistorialItem with Recolector data
-                                    HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, new McqRecolector(), timeStamp);
+                    // Check if recolectorCantidadResenas and recolectorSumaResenas are not null before unboxing.
+                    int cantidadResenas = recolectorCantidadResenas != null ? recolectorCantidadResenas.intValue() : 0;
+                    int sumaResenas = recolectorSumaResenas != null ? recolectorSumaResenas.intValue() : 0;
 
-                                    itemList.add(newItem);
-                                    itemList.sort((item1, item2) -> {
-                                        // Compare the timestamps in descending order
-                                        long timestamp1 = item1.getTimeStamp();
-                                        long timestamp2 = item2.getTimeStamp();
-                                        return Long.compare(timestamp2, timestamp1);
-                                    });
-                                    historialAdapter.notifyDataSetChanged();
-                                }
-                            } else {
-                                // Handle any errors or exceptions related to retrieving the document
-                                Log.d("firestorageRecolectorError", "Couldn't access fireStorage DB");
-                            }
-                        });
+                    Log.d("fireStoreErrorTag", "55555");
+                    McqRecolector recolector = new McqRecolector(recolectorNombre, recolectorApellidos, recolectorTelefono, recolectorFoto, cantidadResenas, sumaResenas);
+
+                    Log.d("fireStoreErrorTag", "666666");
+                    // Access the "materiales" field
+                    Map<String, Map<String, Object>> materialesMap = recoleccion.getMateriales();
+
+                    List<McqMaterial> materialesList = new ArrayList<>();
+                    // Loop through the materials in your Firestore document
+                    for (String materialId : materialesMap.keySet()) {
+                        Map<String, Object> materialData = materialesMap.get(materialId);
+                        if (materialData != null) {
+                            McqMaterial material = new McqMaterial();
+                            material.setNombre((String) materialData.get("nombre"));
+                            material.setUnidad((String) materialData.get("unidad"));
+
+                            // Se revisa que cantidadMaterial no sea nulo
+                            Long cantidadMaterialLong = (Long) materialData.get("cantidad");
+                            int cantidadMaterialInt = cantidadMaterialLong != null ? cantidadMaterialLong.intValue() : 0;
+                            material.setCantidad(cantidadMaterialInt);
+
+                            material.setFotoUrl((String) materialData.get("fotoUrl"));
+                            materialesList.add(material);
+                        }
                     }
-                    else {
+                    // Create a new HistorialItem with Recolector data
+                    HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp, materialesList, enPersona);
 
-
-                        // Create a new HistorialItem with Recolector data
-                        HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, null, timeStamp);
-                        itemList.add(newItem);
-                        historialAdapter.notifyDataSetChanged();
-                    }
+                    itemList.add(newItem);
+                    Log.d("FireStoreAdd", "Item: "+ newItem);
+                    Log.d("FireStoreDocInfo", "Item: "+ snapshot);
                 }
             }
+            historialAdapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.GONE);
         });
-
     }
-
-    // Implement a function to map estado to color
-    private int getColorForEstado(String estado) {
-        Resources res = getResources();
-        // Implement your logic to map estado to a color here
-        if (estado.equals(this.iniciada)) {
-            return ResourcesCompat.getColor(res, R.color.golden, null);
-        }
-        else if (estado.equals(this.enProceso)) {
-            return ResourcesCompat.getColor(res, R.color.blue, null);
-        }
-        else if (estado.equals(this.completada)) {
-            return ResourcesCompat.getColor(res, R.color.green, null);
-        }
-        else if (estado.equals(this.cancelada)) {
-            return ResourcesCompat.getColor(res, R.color.red, null);
-        }
-        else {
-            return ResourcesCompat.getColor(res, R.color.green, null);
-        }
-    }
-
-    // Implement a function to map estado to Drawable
-    private Drawable getDrawableForEstado(String estado) {
-        Resources res = getResources();
-        // Implement your logic to map estado to a color here
-        if (estado.equals(this.iniciada)) {
-            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_gold, null);
-        }
-        else if (estado.equals(this.enProceso)) {
-            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_blue, null);
-        }
-        else if (estado.equals(this.completada)) {
-            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
-        }
-        else if (estado.equals(this.cancelada)) {
-            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_red, null);
-        }
-        else {
-            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
-        }
-    }
-
-    public void addOrder (View v) {
-        Intent intent = new Intent(this, OrdenHorarioActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View v, int pos) {
-
-        HistorialItem clickedItem = itemList.get(pos);
-        String estado = clickedItem.getEstado();
-
-        showCorrectPopup(estado, pos);
-    }
-
 
     public void showCorrectPopup(String estado, int itemPos) {
         HistorialItem curItem = itemList.get(itemPos);
@@ -276,8 +215,23 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
 
             // Configure button actions
+            Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
             Button btnCancelarOrden = dialogView.findViewById(R.id.cancelarOrdenButton);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
+
+            btnVerDetalles.setOnClickListener(v -> {
+                Intent intent = new Intent(this, VerDetallesActivity.class);
+                String materialesList = new Gson().toJson(curItem.getMaterialesList());
+                intent.putExtra("data",materialesList);
+                intent.putExtra("fecha", curItem.getFecha());
+                intent.putExtra("horario", curItem.getHorario());
+                intent.putExtra("enPersona", curItem.getEnPersona());
+                startActivity(intent);
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView); // Remove the background
+
+            });
 
             btnCancelarOrden.setOnClickListener(v -> {
                 alertDialog.dismiss();
@@ -341,6 +295,11 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             // Se agrega el teléfono del recolector
             TextView recolectorTelefono = dialogView.findViewById(R.id.recolectorTelefono);
             recolectorTelefono.setText(curItem.getRecolector().getTelefono());
+
+            // se agrega la calificación del recolector
+            TextView ratingRecolector = dialogView.findViewById(R.id.calificacionRecolector);
+            String calificacion = String.format(Locale.getDefault(), "%.1f", curItem.getRecolector().calcularCalificacion());
+            ratingRecolector.setText(calificacion);
 
             // Configure button actions
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
@@ -499,37 +458,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     }
 
-    private void updateRecoleccionEstado(String recoleccionIdToUpdate, String newEstado) {
-
-        // Initialize a Firestore DocumentReference for the recolección document
-        firestore.collection("recolecciones").document(recoleccionIdToUpdate).update("estado", newEstado).addOnCompleteListener(task -> {
-            if (!task.isSuccessful()){
-                Toast.makeText(HistorialRecoleccionesActivity.this, "Lo sentimos, ocurrió un error, inténtelo de nuevo más tarde", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        /*
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference recoleccionRef = databaseReference.child("recolecciones");
-        // Obtain the reference to the specific recolección using its unique 'rid'
-        Query query = recoleccionRef.orderByChild("rid").equalTo(recoleccionIdToUpdate);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    // Update the 'estado' field with the new value
-                    snapshot.getRef().child("estado").setValue(newEstado);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle errors
-            }
-        });*/
-    }
-
     public void confirmarCancelarOrden(int itemPos) {
         // Create a view for the semitransparent background
         final View backgroundView = new View(this);
@@ -590,5 +518,72 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         // Add the background view and show the dialog
         FrameLayout rootView = findViewById(android.R.id.content);
         rootView.addView(backgroundView);
+    }
+
+    @Override
+    public void onClick(View v, int pos) {
+
+        HistorialItem clickedItem = itemList.get(pos);
+        String estado = clickedItem.getEstado();
+
+        showCorrectPopup(estado, pos);
+    }
+
+    private void updateRecoleccionEstado(String recoleccionIdToUpdate, String newEstado) {
+
+        // Initialize a Firestore DocumentReference for the recolección document
+        firestore.collection("recolecciones").document(recoleccionIdToUpdate).update("estado", newEstado).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()){
+                Toast.makeText(HistorialRecoleccionesActivity.this, "Lo sentimos, ocurrió un error, inténtelo de nuevo más tarde", Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    // Implement a function to map estado to color
+    private int getColorForEstado(String estado) {
+        Resources res = getResources();
+        // Implement your logic to map estado to a color here
+        if (estado.equals(this.iniciada)) {
+            return ResourcesCompat.getColor(res, R.color.golden, null);
+        }
+        else if (estado.equals(this.enProceso)) {
+            return ResourcesCompat.getColor(res, R.color.blue, null);
+        }
+        else if (estado.equals(this.completada)) {
+            return ResourcesCompat.getColor(res, R.color.green, null);
+        }
+        else if (estado.equals(this.cancelada)) {
+            return ResourcesCompat.getColor(res, R.color.red, null);
+        }
+        else {
+            return ResourcesCompat.getColor(res, R.color.green, null);
+        }
+    }
+
+    // Implement a function to map estado to Drawable
+    private Drawable getDrawableForEstado(String estado) {
+        Resources res = getResources();
+        // Implement your logic to map estado to a color here
+        if (estado.equals(this.iniciada)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_gold, null);
+        }
+        else if (estado.equals(this.enProceso)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_blue, null);
+        }
+        else if (estado.equals(this.completada)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
+        }
+        else if (estado.equals(this.cancelada)) {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_red, null);
+        }
+        else {
+            return ResourcesCompat.getDrawable(res, R.drawable.shape_square_green, null);
+        }
+    }
+
+    public void addOrder (View v) {
+        Intent intent = new Intent(this, OrdenHorarioActivity.class);
+        startActivity(intent);
     }
 }

@@ -5,7 +5,6 @@ import java.util.Map;
 public class McqRecoleccion {
     private String Rid;
     private String idUsuarioCliente;
-    private String idRecolector;
     private String fechaRecoleccion;
     private String horaRecoleccionInicio;
     private String horaRecoleccionFinal;
@@ -14,10 +13,19 @@ public class McqRecoleccion {
     private boolean calificado;
     private String estado;
     private Long timeStamp;
+    private Map<String, Object> recolector;
 
-    private Map<String, McqMaterial> materiales;
+    private Map<String, Map<String, Object>> materiales;
 
     public McqRecoleccion() {
+    }
+
+    public Map<String, Object> getRecolector() {
+        return recolector;
+    }
+
+    public void setRecolector(Map<String, Object> recolector) {
+        this.recolector = recolector;
     }
 
     public Long getTimeStamp() {
@@ -68,14 +76,6 @@ public class McqRecoleccion {
         this.idUsuarioCliente = idUsuarioCliente;
     }
 
-    public String getIdRecolector() {
-        return idRecolector;
-    }
-
-    public void setIdRecolector(String idRecolector) {
-        this.idRecolector = idRecolector;
-    }
-
     public String getFechaRecoleccion() {
         return fechaRecoleccion;
     }
@@ -108,11 +108,11 @@ public class McqRecoleccion {
         this.comentarios = comentarios;
     }
 
-    public Map<String, McqMaterial> getMateriales() {
+    public Map<String, Map<String, Object>> getMateriales() {
         return materiales;
     }
 
-    public void setMateriales(Map<String, McqMaterial> materiales) {
+    public void setMateriales(Map<String, Map<String, Object>> materiales) {
         this.materiales = materiales;
     }
 }

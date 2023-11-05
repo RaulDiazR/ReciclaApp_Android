@@ -2,31 +2,63 @@ package com.example.reciclaapp;
 
 import android.graphics.drawable.Drawable;
 
+import com.example.reciclaapp.models.McqMaterial;
 import com.example.reciclaapp.models.McqRecolector;
+
+import java.util.List;
 
 public class HistorialItem {
     Drawable backgroundDrawable; // New variable for background
-    String fecha, horario, materiales, estado;
+    String fecha, horario, totalMateriales, estado;
     int estadoColor;
     boolean isRated;
     String id;
     McqRecolector recolector;
     Long timeStamp;
+    boolean enPersona;
 
-    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String materiales, String estado, int estadoColor, boolean isRated, String id, McqRecolector recolector, Long timeStamp) {
+    List<McqMaterial> materialesList;
+
+    public HistorialItem(Drawable backgroundDrawable, String fecha, String horario, String totalMateriales, String estado, int estadoColor, boolean isRated, String id, McqRecolector recolector, Long timeStamp, List<McqMaterial> materialesList, boolean enPersona) {
         this.backgroundDrawable = backgroundDrawable;
         this.fecha = fecha;
         this.horario = horario;
-        this.materiales = materiales;
+        this.totalMateriales = totalMateriales;
         this.estado = estado;
         this.estadoColor = estadoColor;
         this.isRated = isRated;
         this.id = id;
         this.recolector = recolector;
         this.timeStamp = timeStamp;
+        this.materialesList = materialesList;
+        this.enPersona = enPersona;
     }
 
     public HistorialItem() {
+    }
+
+    public boolean getEnPersona() {
+        return enPersona;
+    }
+
+    public void setEnPersona(boolean enPersona) {
+        this.enPersona = enPersona;
+    }
+
+    public boolean isRated() {
+        return isRated;
+    }
+
+    public void setRated(boolean rated) {
+        isRated = rated;
+    }
+
+    public List<McqMaterial> getMaterialesList() {
+        return materialesList;
+    }
+
+    public void setMaterialesList(List<McqMaterial> materialesList) {
+        this.materialesList = materialesList;
     }
 
     public Long getTimeStamp() {
@@ -83,12 +115,12 @@ public class HistorialItem {
         this.horario = horario;
     }
 
-    public String getMateriales() {
-        return materiales;
+    public String getTotalMateriales() {
+        return totalMateriales;
     }
 
-    public void setMateriales(String materiales) {
-        this.materiales = materiales;
+    public void setTotalMateriales(String totalMateriales) {
+        this.totalMateriales = totalMateriales;
     }
 
     public String getEstado() {

@@ -44,7 +44,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
 
         holder.fecha.setText(item.getFecha());
         holder.horario.setText(item.getHorario());
-        holder.materiales.setText(item.getMateriales());
+        holder.materiales.setText(item.getTotalMateriales());
         holder.estadoTexto.setText(item.getEstado());
         holder.estadoTexto.setTextColor(item.getEstadoColor());
         holder.estadoColor.setBackground(item.getBackgroundDrawable());

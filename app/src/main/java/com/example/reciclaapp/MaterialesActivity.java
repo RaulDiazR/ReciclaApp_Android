@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,12 +29,7 @@ import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.reciclaapp.models.McqMaterial;
-import com.example.reciclaapp.models.McqRecoleccion;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -66,8 +60,7 @@ public class MaterialesActivity extends AppCompatActivity{
     ConcatAdapter concatAdapter; // Add ConcatAdapter
     // intent with data from previous activities
     private Intent receivedIntent;
-    // reference to the FireStore database and the Storage
-    private DatabaseReference fbRecoleccionesRef;
+    // reference to FireBase Storage
     private FirebaseFirestore firestore;
     private StorageReference storageReference;
 
@@ -94,38 +87,12 @@ public class MaterialesActivity extends AppCompatActivity{
 
         // Se accede a la base de datos de FireStore
         firestore = FirebaseFirestore.getInstance();
-        fbRecoleccionesRef = FirebaseDatabase.getInstance().getReference("recolecciones");
 
         // Se accede a Firebase Storage para acceder a las imágenes
         // referente to firebase storage for images
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         System.out.print(storageReference);
-
-        /*
-        // -------------------------------------------------------------------------------
-        // -------------------------------------------------------------------------------
-        // -------------------------------------------------------------------------------
-        // -------------------------------------------------------------------------------
-        DatabaseReference recolectoresRef = database.getReference("recolectores");
-        // se genera un id único para la recolección
-        String uid = recolectoresRef.push().getKey();
-
-        McqRecolector recolector = new McqRecolector();
-        recolector.setId(uid);
-        recolector.setApellidos("Alden Armstrong");
-        recolector.setTelefono("999 999 9999");
-        recolector.setNombre("Neil");
-
-        // Write a message to the database
-        if (uid != null) {
-            recolectoresRef.child(uid).setValue(recolector).addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(MaterialesActivity.this, "Lo sentimos, no se pudo procesar su recolector JAJAJJAJAJJA!",
-                            Toast.LENGTH_LONG).show();
-                }
-            });
-        } */
 
         // Get result from MaterialesSelectionActivity
         ActivityResultLauncher<Intent> materialesActivityResultLauncher = registerForActivityResult(
@@ -383,41 +350,20 @@ public class MaterialesActivity extends AppCompatActivity{
         if (comentarios != null) {
             recoleccionData.put("comentarios", comentarios);
         }
-        // Se extrae el valor booleano de si el pedido es en puerte o no
+        // Se extrae el valor booleano de si el pedido es en persona o no
         boolean enPersona = receivedIntent.getBooleanExtra("enPersona", true);
         recoleccionData.put("enPersona",enPersona);
 
         // Add all the remaining values which are constants
         Long timeStamp = System.currentTimeMillis(); // Get the current timestamp
         recoleccionData.put("timeStamp",timeStamp); // Add the timestamp to your data
-        recoleccionData.put("idUsuarioCliente", "user_id_1"); // id del usuario
+        recoleccionData.put("idUsuarioCliente", "user_id_2"); // id del usuario
         // Se ponen valores fijos debido a que posteriormente cambiaran
         recoleccionData.put("recolectada", false);
         recoleccionData.put("calificado", false);
         recoleccionData.put("estado", "Iniciada");
 
         // crear Map de materiales viejo
-        /*
-        // Create a map to hold material data
-        Map<String, McqMaterial> materiales = new HashMap<>();
-        for (int count = 0; count < itemList.size(); count++) {
-            MaterialesItem materialesItem = itemList.get(count);
-
-            McqMaterial material = new McqMaterial();
-            material.setNombre(materialesItem.getName());
-            material.setUnidad(materialesItem.getMaterialUnit());
-            material.setCantidad(materialesItem.materialQuantity);
-
-            // Upload the image to Firebase Storage and set the URL
-            if (materialesItem.getFotoMaterial() != null) {
-                uploadPictureToFirebase(materialesItem.getFotoMaterial(), count, uid);
-            }
-            else {
-                material.setFotoUrl("");
-            }
-
-            materiales.put("material_" + count, material);
-        } */
         Map<String, Map<String, Object>> materialesMap = new HashMap<>();
 
         for (int count = 0; count < itemList.size(); count++) {
@@ -436,11 +382,21 @@ public class MaterialesActivity extends AppCompatActivity{
 
         // Create a map with recolector data
         Map<String, Object> recolectorData = new HashMap<>();
-        recolectorData.put("nombre", "Neil Alden");
+        recolectorData.put("nombre", "");
+        recolectorData.put("apellidos", "");
+        recolectorData.put("telefono", "123 444 5556");
+        recolectorData.put("fotoUrl", "");
+        recolectorData.put("cantidad_reseñas", 0);
+        recolectorData.put("suma_reseñas", 0);
+
+        /*
+        Ejemplo de como llenar los datos de un recolector en una recolección
         recolectorData.put("apellidos", "Armstrong");
-        recolectorData.put("telefono", "(800) 555-0100");
+        recolectorData.put("telefono", "(800) 555‑0100");
+        recolectorData.put("fotoUrl", "https://firebasestorage.googleapis.com/v0/b/pueblareciclaapp.appspot.com/o/recolectores%2Frecolector2.jpg?alt=media&token=a64fa7a6-5f96-4572-afcf-fd56394ec9d2");
         recolectorData.put("cantidad_reseñas", 5);
         recolectorData.put("suma_reseñas", 23);
+        */
 
         recoleccionData.put("recolector", recolectorData);
         // Add a new recolección document to the "recolecciones" collection
@@ -498,9 +454,7 @@ public class MaterialesActivity extends AppCompatActivity{
                 .addOnSuccessListener(aVoid -> {
                     // The "unidad" field of the specific material has been successfully updated.
                 })
-                .addOnFailureListener(e -> {
-                    Log.d("FirebaseFailureUpdateImageMaterial", "Image could not be uploaded");
-                });
+                .addOnFailureListener(e -> Log.d("FirebaseFailureUpdateImageMaterial", "Image could not be uploaded"));
     }
 
     private File createImageFile() throws IOException {

@@ -79,4 +79,14 @@
     <string name="foto_de_material">Foto de Material</string>
     <string name="foto_seleccionada_por_el_usuario_para_el_material_seleccionado">Foto seleccionada por el usuario para el material seleccionado</string>
     <string name="ver_galer_a">Ver Galería</string>
+    <string name="calificaci_n_del_recolector">Calificación del Recolector</string>
+    <string name="_5_0">5.0</string>
+    <string name="imagen_de_una_estrella">Imagen de una Estrella</string>
+    <string name="ver_detalles">Ver Detalles</string>
+    <string name="entrega_en_persona">Entrega en Persona</string>
+    <string name="imagen_de_usuario_o_puerta">Imagen de usuario o puerta</string>
+    <string name="materiales_escogidos">Materiales Escogidos:</string>
+    <string name="cantidad_5">Cantidad: 5</string>
+    <string name="unidad_bolsas">Unidad: Bolsas</string>
+    <string name="aceite_de_auto">Aceite de Auto</string>
 </resources>
