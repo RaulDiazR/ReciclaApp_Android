@@ -160,10 +160,28 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <Button
+        android:id="@+id/verDetallesButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_variant_blue"
+        android:text="@string/ver_detalles"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/continuarButton"
+        app:layout_constraintStart_toStartOf="@+id/continuarButton"
+        app:layout_constraintTop_toBottomOf="@+id/subTitle2" />
+
+
+    <Button
         android:id="@+id/continuarButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/button_variant_green"
         android:text="@string/continuar"
@@ -175,7 +193,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/title"
         app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/subTitle2"
+        app:layout_constraintTop_toBottomOf="@+id/verDetallesButton"
         tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

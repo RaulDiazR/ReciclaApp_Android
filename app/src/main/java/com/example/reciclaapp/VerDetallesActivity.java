@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -74,11 +75,12 @@ public class VerDetallesActivity extends AppCompatActivity {
                         getMaterialIcon(material.getNombre()),
                         material.getNombre(),
                         "Unidad: "+ material.getUnidad(),
-                        "Cantidad: " + material.getCantidad()
-                ));
+                        "Cantidad: " + material.getCantidad(),
+                        material.getFotoUrl()));
             }
 
-            VerDetallesAdapter adapter = new VerDetallesAdapter(itemList);
+            FrameLayout rootView = findViewById(android.R.id.content);
+            VerDetallesAdapter adapter = new VerDetallesAdapter(itemList, this, rootView);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }

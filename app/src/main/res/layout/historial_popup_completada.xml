@@ -58,8 +58,7 @@
                 android:id="@+id/subTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/recolector"
+                android:layout_marginTop="24dp" android:text="@string/califica_a_tu_recolector"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -100,11 +99,28 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/verDetallesButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_variant_blue"
+            android:text="@string/ver_detalles"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/continuarButton"
+            app:layout_constraintStart_toStartOf="@+id/continuarButton"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutRating" />
+
+        <Button
             android:id="@+id/continuarButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/button_variant_green_light"
             android:text="@string/continuar"
             android:textAlignment="center"
@@ -116,7 +132,7 @@
             app:layout_constraintEnd_toEndOf="@+id/title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayoutRating"
+            app:layout_constraintTop_toBottomOf="@+id/verDetallesButton"
             tools:ignore="TextContrastCheck"
             android:enabled="false"/>
 

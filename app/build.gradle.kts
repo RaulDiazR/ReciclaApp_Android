@@ -31,6 +31,7 @@ android {
 }
 
 dependencies {
+    //noinspection GradleCompatible, GradleDependency
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -45,6 +46,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
     testImplementation("junit:junit:4.13.2")
     implementation("com.android.volley:volley:1.2.1")
+    implementation("org.osmdroid:osmdroid-android:6.1.11")
 
     implementation("com.squareup.picasso:picasso:2.71828")
 

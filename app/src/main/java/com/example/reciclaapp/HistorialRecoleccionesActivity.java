@@ -215,9 +215,9 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
 
             // Configure button actions
-            Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
             Button btnCancelarOrden = dialogView.findViewById(R.id.cancelarOrdenButton);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
+            Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
 
             btnVerDetalles.setOnClickListener(v -> {
                 Intent intent = new Intent(this, VerDetallesActivity.class);
@@ -289,8 +289,12 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             // Se agrega la imagen del recolector
             ImageFilterView recolectorImg = dialogView.findViewById(R.id.recolectorImg);
             String url = curItem.getRecolector().getFotoUrl();
-            Picasso.get().load(url).placeholder(R.drawable.icon_user_gray).error(R.drawable.icon_user_gray).into(recolectorImg);
-
+            if (url.equals("")){
+                recolectorImg.setImageResource(R.drawable.icon_user_gray);
+            }
+            else {
+                Picasso.get().load(url).placeholder(R.drawable.icon_loading).error(R.drawable.icon_user_gray).into(recolectorImg);
+            }
 
             // Se agrega el teléfono del recolector
             TextView recolectorTelefono = dialogView.findViewById(R.id.recolectorTelefono);
@@ -303,6 +307,21 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             // Configure button actions
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
+            Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
+
+            btnVerDetalles.setOnClickListener(v -> {
+                Intent intent = new Intent(this, VerDetallesActivity.class);
+                String materialesList = new Gson().toJson(curItem.getMaterialesList());
+                intent.putExtra("data",materialesList);
+                intent.putExtra("fecha", curItem.getFecha());
+                intent.putExtra("horario", curItem.getHorario());
+                intent.putExtra("enPersona", curItem.getEnPersona());
+                startActivity(intent);
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView); // Remove the background
+
+            });
 
             btnContinuar.setOnClickListener(v -> {
                 alertDialog.dismiss();
@@ -357,20 +376,21 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             LinearLayout linearLayoutRatingSection = dialogView.findViewById(R.id.linearLayoutRating);
             RatingBar ratingBar = dialogView.findViewById(R.id.ratingBar);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
+            Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
 
-            // Se agrega la imagen del recolector
-            ImageFilterView recolectorImg = dialogView.findViewById(R.id.recolectorImg);
-            String url = curItem.getRecolector().getFotoUrl();
-            Picasso.get().load(url).placeholder(R.drawable.icon_user_gray).error(R.drawable.icon_user_gray).into(recolectorImg);
+            btnVerDetalles.setOnClickListener(v -> {
+                Intent intent = new Intent(this, VerDetallesActivity.class);
+                String materialesList = new Gson().toJson(curItem.getMaterialesList());
+                intent.putExtra("data",materialesList);
+                intent.putExtra("fecha", curItem.getFecha());
+                intent.putExtra("horario", curItem.getHorario());
+                intent.putExtra("enPersona", curItem.getEnPersona());
+                startActivity(intent);
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView); // Remove the background
 
-            if (curItem.getIsRated()) {
-                linearLayoutRatingSection.setVisibility(View.GONE);
-                Resources res = getResources();
-                Drawable button_variant_green = ResourcesCompat.getDrawable(res, R.drawable.button_variant_green, null);
-                btnContinuar.setBackground(button_variant_green);
-                btnContinuar.setEnabled(true);
-            }
-
+            });
 
             ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
                 Resources res = getResources();
@@ -395,6 +415,24 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 FrameLayout rootView = findViewById(android.R.id.content);
                 rootView.removeView(backgroundView); // Remove the background
             });
+
+            // Se agrega la imagen del recolector
+            ImageFilterView recolectorImg = dialogView.findViewById(R.id.recolectorImg);
+            String url = curItem.getRecolector().getFotoUrl();
+            if (url.equals("")){
+                recolectorImg.setImageResource(R.drawable.icon_user_gray);
+            }
+            else {
+                Picasso.get().load(url).placeholder(R.drawable.icon_loading).error(R.drawable.icon_user_gray).into(recolectorImg);
+            }
+
+            if (curItem.getIsRated()) {
+                linearLayoutRatingSection.setVisibility(View.GONE);
+                Resources res = getResources();
+                Drawable button_variant_green = ResourcesCompat.getDrawable(res, R.drawable.button_variant_green, null);
+                btnContinuar.setBackground(button_variant_green);
+                btnContinuar.setEnabled(true);
+            }
 
             // Add the background view and show the dialog
             FrameLayout rootView = findViewById(android.R.id.content);
@@ -433,6 +471,21 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             // Configure button actions
             Button btnVerCentros = dialogView.findViewById(R.id.verCentrosButton);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
+            Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
+
+            btnVerDetalles.setOnClickListener(v -> {
+                Intent intent = new Intent(this, VerDetallesActivity.class);
+                String materialesList = new Gson().toJson(curItem.getMaterialesList());
+                intent.putExtra("data",materialesList);
+                intent.putExtra("fecha", curItem.getFecha());
+                intent.putExtra("horario", curItem.getHorario());
+                intent.putExtra("enPersona", curItem.getEnPersona());
+                startActivity(intent);
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView); // Remove the background
+
+            });
 
             btnVerCentros.setOnClickListener(v -> {
                 Intent intent = new Intent(this, MainActivity.class);

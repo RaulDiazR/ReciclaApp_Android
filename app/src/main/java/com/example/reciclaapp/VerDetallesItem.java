@@ -5,12 +5,22 @@ public class VerDetallesItem {
     private String nombreMaterial;
     private String unidadMaterial;
     private String cantidadMaterial;
+    private String fotoUrl;
 
-    public VerDetallesItem(int imageResource, String text, String unidadMaterial, String cantidadMaterial) {
-        this.iconoMaterial = imageResource;
+    public VerDetallesItem(int iconoMaterial, String text, String unidadMaterial, String cantidadMaterial, String fotoUrl) {
+        this.iconoMaterial = iconoMaterial;
         this.nombreMaterial = text;
         this.unidadMaterial = unidadMaterial;
         this.cantidadMaterial = cantidadMaterial;
+        this.fotoUrl = fotoUrl;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 
     public int getIconoMaterial() {

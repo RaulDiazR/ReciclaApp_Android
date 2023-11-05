@@ -46,10 +46,27 @@
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <Button
-        android:id="@+id/verCentrosButton"
+        android:id="@+id/verDetallesButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_variant_blue"
+        android:text="@string/ver_detalles"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/continuarButton"
+        app:layout_constraintStart_toStartOf="@+id/continuarButton"
+        app:layout_constraintTop_toBottomOf="@+id/subTitle" />
+
+    <Button
+        android:id="@+id/verCentrosButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/button_variant_blue"
         android:text="@string/ver_centros"
@@ -60,7 +77,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/continuarButton"
         app:layout_constraintStart_toStartOf="@+id/continuarButton"
-        app:layout_constraintTop_toBottomOf="@+id/subTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/verDetallesButton" />
 
     <Button
         android:id="@+id/continuarButton"
