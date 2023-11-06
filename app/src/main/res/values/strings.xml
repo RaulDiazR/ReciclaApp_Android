@@ -90,4 +90,10 @@
     <string name="unidad_bolsas">Unidad: Bolsas</string>
     <string name="aceite_de_auto">Aceite de Auto</string>
     <string name="califica_a_tu_recolector">Califica a tu Recolector</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="ubicaci_n">Ubicación</string>
+    <string name="como_usar_el_mapa">Como usar el Mapa</string>
+    <string name="aqu_tienes_un_mapa_de_puebla_con_tu_ubicaci_n_gps_si_deseas_cambiarla_solo_mant_n_presionado_el_icono_de_ubicaci_n_y_aj_stalo_a_donde_prefieras_luego_pulsa_continuar_para_confirmar_tu_elecci_n_de_ubicaci_n_gracias_por_usar_nuestro_servicio">Aquí tienes un mapa de Puebla con tu ubicación GPS. Si deseas cambiarla, solo mantén presionado el icono de ubicación y ajústalo a donde prefieras. Luego, pulsa \'Comprendo\' para confirmar tu elección de ubicación. ¡Gracias por usar nuestro servicio!</string>
+    <string name="imagen_de_ejemplo_del_mapa">imagen de ejemplo del mapa</string>
+    <string name="comprendo">Comprendo</string>
 </resources>

@@ -276,7 +276,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         if (isTimeDifferenceValid() && checkComentarios(editTextComentarios)) {
             String comentariosText = editTextComentarios.getText().toString(); //Comentarios
             boolean enPersona = selectedRadioButtonId == R.id.entrega_persona; // modo de entregar los desechos
-            Intent intent = new Intent(this, DirectionActivity.class);
+            Intent intent = new Intent(this, DireccionActivity.class);
             intent.putExtra("fecha", this.finalDate);
             intent.putExtra("tiempoIni", this.finalTimeIni);
             intent.putExtra("tiempoEnd", this.finalTimeEnd);

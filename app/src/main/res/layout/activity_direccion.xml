@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".PerfilActivity">
+        tools:context=".PerfilActivity"
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -86,7 +87,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:ems="10"
-            android:inputType="text"
+            android:inputType="number"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:hint="@string/_21"
@@ -179,7 +180,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:ems="10"
-            android:inputType="text"
+            android:inputType="number"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:hint="@string/_72020"
@@ -210,7 +211,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:ems="10"
-            android:inputType="text"
+            android:inputType="phone"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:hint="@string/ejemplo_telefono"
@@ -275,4 +276,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

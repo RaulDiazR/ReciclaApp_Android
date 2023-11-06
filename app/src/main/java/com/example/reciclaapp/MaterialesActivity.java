@@ -257,7 +257,8 @@ public class MaterialesActivity extends AppCompatActivity{
 
         // Logic for Confirm
         btnConfirmar.setOnClickListener(v -> {
-            sendDataToDB();
+            sendDataToDBRecolecciones();
+            sendDataToDBUsuarios();
             mostrarConfirmacion(v);
             alertDialog.dismiss();
         });
@@ -319,7 +320,7 @@ public class MaterialesActivity extends AppCompatActivity{
         rootView.addView(backgroundView);
     }
 
-    private void sendDataToDB() {
+    private void sendDataToDBRecolecciones() {
         receivedIntent = getIntent();
 
         Map<String, Object> recoleccionData = new HashMap<>();
@@ -349,6 +350,23 @@ public class MaterialesActivity extends AppCompatActivity{
         String comentarios = receivedIntent.getStringExtra("comentarios");
         if (comentarios != null) {
             recoleccionData.put("comentarios", comentarios);
+        }
+        // se extraen las indicaciones de la dirección
+        String indicaciones = receivedIntent.getStringExtra("indicaciones");
+        if (indicaciones != null) {
+            recoleccionData.put("indicaciones", indicaciones);
+        }
+        // se extrae el teléfono
+        String telefono = receivedIntent.getStringExtra("telefono");
+        if (telefono != null) {
+            recoleccionData.put("telefono", telefono);
+        }
+        // se extraen la longitud y latitud
+        String latitud = receivedIntent.getStringExtra("latitud");
+        String longitud = receivedIntent.getStringExtra("longitud");
+        if (latitud != null && longitud != null) {
+            recoleccionData.put("latitud", latitud);
+            recoleccionData.put("longitud", longitud);
         }
         // Se extrae el valor booleano de si el pedido es en persona o no
         boolean enPersona = receivedIntent.getBooleanExtra("enPersona", true);
@@ -384,7 +402,7 @@ public class MaterialesActivity extends AppCompatActivity{
         Map<String, Object> recolectorData = new HashMap<>();
         recolectorData.put("nombre", "");
         recolectorData.put("apellidos", "");
-        recolectorData.put("telefono", "123 444 5556");
+        recolectorData.put("telefono", "");
         recolectorData.put("fotoUrl", "");
         recolectorData.put("cantidad_reseñas", 0);
         recolectorData.put("suma_reseñas", 0);
@@ -416,6 +434,43 @@ public class MaterialesActivity extends AppCompatActivity{
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure.
+                });
+    }
+
+    public void sendDataToDBUsuarios() {
+        // Retrieve data from the Intent
+        receivedIntent = getIntent();
+        String calleText = receivedIntent.getStringExtra("street");
+        String numeroText = receivedIntent.getStringExtra("numero");
+        String coloniaText = receivedIntent.getStringExtra("colonia");
+        String municipioText = receivedIntent.getStringExtra("municipio");
+        String codigoPostalText = receivedIntent.getStringExtra("postalcode");
+        String telefonoText = receivedIntent.getStringExtra("telefono");
+        String indicacionesText = receivedIntent.getStringExtra("indicaciones");
+
+        // Create a Map with the "direccion" field data
+        Map<String, Object> direccionData = new HashMap<>();
+        direccionData.put("calle", calleText);
+        direccionData.put("numero", numeroText);
+        direccionData.put("colonia", coloniaText);
+        direccionData.put("municipio", municipioText);
+        direccionData.put("codigoPostal", codigoPostalText);
+        direccionData.put("telefono", telefonoText);
+        direccionData.put("indicaciones", indicacionesText);
+
+        // Get a reference to the Firestore document
+        String userId = "your_user_id_here"; // Replace with the actual user ID
+        DocumentReference userRef = firestore.collection("usuarios").document(userId);
+
+        // Update the "direccion" field with the new data
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("direccion", direccionData);
+
+        userRef.update(updateData)
+                .addOnCompleteListener(task -> {
+                    if(!task.isSuccessful()){
+                        Log.d("fireStoreDataSendToUsuarios", "Ocurrió un error en el envío de datos a la recolección 'usuarios' con este id del documento: "+userId);
+                    }
                 });
     }
 

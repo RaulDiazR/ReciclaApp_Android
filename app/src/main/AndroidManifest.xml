@@ -16,6 +16,12 @@
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+
     <queries>
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -54,9 +60,9 @@
             android:theme="@style/Base.Theme.ReciclaApp.PopMe" />
         <activity
             android:name=".MaterialesActivity"
-            android:exported="false"></activity>
+            android:exported="false"/>
         <activity
-            android:name=".DirectionActivity"
+            android:name=".DireccionActivity"
             android:exported="false" />
         <activity
             android:name=".OrdenHorarioActivity"
