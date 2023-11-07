@@ -7,17 +7,19 @@ public class McqRecolector {
     String fotoUrl;
     int cantidadResenas;
     int sumaResenas;
+    String id;
 
     public McqRecolector() {
     }
 
-    public McqRecolector(String nombre, String apellidos, String telefono, String fotoUrl, int cantidadResenas, int sumaResenas) {
+    public McqRecolector(String nombre, String apellidos, String telefono, String fotoUrl, int cantidadResenas, int sumaResenas, String id) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.fotoUrl = fotoUrl;
         this.cantidadResenas = cantidadResenas;
         this.sumaResenas = sumaResenas;
+        this.id = id;
     }
 
     public float calcularCalificacion() {
@@ -26,6 +28,14 @@ public class McqRecolector {
             return Math.round(rating * 10.0f) / 10.0f; // Round to one decimal place
         }
         return 0.0f;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getCantidadResenas() {

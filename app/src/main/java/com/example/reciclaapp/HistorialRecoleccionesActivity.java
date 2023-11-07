@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -31,16 +32,23 @@ import com.example.reciclaapp.models.McqMaterial;
 import com.example.reciclaapp.models.McqRecoleccion;
 import com.example.reciclaapp.models.McqRecolector;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class HistorialRecoleccionesActivity extends AppCompatActivity implements HistorialItemClickListener {
 
@@ -58,6 +66,9 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     String cancelada = "Cancelada";
 
     FirebaseFirestore firestore;
+
+    // Define a handler for scheduling periodic tasks
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +147,16 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     String recolectorApellidos = (String) recolectorData.get("apellidos");
                     String recolectorTelefono = (String) recolectorData.get("telefono");
                     String recolectorFoto = (String) recolectorData.get("fotoUrl");
+                    String recolectorId = (String) recolectorData.get("id");
+
+                    if (recolectorId != null && estado.equals(this.iniciada)){
+                        if(!recolectorId.equals("")){
+                            estado = this.enProceso;
+                            color = getColorForEstado(estado);
+                            squareDrawable = getDrawableForEstado(estado);
+                            updateRecoleccionEstado(id, this.enProceso);
+                        }
+                    }
 
                     Log.d("fireStoreErrorTag", "4444");
                     Long recolectorCantidadResenas = (Long) recolectorData.get("cantidad_reseñas");
@@ -146,7 +167,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     int sumaResenas = recolectorSumaResenas != null ? recolectorSumaResenas.intValue() : 0;
 
                     Log.d("fireStoreErrorTag", "55555");
-                    McqRecolector recolector = new McqRecolector(recolectorNombre, recolectorApellidos, recolectorTelefono, recolectorFoto, cantidadResenas, sumaResenas);
+                    McqRecolector recolector = new McqRecolector(recolectorNombre, recolectorApellidos, recolectorTelefono, recolectorFoto, cantidadResenas, sumaResenas, recolectorId);
 
                     Log.d("fireStoreErrorTag", "666666");
                     // Access the "materiales" field
@@ -404,6 +425,13 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     Toast.makeText(this,
                             "DB changed!!!",
                             Toast.LENGTH_LONG).show();
+                    DocumentReference recolectorRef = firestore.collection("recolectores").document(curItem.getRecolector().getId());
+
+                    // Atomically increment the values.
+                    recolectorRef.update("cantidad_reseñas", FieldValue.increment(1));
+                    recolectorRef.update("suma_reseñas", FieldValue.increment((int) ratingBar.getRating()));
+                    updateRecoleccionCalificadoBool(curItem.getId());
+                    curItem.setRated(true);
                 }
                 alertDialog.dismiss();
                 FrameLayout rootView = findViewById(android.R.id.content);
@@ -511,6 +539,64 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     }
 
+    // Define a task that checks and updates the status
+    private final Runnable updateStatusTask = new Runnable() {
+        @SuppressLint("NotifyDataSetChanged")
+        @Override
+        public void run() {
+            // Get the current date and time in CST
+            TimeZone cstTimeZone = TimeZone.getTimeZone("America/Chicago"); // CST time zone
+            Calendar currentCalendar = Calendar.getInstance(cstTimeZone);
+            Date currentDate = currentCalendar.getTime();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy HH:mm");
+
+            // Iterate through recolecciones and update as needed
+            for (HistorialItem item : itemList) {
+                String fechaRecoleccionString = item.getFecha();
+                String horaRecoleccionFinalString = item.getHorario();
+                Date horaRecoleccionFinal;
+                try {
+                    horaRecoleccionFinal = dateFormat.parse(fechaRecoleccionString + " " + horaRecoleccionFinalString);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (currentDate.after(horaRecoleccionFinal) && !item.getEstado().equals("Cancelada")) {
+                    // Current time and date are ahead of 'fechaRecoleccion' and 'horaRecoleccionFinal'
+                    // Update the 'estado' attribute to "Cancelada"
+                    String estado = "Cancelada";
+                    item.setEstado(estado);
+                    item.setEstadoColor(ResourcesCompat.getColor(getResources(), R.color.red, null));
+                    item.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_square_red, null));
+                    updateRecoleccionEstado(item.getId(),estado);
+                }
+            }
+
+            // Notify the adapter to update the RecyclerView
+            historialAdapter.notifyDataSetChanged();
+
+            int minutes = 1;
+            // Schedule the task to run again after a certain interval (e.g., every 5 minutes)
+            handler.postDelayed(this, minutes * 60 * 1000); // 1 minute in milliseconds
+        }
+    };
+
+    // Start the task when your activity is created or resumed
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Start the initial task and schedule it to run periodically
+        handler.post(updateStatusTask);
+    }
+
+    // Stop the task when your activity is paused or destroyed
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Remove any pending callbacks to stop the task
+        handler.removeCallbacks(updateStatusTask);
+    }
+
     public void confirmarCancelarOrden(int itemPos) {
         // Create a view for the semitransparent background
         final View backgroundView = new View(this);
@@ -583,7 +669,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     }
 
     private void updateRecoleccionEstado(String recoleccionIdToUpdate, String newEstado) {
-
         // Initialize a Firestore DocumentReference for the recolección document
         firestore.collection("recolecciones").document(recoleccionIdToUpdate).update("estado", newEstado).addOnCompleteListener(task -> {
             if (!task.isSuccessful()){
@@ -591,6 +676,15 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             }
         });
 
+    }
+
+    private void updateRecoleccionCalificadoBool(String recoleccionIdToUpdate) {
+        // Initialize a Firestore DocumentReference for the recolección document
+        firestore.collection("recolecciones").document(recoleccionIdToUpdate).update("calificado", true).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()){
+                Toast.makeText(HistorialRecoleccionesActivity.this, "Lo sentimos, ocurrió un error, inténtelo de nuevo más tarde", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     // Implement a function to map estado to color
