@@ -68,6 +68,9 @@
             android:name=".OrdenHorarioActivity"
             android:exported="false" />
         <activity
+            android:name=".SelfLocationStreetMapActivity"
+            android:exported="false" />
+        <activity
             android:name=".HistorialRecoleccionesActivity"
             android:exported="true">
             <intent-filter>

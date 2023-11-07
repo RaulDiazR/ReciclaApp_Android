@@ -149,7 +149,9 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     String recolectorFoto = (String) recolectorData.get("fotoUrl");
                     String recolectorId = (String) recolectorData.get("id");
 
+                    // Se checa si la recolección tiene un recolector asignado
                     if (recolectorId != null && estado.equals(this.iniciada)){
+                        // en caso de ser cierto, se cambia el estado de la aplicación
                         if(!recolectorId.equals("")){
                             estado = this.enProceso;
                             color = getColorForEstado(estado);
@@ -561,7 +563,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     throw new RuntimeException(e);
                 }
 
-                if (currentDate.after(horaRecoleccionFinal) && !item.getEstado().equals("Cancelada")) {
+                if (currentDate.after(horaRecoleccionFinal) && item.getEstado().equals("Iniciada") && !item.getEstado().equals("Cancelada")) {
                     // Current time and date are ahead of 'fechaRecoleccion' and 'horaRecoleccionFinal'
                     // Update the 'estado' attribute to "Cancelada"
                     String estado = "Cancelada";

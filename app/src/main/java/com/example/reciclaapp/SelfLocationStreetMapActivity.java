@@ -47,96 +47,103 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_self_location_street_map);
-        showPopupMapExplanation();
+        try {
+            setContentView(R.layout.activity_self_location_street_map);
+            showPopupMapExplanation();
 
-        // Get Direction Of User
-        Intent intent = getIntent();
-        String postalCode = "72810";
-        String state = "Puebla";
-        String city = "Xicontenco";
-        String country = "Mexico";
-        String street = "Sena";
-        String county = "";
+            // Get Direction Of User
+            Intent intent = getIntent();
+            String postalCode = "72810";
+            String state = "Puebla";
+            String city = "San Andres Cholula";
+            String country = "Mexico";
+            String street = "Sena";
+            String county = "";
 
-        final String[] finalPostalCode = {postalCode};
-        final String[] finalState = {state};
-        final String[] finalCity = {city};
-        final String[] finalCountry = {country};
-        final String[] finalStreet = {street};
-
-
-        // Create the string to send the request to the Nominatim API
-        String DirectionCoordinates = "https://nominatim.openstreetmap.org/search?" + "street=" + street.replace(" ", "+") + "&city=" + city.replace(" ", "+") + "&postalcode=" + postalCode + "&country=" + country + "&state=" + state + "&format=jsonv2";
-        Log.d("TAG", "URL " + DirectionCoordinates);
-        GetCoordinates(DirectionCoordinates);
-
-        //Create Map and Put the Marker
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-        Map = (MapView) findViewById(R.id.osmap);
-        Map.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
-        Map.setBuiltInZoomControls(true);
-        Map.setMultiTouchControls(true);
-        Map.getController().setZoom(20.0);
-        //StartPoint = new GeoPoint(19.0653127, -98.2021354);
-
-        StartPoint = new GeoPoint(Latitud, Longitud);
-        Map.getController().setCenter(StartPoint);
-
-        Mark = new Marker(Map);
-        Mark.setPosition(StartPoint);
-        Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        Mark.setTitle("Mi ubicacion");
-        Mark.setDraggable(true);
-
-        // Add mark to MapLayer OSM
-        Map.getOverlays().add(Mark);
+            final String[] finalPostalCode = {postalCode};
+            final String[] finalState = {state};
+            final String[] finalCity = {city};
+            final String[] finalCountry = {country};
+            final String[] finalStreet = {street};
 
 
+            // Create the string to send the request to the Nominatim API
+            String DirectionCoordinates = "https://nominatim.openstreetmap.org/search?" + "street=" + street.replace(" ", "+") + "&city=" + city.replace(" ", "+") + "&postalcode=" + postalCode + "&country=" + country + "&state=" + state + "&format=jsonv2";
+            Log.d("TAG", "URL " + DirectionCoordinates);
+            GetCoordinates(DirectionCoordinates);
+
+            //Create Map and Put the Marker
+            Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+            Map = (MapView) findViewById(R.id.osmap);
+            Map.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
+            Map.setBuiltInZoomControls(true);
+            Map.setMultiTouchControls(true);
+            Map.getController().setZoom(20.0);
+            //StartPoint = new GeoPoint(19.0653127, -98.2021354);
+
+            StartPoint = new GeoPoint(Latitud, Longitud);
+            Map.getController().setCenter(StartPoint);
+
+            Mark = new Marker(Map);
+            Mark.setPosition(StartPoint);
+            Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            Mark.setTitle("Mi ubicacion");
+            Mark.setDraggable(true);
+
+            // Add mark to MapLayer OSM
+            Map.getOverlays().add(Mark);
 
 
-        // Agrega un OnMarkerDragListener al marcador
-        Mark.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
-            @Override
-            public void onMarkerDrag(Marker marker) {
-                // Evento mientras el usuario está arrastrando el marcador
-            }
 
-            @SuppressLint("StaticFieldLeak")
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
 
-                Log.d("TAG", "Drag End Activated" );
-                new ReverseGeocodingTask() {
-                    @Override
-                    protected void onPostExecute(List<String> response) {
-                        if (!response.isEmpty()) {
-                            // Process the response here
-                            finalPostalCode[0] = response.get(4);
-                            finalState[0] = response.get(3);
-                            finalCity[0] = response.get(2);
-                            finalCountry[0] = response.get(6);
-                            finalStreet[0] = response.get(0);
-                            Log.d("TAG", "Marker: Entre" );
-                            Log.d("TAG", "finalPostalCode: " + finalPostalCode[0]);
-                            Log.d("TAG", "finalState: " + finalState[0]);
-                            Log.d("TAG", "finalCity: " + finalCity[0]);
-                            Log.d("TAG", "finalCountry: " + finalCountry[0]);
-                            Log.d("TAG", "finalStreet: " + finalStreet[0]);
+            // Agrega un OnMarkerDragListener al marcador
+            Mark.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
+                @Override
+                public void onMarkerDrag(Marker marker) {
+                    // Evento mientras el usuario está arrastrando el marcador
+                }
 
-                            StartPoint = marker.getPosition();
-                            Map.getController().setCenter(StartPoint);
+                @SuppressLint("StaticFieldLeak")
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+
+                    Log.d("TAG", "Drag End Activated" );
+                    new ReverseGeocodingTask() {
+                        @Override
+                        protected void onPostExecute(List<String> response) {
+                            if (!response.isEmpty()) {
+                                // Process the response here
+                                finalPostalCode[0] = response.get(4);
+                                finalState[0] = response.get(3);
+                                finalCity[0] = response.get(2);
+                                finalCountry[0] = response.get(6);
+                                finalStreet[0] = response.get(0);
+                                Log.d("TAG", "Marker: Entre" );
+                                Log.d("TAG", "finalPostalCode: " + finalPostalCode[0]);
+                                Log.d("TAG", "finalState: " + finalState[0]);
+                                Log.d("TAG", "finalCity: " + finalCity[0]);
+                                Log.d("TAG", "finalCountry: " + finalCountry[0]);
+                                Log.d("TAG", "finalStreet: " + finalStreet[0]);
+
+                                StartPoint = marker.getPosition();
+                                Map.getController().setCenter(StartPoint);
+                            }
                         }
-                    }
-                }.execute(marker.getPosition());
+                    }.execute(marker.getPosition());
 
-            }
+                }
 
-            @Override
-            public void onMarkerDragStart(Marker marker) {
-                // Evento cuando el usuario comienza a arrastrar el marcador
-            }
-        });
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+                    // Evento cuando el usuario comienza a arrastrar el marcador
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            runOnUiThread(() -> {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        }
 
     }
 

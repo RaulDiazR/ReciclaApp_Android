@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -56,7 +57,6 @@ public class DireccionActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
 
-
         // Create a view for the semitransparent background
         final View backgroundView = new View(this);
         backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -89,9 +89,6 @@ public class DireccionActivity extends AppCompatActivity {
         FrameLayout rootView = findViewById(android.R.id.content);
         rootView.addView(backgroundView);
 
-        // Se accede a la base de datos de FireStore
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
         // Initialize the references to form fields and error message
         calleField = findViewById(R.id.Calle);
         numeroField = findViewById(R.id.numeroCasa);
@@ -111,6 +108,8 @@ public class DireccionActivity extends AppCompatActivity {
 
         // Get a reference to the Firestore document
         String userId = "user_id_2"; // Replace with the actual user ID
+        // Se accede a la base de datos de FireStore
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         DocumentReference userRef = firestore.collection("usuarios").document(userId);
 
         // Fetch the data from Firestore
@@ -158,21 +157,29 @@ public class DireccionActivity extends AppCompatActivity {
 
         // Check if the form is valid
         if (isFormValid()) {
-            Intent intent = new Intent(this, SelfLocationStreetMapActivity.class);
-            intent.putExtra("street", calleText);
-            intent.putExtra("numero", numeroText);
-            intent.putExtra("colonia", coloniaText);
-            intent.putExtra("municipio", municipioText);
-            intent.putExtra("postalcode", codigoPostalText);
-            intent.putExtra("telefono", telefonoText);
-            intent.putExtra("indicaciones", indicacionesText);
+            try {
+                Intent intent = new Intent(this, SelfLocationStreetMapActivity.class);
+                intent.putExtra("street", calleText);
+                intent.putExtra("numero", numeroText);
+                intent.putExtra("colonia", coloniaText);
+                intent.putExtra("municipio", municipioText);
+                intent.putExtra("postalcode", codigoPostalText);
+                intent.putExtra("telefono", telefonoText);
+                intent.putExtra("indicaciones", indicacionesText);
 
-            // Se pasa la información de la actividad previa
-            Bundle bundle = getIntent().getExtras();
-            if (bundle != null) {
-                intent.putExtras(bundle);
+                // Se pasa la información de la actividad previa
+                Bundle bundle = getIntent().getExtras();
+                if (bundle != null) {
+                    intent.putExtras(bundle);
+                }
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
-            startActivity(intent);
+
         }
     }
 
