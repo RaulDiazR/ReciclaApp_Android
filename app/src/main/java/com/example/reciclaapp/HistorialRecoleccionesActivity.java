@@ -124,7 +124,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                     McqRecoleccion recoleccion = snapshot.toObject(McqRecoleccion.class);
 
-                    Log.d("fireStoreErrorTag", "1");
                     String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
                     String date = recoleccion.getFechaRecoleccion();
                     String time = recoleccion.getHoraRecoleccionFinal();
@@ -136,12 +135,15 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     String id = snapshot.getId(); // Use the document ID as the unique identifier
                     Long timeStamp = recoleccion.getTimeStamp();
                     boolean enPersona = recoleccion.getEnPersona();
+                    boolean recolectada = recoleccion.getRecolectada();
+                    if (id.equals("OaipvogswF445fjGJ4xk")) {
+                        Log.d("fireStore", "recolectada value: " + recolectada);
+                        Log.d("fireStore", "item: " + snapshot);
+                    }
 
-                    Log.d("fireStoreErrorTag", "22");
                     // Access the recolector data from the recoleccion document
                     Map<String, Object> recolectorData = recoleccion.getRecolector();
 
-                    Log.d("fireStoreErrorTag", "333");
                     // Now, you can access fields within recolectorData
                     String recolectorNombre = (String) recolectorData.get("nombre");
                     String recolectorApellidos = (String) recolectorData.get("apellidos");
@@ -156,11 +158,18 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                             estado = this.enProceso;
                             color = getColorForEstado(estado);
                             squareDrawable = getDrawableForEstado(estado);
-                            updateRecoleccionEstado(id, this.enProceso);
+                            updateRecoleccionEstado(id, estado);
+                        }
+                    } else if (estado.equals(this.enProceso)){
+                        // se cambia la recolección a Completada en caso de estar En Proceso y haber sido recolectada por el recolector
+                        if(recolectada){
+                            estado = this.completada;
+                            color = getColorForEstado(estado);
+                            squareDrawable = getDrawableForEstado(estado);
+                            updateRecoleccionEstado(id, estado);
                         }
                     }
 
-                    Log.d("fireStoreErrorTag", "4444");
                     Long recolectorCantidadResenas = (Long) recolectorData.get("cantidad_reseñas");
                     Long recolectorSumaResenas = (Long) recolectorData.get("suma_reseñas");
 
@@ -168,10 +177,8 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     int cantidadResenas = recolectorCantidadResenas != null ? recolectorCantidadResenas.intValue() : 0;
                     int sumaResenas = recolectorSumaResenas != null ? recolectorSumaResenas.intValue() : 0;
 
-                    Log.d("fireStoreErrorTag", "55555");
                     McqRecolector recolector = new McqRecolector(recolectorNombre, recolectorApellidos, recolectorTelefono, recolectorFoto, cantidadResenas, sumaResenas, recolectorId);
 
-                    Log.d("fireStoreErrorTag", "666666");
                     // Access the "materiales" field
                     Map<String, Map<String, Object>> materialesMap = recoleccion.getMateriales();
 
@@ -197,8 +204,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp, materialesList, enPersona);
 
                     itemList.add(newItem);
-                    Log.d("FireStoreAdd", "Item: "+ newItem);
-                    Log.d("FireStoreDocInfo", "Item: "+ snapshot);
                 }
             }
             historialAdapter.notifyDataSetChanged();

@@ -66,10 +66,11 @@
     <string name="confirmar">Confirmar</string>
     <string name="cancelar">Cancelar</string>
     <string name="tu_orden_ha_sido_registrada_n_nte_enviaremos_una_notificaci_n_cuando_encontremos_un_recolector">Tu orden está siendo procesada.\n\nTe enviaremos una notificación cuando encontremos un recolector.</string>
+    <string name="lo_sentimos_a_n_no_se_ha_encontrado_un_recolector_le_notificaremos_tan_r_pido_como_encontremos_uno">Lo sentimos, aún no se ha encontrado un Recolector, el estado de la recolección cambiará tan rápido como encontremos uno.</string>
     <string name="recolector">Recolector:</string>
     <string name="juan_ramirez_ramirez">Juan Ramirez Ramirez</string>
-    <string name="permanezca_cerca_del_celular_por_cualquier_notificaci_n">Permanezca cerca del celular por cualquier notificación.</string>
-    <string name="lo_sentimos_a_n_no_se_ha_encontrado_un_recolector_le_notificaremos_tan_r_pido_como_encontremos_uno">Lo sentimos, aún no se ha encontrado un Recolector, le notificaremos tan rápido como encontremos uno.</string>
+    <string name="permanezca_cerca_del_celular_por_cualquier_notificaci_n">Permanezca cerca del celular y la aplicación por cualquier notificación.</string>
+    <string name="msj_recoleccion_iniciada">Lo sentimos, aún no se ha encontrado un Recolector, el estado de la recolección cambiará tan rápido como encontremos uno.</string>
     <string name="cancelar_orden">Cancelar Orden</string>
     <string name="deseas_cancelar_la_orden">¿Deseas Cancelar la Orden?</string>
     <string name="ver_centros">Ver Centros</string>
@@ -93,7 +94,7 @@
     <string name="aceptar">Aceptar</string>
     <string name="ubicaci_n">Ubicación</string>
     <string name="como_usar_el_mapa">Como usar el Mapa</string>
-    <string name="aqu_tienes_un_mapa_de_puebla_con_tu_ubicaci_n_gps_si_deseas_cambiarla_solo_mant_n_presionado_el_icono_de_ubicaci_n_y_aj_stalo_a_donde_prefieras_luego_pulsa_continuar_para_confirmar_tu_elecci_n_de_ubicaci_n_gracias_por_usar_nuestro_servicio">Aquí tienes un mapa de Puebla con tu ubicación GPS. Si deseas cambiarla, solo mantén presionado el icono de ubicación y ajústalo a donde prefieras. Luego, pulsa \'Comprendo\' para confirmar tu elección de ubicación. ¡Gracias por usar nuestro servicio!</string>
+    <string name="explicacion_como_precisar_ubicacion">A continuación, verás un mapa con un marcador en tu ubicación GPS. Si deseas cambiar tu ubicación, solo mantén presionado un segundo el marcador y ajústalo a donde prefieras. Luego, pulsa  \'Aceptar \' para confirmar tu elección de ubicación. ¡Gracias por usar nuestro servicio!</string>
     <string name="imagen_de_ejemplo_del_mapa">imagen de ejemplo del mapa</string>
     <string name="comprendo">Comprendo</string>
 </resources>

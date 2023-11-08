@@ -11,6 +11,7 @@ public class McqRecoleccion {
     private String comentarios;
     private boolean enPersona;
     private boolean calificado;
+    private boolean recolectada;
     private String estado;
     private Long timeStamp;
     private Map<String, Object> recolector;
@@ -18,6 +19,14 @@ public class McqRecoleccion {
     private Map<String, Map<String, Object>> materiales;
 
     public McqRecoleccion() {
+    }
+
+    public boolean getRecolectada() {
+        return recolectada;
+    }
+
+    public void setRecolectada(boolean recolectada) {
+        this.recolectada = recolectada;
     }
 
     public Map<String, Object> getRecolector() {
