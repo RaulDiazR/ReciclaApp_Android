@@ -22,7 +22,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/white">
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/icon_regresar">
         <!-- Centered Title TextView -->
         <TextView
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"

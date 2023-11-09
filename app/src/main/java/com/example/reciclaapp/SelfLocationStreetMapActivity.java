@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -33,6 +34,8 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.util.Objects;
+
 public class SelfLocationStreetMapActivity extends AppCompatActivity {
 
     MapView MapOS = null;
@@ -40,7 +43,6 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
     Marker Mark = null;
     Double Latitud = 0.0;
     Double Longitud = 0.0;
-    LocationRequest mLocationRequest;
     Location mLastLocation;
     FusedLocationProviderClient mFusedLocationClient;
     final Context context = this;
@@ -49,6 +51,14 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_self_location_street_map);
+        // Find the Toolbar by its ID and set the Toolbar as the app bar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Remove default title for the app bar
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        // Enable the back button (up navigation)
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
 
         showPopupMapExplanation();
 
@@ -258,5 +268,11 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
 
     public void onHelpMap(View view) {
         showPopupMapExplanation();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }
