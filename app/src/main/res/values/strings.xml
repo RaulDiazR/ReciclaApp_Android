@@ -65,7 +65,7 @@
     <string name="confirmar_orden">Confirmar Orden</string>
     <string name="confirmar">Confirmar</string>
     <string name="cancelar">Cancelar</string>
-    <string name="tu_orden_ha_sido_registrada_n_nte_enviaremos_una_notificaci_n_cuando_encontremos_un_recolector">Tu orden está siendo procesada.\n\nTe enviaremos una notificación cuando encontremos un recolector.</string>
+    <string name="msj_confirmacion_orden">Tu orden está siendo procesada.\n\nEl estado de la recolección cambiará cuando encontremos un recolector.</string>
     <string name="lo_sentimos_a_n_no_se_ha_encontrado_un_recolector_le_notificaremos_tan_r_pido_como_encontremos_uno">Lo sentimos, aún no se ha encontrado un Recolector, el estado de la recolección cambiará tan rápido como encontremos uno.</string>
     <string name="recolector">Recolector:</string>
     <string name="juan_ramirez_ramirez">Juan Ramirez Ramirez</string>

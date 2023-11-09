@@ -65,6 +65,8 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     String completada = "Completada";
     String cancelada = "Cancelada";
 
+    String userId;
+
     FirebaseFirestore firestore;
 
     // Define a handler for scheduling periodic tasks
@@ -108,11 +110,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
-        String idUsuarioClienteToFilter = "user_id_2"; // Replace with the actual user ID you want to filter by
-
+        userId = "user_id_2";
         CollectionReference recoleccionesCollection = firestore.collection("recolecciones");
 
-        recoleccionesCollection.whereEqualTo("idUsuarioCliente", idUsuarioClienteToFilter).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30).addSnapshotListener((queryDocumentSnapshots, e) -> {
+        recoleccionesCollection.whereEqualTo("idUsuarioCliente", userId).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30).addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
                 Log.d("firestorageErrorGet", "Error: " + e);
                 return;

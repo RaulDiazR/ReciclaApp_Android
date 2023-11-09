@@ -77,7 +77,8 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/numeroCasa"
-            app:layout_constraintTop_toBottomOf="@+id/Calle" />
+            app:layout_constraintTop_toBottomOf="@+id/Calle"
+            tools:ignore="TextContrastCheck" />
 
         <EditText
             android:id="@+id/numeroCasa"
@@ -221,37 +222,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textView6"
             tools:ignore="VisualLintTextFieldSize" />
 
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/indicaciones_al_recolector"
-            android:textAlignment="viewStart"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/indicaciones"
-            app:layout_constraintTop_toBottomOf="@+id/telefono" />
-
-        <EditText
-            android:id="@+id/indicaciones"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:ems="10"
-            android:inputType="text"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:hint="@string/comentarios"
-            android:autofillHints="Teléfono"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7"
-            tools:ignore="VisualLintTextFieldSize" />
-
         <Button
             android:id="@+id/buttonCrear"
             android:layout_width="0dp"
@@ -271,7 +241,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/indicaciones"
+            app:layout_constraintTop_toBottomOf="@+id/telefono"
             tools:ignore="VisualLintButtonSize,TextContrastCheck" />
 
 

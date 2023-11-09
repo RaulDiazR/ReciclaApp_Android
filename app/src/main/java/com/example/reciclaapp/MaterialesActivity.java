@@ -72,6 +72,8 @@ public class MaterialesActivity extends AppCompatActivity{
 
     public static String currentPhotoPath;
 
+    String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +83,8 @@ public class MaterialesActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         // Remove default title for the app bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        userId = "user_id_2";
 
         // creates intent to receive data from past activities
         this.receivedIntent = getIntent();
@@ -164,7 +168,8 @@ public class MaterialesActivity extends AppCompatActivity{
         });
 
         FrameLayout rootView = findViewById(android.R.id.content);
-        itemList.add(new MaterialesItem(R.drawable.material_madera, "Madera"));
+        // ejemplo de como añadir un material al recyclerview
+        //itemList.add(new MaterialesItem(R.drawable.material_madera, "Madera"));
         materialesAdapter = new MaterialesAdapter(this, itemList, takePhotoLauncher, openGallery, rootView);
 
         // Create a ConcatAdapter and add the headerAdapter and materialesAdapter
@@ -176,7 +181,6 @@ public class MaterialesActivity extends AppCompatActivity{
 
         // Set the ConcatAdapter as the adapter for the RecyclerView
         recyclerView.setAdapter(concatAdapter);
-
     }
 
     private String[] getInfoFromIntent() {
@@ -351,16 +355,8 @@ public class MaterialesActivity extends AppCompatActivity{
         if (comentarios != null) {
             recoleccionData.put("comentarios", comentarios);
         }
-        // se extraen las indicaciones de la dirección
-        String indicaciones = receivedIntent.getStringExtra("indicaciones");
-        if (indicaciones != null) {
-            recoleccionData.put("indicaciones", indicaciones);
-        }
-        // se extrae el teléfono
-        String telefono = receivedIntent.getStringExtra("telefono");
-        if (telefono != null) {
-            recoleccionData.put("telefono", telefono);
-        }
+
+
         // se extraen la longitud y latitud
         String latitud = receivedIntent.getStringExtra("latitud");
         String longitud = receivedIntent.getStringExtra("longitud");
@@ -375,7 +371,7 @@ public class MaterialesActivity extends AppCompatActivity{
         // Add all the remaining values which are constants
         Long timeStamp = System.currentTimeMillis(); // Get the current timestamp
         recoleccionData.put("timeStamp",timeStamp); // Add the timestamp to your data
-        recoleccionData.put("idUsuarioCliente", "user_id_2"); // id del usuario
+        recoleccionData.put("idUsuarioCliente", userId); // id del usuario
         // Se ponen valores fijos debido a que posteriormente cambiaran
         recoleccionData.put("recolectada", false);
         recoleccionData.put("calificado", false);
@@ -397,7 +393,6 @@ public class MaterialesActivity extends AppCompatActivity{
         }
         recoleccionData.put("materiales", materialesMap);
 
-
         // Create a map with recolector data
         Map<String, Object> recolectorData = new HashMap<>();
         recolectorData.put("nombre", "");
@@ -408,15 +403,32 @@ public class MaterialesActivity extends AppCompatActivity{
         recolectorData.put("suma_reseñas", 0);
 
         /*
-        Ejemplo de como llenar los datos de un recolector en una recolección
+        1er Ejemplo de como llenar los datos de un recolector en una recolección
+        recolectorData.put("nombre", "Neil Alden");
         recolectorData.put("apellidos", "Armstrong");
         recolectorData.put("telefono", "(800) 555‑0100");
         recolectorData.put("fotoUrl", "https://firebasestorage.googleapis.com/v0/b/pueblareciclaapp.appspot.com/o/recolectores%2Frecolector2.jpg?alt=media&token=a64fa7a6-5f96-4572-afcf-fd56394ec9d2");
         recolectorData.put("cantidad_reseñas", 5);
         recolectorData.put("suma_reseñas", 23);
+
+        2do Ejemplo de como llenar los datos de un recolector en una recolección
+        recolectorData.put("nombre", "Jordi MF");
+        recolectorData.put("apellidos", "El Salvaje");
+        recolectorData.put("telefono", "123 444 5556");
+        recolectorData.put("fotoUrl", "https://firebasestorage.googleapis.com/v0/b/pueblareciclaapp.appspot.com/o/recolectores%2Frecolector1.jpg?alt=media&token=8e621509-c2f4-414f-952a-e7c3ca4ca1ff");
+        recolectorData.put("cantidad_reseñas", 11);
+        recolectorData.put("suma_reseñas", 55);
         */
 
         recoleccionData.put("recolector", recolectorData);
+
+        // Create a map with user data
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("nombreCompleto", receivedIntent.getStringExtra("nombreCompleto"));
+        userData.put("telefono", receivedIntent.getStringExtra("telefono"));
+        userData.put("direccion",  receivedIntent.getStringExtra("direccionCompleta"));
+
+        recoleccionData.put("userInfo", userData);
         // Add a new recolección document to the "recolecciones" collection
         firestore.collection("recolecciones")
                 .add(recoleccionData)
@@ -446,7 +458,6 @@ public class MaterialesActivity extends AppCompatActivity{
         String municipioText = receivedIntent.getStringExtra("municipio");
         String codigoPostalText = receivedIntent.getStringExtra("postalcode");
         String telefonoText = receivedIntent.getStringExtra("telefono");
-        String indicacionesText = receivedIntent.getStringExtra("indicaciones");
 
         // Create a Map with the "direccion" field data
         Map<String, Object> direccionData = new HashMap<>();
@@ -455,19 +466,16 @@ public class MaterialesActivity extends AppCompatActivity{
         direccionData.put("colonia", coloniaText);
         direccionData.put("municipio", municipioText);
         direccionData.put("codigoPostal", codigoPostalText);
-        direccionData.put("telefono", telefonoText);
-        direccionData.put("indicaciones", indicacionesText);
 
         // Get a reference to the Firestore document
-        String userId = "your_user_id_here"; // Replace with the actual user ID
         DocumentReference userRef = firestore.collection("usuarios").document(userId);
 
         // Update the "direccion" field with the new data
         Map<String, Object> updateData = new HashMap<>();
         updateData.put("direccion", direccionData);
+        updateData.put("telefono", telefonoText);
 
-        userRef.update(updateData)
-                .addOnCompleteListener(task -> {
+        userRef.update(updateData).addOnCompleteListener(task -> {
                     if(!task.isSuccessful()){
                         Log.d("fireStoreDataSendToUsuarios", "Ocurrió un error en el envío de datos a la recolección 'usuarios' con este id del documento: "+userId);
                     }

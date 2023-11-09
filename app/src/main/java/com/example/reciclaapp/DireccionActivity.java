@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -43,6 +42,10 @@ public class DireccionActivity extends AppCompatActivity {
     TextView codigoPostalTextView;
     TextView telefonoTextView;
     TextView errorTextView;
+
+    String nombreCompleto;
+
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +99,6 @@ public class DireccionActivity extends AppCompatActivity {
         municipioField = findViewById(R.id.municipio);
         codigoPostalField = findViewById(R.id.codigoPostal);
         telefonoField = findViewById(R.id.telefono);
-        EditText indicaciones = findViewById(R.id.indicaciones);
 
         // Get references to TextView elements for required fields
         calleTextView = findViewById(R.id.textView4);
@@ -107,7 +109,7 @@ public class DireccionActivity extends AppCompatActivity {
         telefonoTextView = findViewById(R.id.textView6);
 
         // Get a reference to the Firestore document
-        String userId = "user_id_2"; // Replace with the actual user ID
+        userId = "user_id_2"; // Replace with the actual user ID
         // Se accede a la base de datos de FireStore
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         DocumentReference userRef = firestore.collection("usuarios").document(userId);
@@ -122,6 +124,13 @@ public class DireccionActivity extends AppCompatActivity {
                     Map<String, Object> userData = documentSnapshot.getData();
 
                     if (userData != null) {
+                        String nombre = (String) userData.get("nombre");
+                        String apellidos = (String) userData.get("apellidos");
+                        nombreCompleto = nombre + " " + apellidos;
+
+                        String telefono = (String) userData.get("telefono");
+                        telefonoField.setText(telefono);
+
                         Map<String, Object> direccionData = (Map<String, Object>) userData.get("direccion");
 
                         if (direccionData != null) {
@@ -131,8 +140,6 @@ public class DireccionActivity extends AppCompatActivity {
                             coloniaField.setText((String) direccionData.get("colonia"));
                             municipioField.setText((String) direccionData.get("municipio"));
                             codigoPostalField.setText((String) direccionData.get("codigoPostal"));
-                            telefonoField.setText((String) direccionData.get("telefono"));
-                            indicaciones.setText((String) direccionData.get("indicaciones"));
                         }
                     }
                 }
@@ -146,40 +153,37 @@ public class DireccionActivity extends AppCompatActivity {
     }
 
     public void localizar_en_mapa(View view) {
-        String calleText = calleTextView.getText().toString();
-        String numeroText = numeroTextView.getText().toString();
-        String coloniaText = coloniaTextView.getText().toString();
-        String municipioText = municipioTextView.getText().toString();
-        String codigoPostalText = codigoPostalTextView.getText().toString();
-        String telefonoText = telefonoTextView.getText().toString();
-        TextView indicaciones = findViewById(R.id.indicaciones);
-        String indicacionesText = indicaciones.getText().toString();
+        String calleText = calleField.getText().toString();
+        String numeroText = numeroField.getText().toString();
+        String coloniaText = coloniaField.getText().toString();
+        String municipioText = municipioField.getText().toString();
+        String codigoPostalText = codigoPostalField.getText().toString();
+        String telefonoText = telefonoField.getText().toString();
 
         // Check if the form is valid
         if (isFormValid()) {
-            try {
-                Intent intent = new Intent(this, SelfLocationStreetMapActivity.class);
-                intent.putExtra("street", calleText);
-                intent.putExtra("numero", numeroText);
-                intent.putExtra("colonia", coloniaText);
-                intent.putExtra("municipio", municipioText);
-                intent.putExtra("postalcode", codigoPostalText);
-                intent.putExtra("telefono", telefonoText);
-                intent.putExtra("indicaciones", indicacionesText);
+            Intent intent = new Intent(this, SelfLocationStreetMapActivity.class);
+            // se crea una dirección completa para agregar al apartado de userInfo de la recolección
+            String direccion = calleText + " " + numeroText + ", " + "Colonia " + coloniaText+ ", " + municipioText + ", Código Postal " + codigoPostalText;
+            Log.d("direccion", direccion);
+            // se mandan por intent a la siguiente actividad toda la info relacionada a la dirección del usuario
+            intent.putExtra("street", calleText);
+            intent.putExtra("numero", numeroText);
+            intent.putExtra("colonia", coloniaText);
+            intent.putExtra("municipio", municipioText);
+            intent.putExtra("postalcode", codigoPostalText);
 
-                // Se pasa la información de la actividad previa
-                Bundle bundle = getIntent().getExtras();
-                if (bundle != null) {
-                    intent.putExtras(bundle);
-                }
-                startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+            // esta info se adjunta dentro del apartado de userInfo de la recolección
+            intent.putExtra("direccionCompleta", direccion);
+            intent.putExtra("telefono", telefonoText);
+            intent.putExtra("nombreCompleto", nombreCompleto);
+
+            // Se pasa la información de la actividad previa
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                intent.putExtras(bundle);
             }
-
+            startActivity(intent);
         }
     }
 

@@ -28,7 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/tu_orden_ha_sido_registrada_n_nte_enviaremos_una_notificaci_n_cuando_encontremos_un_recolector"
+        android:text="@string/msj_confirmacion_orden"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"

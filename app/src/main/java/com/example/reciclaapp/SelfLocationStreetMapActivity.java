@@ -1,176 +1,173 @@
 package com.example.reciclaapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.utils.widget.ImageFilterView;
-
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.library.BuildConfig;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
-import java.util.List;
-import java.util.Locale;
-
 public class SelfLocationStreetMapActivity extends AppCompatActivity {
 
-    MapView Map = null;
+    MapView MapOS = null;
     GeoPoint StartPoint;
     Marker Mark = null;
     Double Latitud = 0.0;
     Double Longitud = 0.0;
+    LocationRequest mLocationRequest;
+    Location mLastLocation;
+    FusedLocationProviderClient mFusedLocationClient;
+    final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_self_location_street_map);
+
+        showPopupMapExplanation();
+
         try {
-            setContentView(R.layout.activity_self_location_street_map);
-            showPopupMapExplanation();
 
-            // Get Direction Of User
-            Intent intent = getIntent();
-            String postalCode = "72810";
-            String state = "Puebla";
-            String city = "San Andres Cholula";
-            String country = "Mexico";
-            String street = "Sena";
-            String county = "";
+            // Initialize current location service
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-            final String[] finalPostalCode = {postalCode};
-            final String[] finalState = {state};
-            final String[] finalCity = {city};
-            final String[] finalCountry = {country};
-            final String[] finalStreet = {street};
-
-
-            // Create the string to send the request to the Nominatim API
-            String DirectionCoordinates = "https://nominatim.openstreetmap.org/search?" + "street=" + street.replace(" ", "+") + "&city=" + city.replace(" ", "+") + "&postalcode=" + postalCode + "&country=" + country + "&state=" + state + "&format=jsonv2";
-            Log.d("TAG", "URL " + DirectionCoordinates);
-            GetCoordinates(DirectionCoordinates);
-
-            //Create Map and Put the Marker
+            //Init Map
             Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-            Map = (MapView) findViewById(R.id.osmap);
-            Map.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
-            Map.setBuiltInZoomControls(true);
-            Map.setMultiTouchControls(true);
-            Map.getController().setZoom(20.0);
-            //StartPoint = new GeoPoint(19.0653127, -98.2021354);
+            InitializeMap();
 
-            StartPoint = new GeoPoint(Latitud, Longitud);
-            Map.getController().setCenter(StartPoint);
+            //Check permission
+            checkLocationPermission();
 
-            Mark = new Marker(Map);
-            Mark.setPosition(StartPoint);
-            Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            Mark.setTitle("Mi ubicacion");
-            Mark.setDraggable(true);
-
-            // Add mark to MapLayer OSM
-            Map.getOverlays().add(Mark);
-
-
-
-
-            // Agrega un OnMarkerDragListener al marcador
-            Mark.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
-                @Override
-                public void onMarkerDrag(Marker marker) {
-                    // Evento mientras el usuario está arrastrando el marcador
-                }
-
-                @SuppressLint("StaticFieldLeak")
-                @Override
-                public void onMarkerDragEnd(Marker marker) {
-
-                    Log.d("TAG", "Drag End Activated" );
-                    new ReverseGeocodingTask() {
-                        @Override
-                        protected void onPostExecute(List<String> response) {
-                            if (!response.isEmpty()) {
-                                // Process the response here
-                                finalPostalCode[0] = response.get(4);
-                                finalState[0] = response.get(3);
-                                finalCity[0] = response.get(2);
-                                finalCountry[0] = response.get(6);
-                                finalStreet[0] = response.get(0);
-                                Log.d("TAG", "Marker: Entre" );
-                                Log.d("TAG", "finalPostalCode: " + finalPostalCode[0]);
-                                Log.d("TAG", "finalState: " + finalState[0]);
-                                Log.d("TAG", "finalCity: " + finalCity[0]);
-                                Log.d("TAG", "finalCountry: " + finalCountry[0]);
-                                Log.d("TAG", "finalStreet: " + finalStreet[0]);
-
-                                StartPoint = marker.getPosition();
-                                Map.getController().setCenter(StartPoint);
-                            }
-                        }
-                    }.execute(marker.getPosition());
-
-                }
-
-                @Override
-                public void onMarkerDragStart(Marker marker) {
-                    // Evento cuando el usuario comienza a arrastrar el marcador
-                }
-            });
         } catch (Exception e) {
-            e.printStackTrace();
-            runOnUiThread(() -> {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            });
+            e.printStackTrace(); // Log the exception in Logcat
+            String errorMessage = e.getMessage(); // Get the error message
+            runOnUiThread(() -> Toast.makeText(this, "An error occurred: " + errorMessage, Toast.LENGTH_LONG).show());
         }
 
     }
 
-    @SuppressLint("StaticFieldLeak")
-    public void GetCoordinates(String URL) {
-        final Context context = this;
-        new GeocodingTask() {
-            @SuppressLint("StaticFieldLeak")
-            @Override
-            protected void onPostExecute(List<Double> response) {
-                if (!response.isEmpty()) {
-                    // Process the response here
-                    Latitud = response.get(0);
-                    Longitud = response.get(1);
-                    StartPoint.setLatitude(Latitud);
-                    StartPoint.setLongitude(Longitud);
-                    Map.getController().setCenter(StartPoint);
-                    Mark.setPosition(StartPoint);
-                    Log.d("TAG", "Lista Coordenadas: " + response);
-                    Log.d("TAG", "Latitud: " + Latitud);
-                    Log.d("TAG", "Longitud: " + Longitud);
-                } else {
-                    Log.e("TAG", "Error al obtener la ubicación");
-                    Toast.makeText(context, "Error al obtener la ubicación", Toast.LENGTH_SHORT).show();
-                }
+    private void InitializeMap() {
+        MapOS = findViewById(R.id.osmap);
+        MapOS.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
+        MapOS.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+        MapOS.setMultiTouchControls(true);
+        MapOS.setHorizontalMapRepetitionEnabled(true);
+        MapOS.setVerticalMapRepetitionEnabled(false);
+        MapOS.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
+        MapOS.getController().setZoom(20.0);
+        MapOS.setMinZoomLevel(5.0);
+        MapOS.getController().setCenter(StartPoint);
+    }
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Se necesita permiso de ubicación")
+                        .setMessage("Esta aplicación necesita el permiso de ubicación, por favor acepta para utilizar la funcionalidad de ubicación")
+                        .setPositiveButton("OK", (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(SelfLocationStreetMapActivity.this,
+                                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST_LOCATION);
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
             }
-        }.execute(URL);
+        } else {
+            requestLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                requestLocation();
+
+            } else {
+                Toast.makeText(this, "Este permiso es necesario", Toast.LENGTH_LONG).show();
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestLocation() {
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        mLastLocation = location;
+
+                        if (StartPoint == null) {
+                            StartPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                            Latitud = location.getLatitude();
+                            Longitud = location.getLongitude();
+                        } else {
+                            StartPoint.setLatitude(location.getLatitude());
+                            StartPoint.setLongitude(location.getLongitude());
+                        }
+
+                        if (Mark == null) {
+                            Mark = new Marker(MapOS);
+                            Mark.setPosition(StartPoint);
+                            Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                            Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.icon_pin_map));
+
+                            Mark.setDraggable(true);
+                            MapOS.getController().setCenter(StartPoint);
+
+                        } else {
+                            Mark.setPosition(StartPoint);
+                            Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+                        }
+
+                        MapOS.getOverlays().add(Mark);
+                    }
+                });
     }
 
     public void onFinishGpsLocation(View view) {
@@ -180,6 +177,11 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
         if (bundle != null) {
             intent.putExtras(bundle);
         }
+
+        // esta info es de las coordenadas de la recolección
+        intent.putExtra("latitud", ""+Latitud);
+        intent.putExtra("longitud", ""+Longitud);
+        Toast.makeText(context, "coordenadas: " + Latitud + ", " + Longitud, Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 
@@ -199,7 +201,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
         builder.setView(dialogView);
 
         // Customize the dialog
-        final AlertDialog alertDialog = builder.create();
+        final android.app.AlertDialog alertDialog = builder.create();
 
         // Configure a semitransparent background
         Window window = alertDialog.getWindow();
