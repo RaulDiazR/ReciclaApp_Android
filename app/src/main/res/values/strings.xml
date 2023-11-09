@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Recicla App</string>
+    <string name="app_name">Reecicla App</string>
     <string name="iniciada">Iniciada</string>
     <string name="enProceso">En Proceso</string>
     <string name="completada">Completada</string>

@@ -159,15 +159,38 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
                             Mark.setDraggable(true);
                             MapOS.getController().setCenter(StartPoint);
 
-                        } else {
+                        } else  {
                             Mark.setPosition(StartPoint);
                             Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
                         }
 
+                        Mark.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
+                            @Override
+                            public void onMarkerDrag(Marker marker) {
+
+                            }
+
+                            @Override
+                            public void onMarkerDragEnd(Marker marker) {
+                                MarkOnClick();
+                            }
+
+                            @Override
+                            public void onMarkerDragStart(Marker marker) {
+
+                            }
+                        });
+
                         MapOS.getOverlays().add(Mark);
                     }
                 });
+    }
+
+    private void MarkOnClick() {
+        StartPoint = Mark.getPosition();
+        Latitud = StartPoint.getLatitude();
+        Longitud = StartPoint.getLongitude();
     }
 
     public void onFinishGpsLocation(View view) {
@@ -181,7 +204,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
         // esta info es de las coordenadas de la recolección
         intent.putExtra("latitud", ""+Latitud);
         intent.putExtra("longitud", ""+Longitud);
-        Toast.makeText(context, "coordenadas: " + Latitud + ", " + Longitud, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "coordenadas: " + Latitud + ", " + Longitud, Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 
