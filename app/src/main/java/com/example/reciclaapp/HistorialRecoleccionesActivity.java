@@ -113,7 +113,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         userId = "user_id_2";
         CollectionReference recoleccionesCollection = firestore.collection("recolecciones");
 
-        recoleccionesCollection.whereEqualTo("idUsuarioCliente", userId).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30).addSnapshotListener((queryDocumentSnapshots, e) -> {
+        recoleccionesCollection.whereEqualTo("idUsuarioCliente", userId).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(50).addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
                 Log.d("firestorageErrorGet", "Error: " + e);
                 return;
@@ -137,10 +137,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     Long timeStamp = recoleccion.getTimeStamp();
                     boolean enPersona = recoleccion.getEnPersona();
                     boolean recolectada = recoleccion.getRecolectada();
-                    if (id.equals("OaipvogswF445fjGJ4xk")) {
-                        Log.d("fireStore", "recolectada value: " + recolectada);
-                        Log.d("fireStore", "item: " + snapshot);
-                    }
 
                     // Access the recolector data from the recoleccion document
                     Map<String, Object> recolectorData = recoleccion.getRecolector();

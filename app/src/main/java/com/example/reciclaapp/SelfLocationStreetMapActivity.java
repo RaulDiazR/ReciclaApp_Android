@@ -59,7 +59,6 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
         // Enable the back button (up navigation)
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-
         showPopupMapExplanation();
 
         try {
@@ -162,6 +161,8 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
 
                         if (Mark == null) {
                             Mark = new Marker(MapOS);
+                            Mark.setTitle("Mi Ubicación");
+                            Mark.setSubDescription("Mueve el pin para ajustar tu ubicación");
                             Mark.setPosition(StartPoint);
                             Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                             Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.icon_pin_map));
