@@ -395,6 +395,7 @@ public class MaterialesActivity extends AppCompatActivity{
 
         // Create a map with recolector data
         Map<String, Object> recolectorData = new HashMap<>();
+        recolectorData.put("id", "");
         recolectorData.put("nombre", "");
         recolectorData.put("apellidos", "");
         recolectorData.put("telefono", "");

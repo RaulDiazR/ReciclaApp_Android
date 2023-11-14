@@ -24,7 +24,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import org.osmdroid.config.Configuration;
@@ -33,6 +32,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.Objects;
 
@@ -46,6 +46,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
     Location mLastLocation;
     FusedLocationProviderClient mFusedLocationClient;
     final Context context = this;
+    InfoWindow customInfoWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +151,20 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
                     if (location != null) {
                         mLastLocation = location;
 
+                        if (customInfoWindow == null) {
+                            customInfoWindow = new InfoWindow(R.layout.custom_window_self_ubication, MapOS) {
+                                @Override
+                                public void onOpen(Object item) {
+
+                                }
+
+                                @Override
+                                public void onClose() {
+
+                                }
+                            };
+                        }
+
                         if (StartPoint == null) {
                             StartPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                             Latitud = location.getLatitude();
@@ -161,12 +176,10 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
 
                         if (Mark == null) {
                             Mark = new Marker(MapOS);
-                            Mark.setTitle("Mi Ubicación");
-                            Mark.setSubDescription("Mueve el pin para ajustar tu ubicación");
                             Mark.setPosition(StartPoint);
                             Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                             Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.icon_pin_map));
-
+                            Mark.setInfoWindow(customInfoWindow);
                             Mark.setDraggable(true);
                             MapOS.getController().setCenter(StartPoint);
 
@@ -191,6 +204,15 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
                             public void onMarkerDragStart(Marker marker) {
 
                             }
+                        });
+
+                        Mark.setOnMarkerClickListener((marker, mapView) -> {
+                            if (marker.isInfoWindowOpen()) {
+                                marker.closeInfoWindow();
+                            } else {
+                                marker.showInfoWindow();
+                            }
+                            return true;
                         });
 
                         MapOS.getOverlays().add(Mark);

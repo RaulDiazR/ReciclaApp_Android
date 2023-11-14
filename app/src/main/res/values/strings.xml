@@ -97,4 +97,5 @@
     <string name="explicacion_como_precisar_ubicacion">A continuación, verás un mapa con un marcador en tu ubicación GPS. Si deseas cambiar tu ubicación, solo mantén presionado un segundo el marcador y ajústalo a donde prefieras. Luego, pulsa  \'Aceptar \' para confirmar tu elección de ubicación. ¡Gracias por usar nuestro servicio!</string>
     <string name="imagen_de_ejemplo_del_mapa">imagen de ejemplo del mapa</string>
     <string name="comprendo">Comprendo</string>
+    <string name="mi_ubicaci_n">Mi ubicación</string>
 </resources>
