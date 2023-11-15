@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,9 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@drawable/shape_rounded"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_alignParentTop="true"
         app:titleTextColor="@color/white">
         <!-- Centered Title TextView -->
         <TextView
@@ -28,159 +26,194 @@
             android:textSize="22sp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="Hola Usuario"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="156dp"
-        android:layout_height="129dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView11"
-        app:srcCompat="@drawable/pf1" />
+        <!-- Contenido del ScrollView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/buttonPerfil"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:drawableLeft="@drawable/perfil"
-        android:onClick="goToPerfil"
-        android:paddingStart="10dp"
-        android:text="     Perfil"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.322"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/buttonConfig"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@null"
-        android:drawableLeft="@drawable/configuracion"
-        android:onClick="goToConfiguracion"
-        android:paddingStart="10dp"
-        android:text="     Preferencias"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.322"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonPerfil" />
+            <ImageView
+                android:id="@+id/selectImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="129dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:textAlignment="center"
+                app:srcCompat="@drawable/pf1" />
 
-    <Button
-        android:id="@+id/buttonFQA"
-        android:layout_width="306dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="12dp"
-        android:background="@null"
-        android:drawableLeft="@drawable/pf"
-        android:onClick="goToFQA"
-        android:paddingStart="10dp"
-        android:text="     Preguntas Frecuentes"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonConfig" />
+            <Button
+                android:id="@+id/buttonPerfil"
+                android:layout_width="334dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:drawableLeft="@drawable/perfil"
+                android:onClick="goToPerfil"
+                android:paddingStart="70dp"
+                android:paddingTop="15dp"
+                android:text="     Perfil"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/buttonFavs"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@null"
-        android:drawableLeft="@drawable/mf"
-        android:onClick="goToFavoritos"
-        android:paddingStart="10dp"
-        android:text="     Mis Favoritos"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.335"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonFQA" />
+            <Button
+                android:id="@+id/buttonFavs"
+                android:layout_width="358dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@null"
+                android:drawableLeft="@drawable/mf"
+                android:onClick="goToFavoritos"
+                android:paddingStart="70dp"
+                android:text="     Favoritos"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.335"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonPerfil" />
 
-    <Button
-        android:id="@+id/buttonAvPriv"
-        android:layout_width="275dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="12dp"
-        android:background="@null"
-        android:drawableLeft="@drawable/ap"
-        android:onClick="goToAvisoPriv"
-        android:paddingStart="10dp"
-        android:text="     Aviso de Privacidad"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.400"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonFavs" />
+            <Button
+                android:id="@+id/buttonFQA"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:layout_marginTop="12dp"
+                android:background="@null"
+                android:drawableLeft="@drawable/pf"
+                android:onClick="goToFQA"
+                android:paddingStart="70dp"
+                android:text="    Preguntas Frecuentes"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonFavs" />
 
-    <Button
-        android:id="@+id/buttonCredit"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@null"
-        android:drawableLeft="@drawable/creditos"
-        android:onClick="goToCreditos"
-        android:paddingStart="10dp"
-        android:text="     Créditos"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.335"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAvPriv" />
+            <Button
+                android:id="@+id/buttonInfo"
+                android:layout_width="347dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="12dp"
+                android:background="@null"
+                android:drawableLeft="@drawable/ap"
+                android:onClick="goToInformacion"
+                android:paddingStart="70dp"
+                android:text="     Información"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.400"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonFavs" />
 
+            <Button
+                android:id="@+id/buttonContact"
+                android:layout_width="353dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@null"
+                android:drawableLeft="@drawable/contacto"
+                android:onClick="goToContacto"
+                android:paddingStart="80dp"
+                android:text="       Contacto"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.385"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonInfo" />
+
+            <Button
+                android:id="@+id/buttonSyA"
+                android:layout_width="326dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@null"
+                android:drawableLeft="@drawable/sociosyamigos"
+                android:onClick="goToSociosyAmigos"
+                android:paddingStart="75dp"
+                android:text="      Socios y Amigos"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.335"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonContact" />
+
+            <Button
+                android:id="@+id/buttonCredit"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:drawableLeft="@drawable/creditos"
+                android:onClick="goToCreditos"
+                android:paddingStart="80dp"
+                android:text="      Créditos"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.370"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonSyA" />
+
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="60sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BottomNavigationView -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/white"
         app:itemIconTint="@drawable/selector"
         app:itemTextColor="@drawable/selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/plex_sans_condensed"
         android:text="Inicia en la Aplicación"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

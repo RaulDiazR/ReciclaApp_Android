@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondocolor"
+    android:background="@drawable/fondo"
     tools:context=".LoginActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -46,7 +46,6 @@
         android:layout_width="255dp"
         android:layout_height="46dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/variant4"
         android:ems="10"
         android:inputType="textEmailAddress"
         android:paddingStart="10dp"
@@ -77,7 +76,6 @@
         android:layout_width="250dp"
         android:layout_height="46dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/variant4"
         android:ems="10"
         android:inputType="textPassword"
         android:paddingStart="10dp"
@@ -89,7 +87,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Button
-        android:id="@+id/buttonCF"
+        android:id="@+id/buttonFacebook"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginTop="24dp"
@@ -109,13 +107,12 @@
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <Button
-        android:id="@+id/buttonCG"
+        android:id="@+id/buttonGoogle"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/variant1"
         android:drawableRight="@drawable/google"
-        android:onClick="ContinuarGoogle"
         android:paddingEnd="10dp"
         android:text="     Continuar con Google"
         android:textAlignment="viewStart"
@@ -126,7 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCF" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonFacebook" />
 
     <TextView
         android:id="@+id/textView"
@@ -138,9 +135,9 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.300"
+        app:layout_constraintHorizontal_bias="0.259"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCG" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonGoogle" />
 
     <Button
         android:id="@+id/buttonIS"
@@ -151,13 +148,13 @@
         android:onClick="goToRegistro"
         android:text="Regístrate"
         android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:textColor="@color/dark_green"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.752"
+        app:layout_constraintHorizontal_bias="0.786"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCG" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonGoogle" />
 
     <Button
         android:id="@+id/buttonContinuar"
