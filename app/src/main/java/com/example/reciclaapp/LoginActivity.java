@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,6 +37,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -56,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient googleSignInClient;
     FirebaseAuth gAuth;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,10 +87,20 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(LoginActivity.this, googleSignInOptions);
 
         btnGoogle.setOnClickListener((View.OnClickListener) view -> {
+            final View backgroundView = new View(LoginActivity.this);
+            backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
             // Initialize sign in intent
             Intent intent = googleSignInClient.getSignInIntent();
             // Start activity for result
             startActivityForResult(intent, 100);
+            FrameLayout rootView = findViewById(android.R.id.content);
+            rootView.addView(backgroundView);
+            // Agregar un OnTouchListener para detectar clics fuera del cuadro de diálogo
+            backgroundView.setOnTouchListener((v, event) -> {
+                rootView.removeView(backgroundView); // Eliminar la vista semitransparente
+                return true;
+            });
         });
 
         // Initialize firebase auth
@@ -121,17 +136,17 @@ public class LoginActivity extends AppCompatActivity {
                         // When sign in account is not equal to null initialize auth credential
                         AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
                         // Check credential
-                        gAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        gAuth.signInWithCredential(authCredential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                // Check condition
-                                if (task.isSuccessful()) {
+                            public void onSuccess(AuthResult authResult) {
+                                if (authResult.getAdditionalUserInfo().isNewUser()) {
                                     // When task is successful redirect to profile activity display Toast
-                                    startActivity(new Intent(LoginActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    startActivity(new Intent(LoginActivity.this, CompletarDatosActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                                     displayToast("Firebase authentication successful");
                                 } else {
                                     // When task is unsuccessful display Toast
-                                    displayToast("Authentication Failed :" + task.getException().getMessage());
+                                    startActivity(new Intent(LoginActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    displayToast("Firebase authentication successful");
                                 }
                             }
                         });
@@ -152,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void Continuar (View v){
+    public void Ingresar (View v){
         if (isFormValid()) {
             correoText = correoField.getText().toString();
             contrasenaText = contrasenaField.getText().toString();
@@ -164,73 +179,111 @@ public class LoginActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
-                                Intent intent = new Intent(LoginActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                overridePendingTransition(0,0);
+                                checkUserInFirestore(user.getUid());
                             } else {
-                                final View backgroundView = new View(LoginActivity.this);
-                                backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-                                backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
-
-                                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-
-                                // Inflar el diseño personalizado
-                                View dialogView = getLayoutInflater().inflate(R.layout.contrasenaincorrrecta, null);
-
-                                // Configurar el diálogo
-                                builder.setView(dialogView);
-
-                                // Personalizar el diálogo
-                                final AlertDialog alertDialog = builder.create();
-                                alertDialog.show();
-
-                                // Configurar un fondo semitransparente
-                                Window window = alertDialog.getWindow();
-                                if (window != null) {
-                                    WindowManager.LayoutParams params = window.getAttributes();
-                                    params.gravity = Gravity.CENTER;
-                                    window.setAttributes(params);
-                                }
-
-                                alertDialog.show();
-
-                                // Configurar acciones de los botones
-                                Button btnVolverIntentar = dialogView.findViewById(R.id.TryAgainButton);
-
-                                btnVolverIntentar.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        // Lógica para Cancelar
-                                        alertDialog.dismiss();
-                                        FrameLayout rootView = findViewById(android.R.id.content);
-                                        rootView.removeView(backgroundView);
-                                    }
-                                });
-
-                                alertDialog.setOnDismissListener(view -> {
-                                    alertDialog.dismiss();
-                                    FrameLayout rootView = findViewById(android.R.id.content);
-                                    rootView.removeView(backgroundView);
-                                });
-
-                                // Agregar la vista de fondo y mostrar el cuadro de diálogo
-                                FrameLayout rootView = findViewById(android.R.id.content);
-                                rootView.addView(backgroundView);
-                                alertDialog.show();
-                                updateUI(null);
+                                showErrorDialog();
                             }
                         }
                     });
         }
     }
 
-    public void ContinuarFacebook (View v){
-        Intent intent = new Intent(this, NewsActivity.class);
-        startActivity(intent);
+    private void checkUserInFirestore(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference usersCollection = db.collection("usuarios"); // Change to your collection name
+
+        usersCollection.document(uid).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            checkUserisVerificated(user.getUid());
+                        } else {
+                            // User does not exist in Firestore, show error message
+                            showErrorDialog();
+                            mAuth.signOut();
+                            updateUI(null);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle failure, show error message
+                        showErrorDialog();
+                        updateUI(null);
+                    }
+                });
     }
 
-    public void ContinuarGoogle (View v){
+    private void checkUserisVerificated(String uid) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user.isEmailVerified()){
+            Intent intent = new Intent(LoginActivity.this, NewsActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Correo no verificado", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showErrorDialog(){
+        final View backgroundView = new View(LoginActivity.this);
+        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+        // Inflar el diseño personalizado
+        View dialogView = getLayoutInflater().inflate(R.layout.contrasenaincorrrecta, null);
+
+        // Configurar el diálogo
+        builder.setView(dialogView);
+
+        // Personalizar el diálogo
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        // Configurar un fondo semitransparente
+        Window window = alertDialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+
+        alertDialog.show();
+
+        // Configurar acciones de los botones
+        Button btnVolverIntentar = dialogView.findViewById(R.id.TryAgainButton);
+
+        btnVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Lógica para Cancelar
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
+            }
+        });
+
+        alertDialog.setOnDismissListener(view -> {
+            alertDialog.dismiss();
+            FrameLayout rootView = findViewById(android.R.id.content);
+            rootView.removeView(backgroundView);
+        });
+
+        // Agregar la vista de fondo y mostrar el cuadro de diálogo
+        FrameLayout rootView = findViewById(android.R.id.content);
+        rootView.addView(backgroundView);
+        alertDialog.show();
+        updateUI(null);
+    }
+
+    public void ContinuarFacebook (View v){
         Intent intent = new Intent(this, NewsActivity.class);
         startActivity(intent);
     }

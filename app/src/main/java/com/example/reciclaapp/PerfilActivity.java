@@ -36,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
 
 public class PerfilActivity extends AppCompatActivity {
 
@@ -43,7 +44,6 @@ public class PerfilActivity extends AppCompatActivity {
     EditText apellidosField;
     EditText correoField;
     EditText telefonoField;
-    EditText fechanacimientoField;
 
     TextView nombreTextView;
     TextView apellidosTextView;
@@ -197,6 +197,87 @@ public class PerfilActivity extends AppCompatActivity {
         datePickerDialog.setOnDismissListener(dialog -> rootView.removeView(backgroundView));
     }
 
+    public void GuardarCambios(View view) {
+        if (isFormValid()){
+            // Crear una vista para el fondo semitransparente
+            final View backgroundView = new View(this);
+            backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // Inflar el diseño personalizado
+            View dialogView = getLayoutInflater().inflate(R.layout.guardarcambios, null);
+
+            // Configurar el diálogo
+            builder.setView(dialogView);
+
+            // Personalizar el diálogo
+            final AlertDialog alertDialog = builder.create();
+
+            // Configurar un fondo semitransparente
+            Window window = alertDialog.getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.gravity = Gravity.CENTER;
+                window.setAttributes(params);
+            }
+
+            alertDialog.show();
+
+            // Configurar acciones de los botones
+            Button btnConfirmar = dialogView.findViewById(R.id.ConfirmarButton);
+            Button btnCancelar = dialogView.findViewById(R.id.CancelarButton);
+
+            btnConfirmar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Update Firestore with new user information
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference userRef = db.collection("usuarios").document(user.getUid());
+
+                    userRef.update(
+                            "nombre_s", nombreField.getText().toString(),
+                            "apellido_s", apellidosField.getText().toString(),
+                            "correo", correoField.getText().toString(),
+                            "telefono", telefonoField.getText().toString(),
+                            "fecha_nacimiento", dateButton.getText().toString()
+                    ).addOnSuccessListener(aVoid -> {
+                        // Handle success
+                        Toast.makeText(PerfilActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                    }).addOnFailureListener(e -> {
+                        // Handle failure
+                        Toast.makeText(PerfilActivity.this, "Error saving changes", Toast.LENGTH_SHORT).show();
+                    });
+                    // Lógica para Confirmar
+                    Intent intent = new Intent(PerfilActivity.this, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+            });
+
+            btnCancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Lógica para Cancelar
+                    alertDialog.dismiss();
+                    FrameLayout rootView = findViewById(android.R.id.content);
+                    rootView.removeView(backgroundView);
+                }
+            });
+
+            alertDialog.setOnDismissListener(v -> {
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
+            });
+
+            // Agregar la vista de fondo y mostrar el cuadro de diálogo
+            FrameLayout rootView = findViewById(android.R.id.content);
+            rootView.addView(backgroundView);
+            alertDialog.show();
+        }
+    }
+
     public void logOut(View v){
         // Crear una vista para el fondo semitransparente
         final View backgroundView = new View(this);
@@ -279,87 +360,6 @@ public class PerfilActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void GuardarCambios(View view) {
-        if (isFormValid()){
-            // Crear una vista para el fondo semitransparente
-            final View backgroundView = new View(this);
-            backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            // Inflar el diseño personalizado
-            View dialogView = getLayoutInflater().inflate(R.layout.guardarcambios, null);
-
-            // Configurar el diálogo
-            builder.setView(dialogView);
-
-            // Personalizar el diálogo
-            final AlertDialog alertDialog = builder.create();
-
-            // Configurar un fondo semitransparente
-            Window window = alertDialog.getWindow();
-            if (window != null) {
-                WindowManager.LayoutParams params = window.getAttributes();
-                params.gravity = Gravity.CENTER;
-                window.setAttributes(params);
-            }
-
-            alertDialog.show();
-
-            // Configurar acciones de los botones
-            Button btnConfirmar = dialogView.findViewById(R.id.ConfirmarButton);
-            Button btnCancelar = dialogView.findViewById(R.id.CancelarButton);
-
-            btnConfirmar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Update Firestore with new user information
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    DocumentReference userRef = db.collection("usuarios").document(user.getUid());
-
-                    userRef.update(
-                            "nombre_s", nombreField.getText().toString(),
-                            "apellido_s", apellidosField.getText().toString(),
-                            "correo", correoField.getText().toString(),
-                            "telefono", telefonoField.getText().toString(),
-                            "fecha_nacimiento", dateButton.getText().toString()
-                    ).addOnSuccessListener(aVoid -> {
-                        // Handle success
-                        Toast.makeText(PerfilActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
-                    }).addOnFailureListener(e -> {
-                        // Handle failure
-                        Toast.makeText(PerfilActivity.this, "Error saving changes", Toast.LENGTH_SHORT).show();
-                    });
-                    // Lógica para Confirmar
-                    Intent intent = new Intent(PerfilActivity.this, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-            });
-
-            btnCancelar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Lógica para Cancelar
-                    alertDialog.dismiss();
-                    FrameLayout rootView = findViewById(android.R.id.content);
-                    rootView.removeView(backgroundView);
-                }
-            });
-
-            alertDialog.setOnDismissListener(v -> {
-                alertDialog.dismiss();
-                FrameLayout rootView = findViewById(android.R.id.content);
-                rootView.removeView(backgroundView);
-            });
-
-            // Agregar la vista de fondo y mostrar el cuadro de diálogo
-            FrameLayout rootView = findViewById(android.R.id.content);
-            rootView.addView(backgroundView);
-            alertDialog.show();
-        }
-    }
-
     private boolean isFormValid() {
         boolean isValid = true;
         TextView firstErrorView = null;
@@ -396,6 +396,14 @@ public class PerfilActivity extends AppCompatActivity {
             isValid = false;
         }
 
+        if (!isValidPhoneNumber(telefonoField.getText().toString())) {
+            telefonoField.setError("El número debe tener 10 dígitos");
+            if (firstErrorView == null) {
+                firstErrorView = telefonoTextView;
+            }
+            isValid = false;
+        }
+
         if (!isValid) {
             if (firstErrorView != null) {
                 ScrollView scrollView = findViewById(R.id.scrollView);
@@ -405,7 +413,13 @@ public class PerfilActivity extends AppCompatActivity {
         return isValid;
     }
 
-        private boolean isEmpty (EditText editText){
-            return editText.getText().toString().trim().isEmpty();
-        }
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // Patrón que verifica que el número de teléfono tenga exactamente 10 dígitos
+        String regex = "^[0-9]{10}$";
+        return Pattern.matches(regex, phoneNumber);
+    }
+
+    private boolean isEmpty (EditText editText){
+        return editText.getText().toString().trim().isEmpty();
+    }
 }

@@ -41,10 +41,20 @@ public class NewsActivity extends AppCompatActivity {
             // Reference to the Users collection
             DocumentReference userRef = db.collection("usuarios").document(user.getUid());
             // Get user information
+
+            int i;
+
+            if (user.isEmailVerified()){
+                i = 1;
+            }
+            else{
+                i = 0;
+            }
+
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     // Populate EditText fields with user information
-                    textView.setText("Hola " + documentSnapshot.getString("nombre_s"));
+                    textView.setText("Hola " + documentSnapshot.getString("nombre_s") + " (" + i + ")");
                 }
             }).addOnFailureListener(e -> {
                 // Handle failure, if any

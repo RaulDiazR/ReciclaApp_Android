@@ -38,31 +38,31 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:text=""
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="24sp" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/setting_profile_image"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/pf1" />
 
-            <ImageView
-                android:id="@+id/selectImageButton"
-                android:layout_width="match_parent"
-                android:layout_height="129dp"
-                android:layout_marginTop="8dp"
-                android:paddingLeft="50dp"
-                android:paddingRight="50dp"
+            <Button
+                android:id="@+id/profilepic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="160dp"
+                android:background="@color/white"
+                android:text="+"
                 android:textAlignment="center"
-                app:srcCompat="@drawable/pf1" />
+                android:textColor="@color/black"
+                android:textSize="34sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/buttonPerfil"
                 android:layout_width="334dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
                 android:background="@null"
                 android:drawableLeft="@drawable/perfil"
                 android:onClick="goToPerfil"
@@ -79,7 +79,7 @@
                 android:id="@+id/buttonFavs"
                 android:layout_width="358dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="6dp"
                 android:background="@null"
                 android:drawableLeft="@drawable/mf"
                 android:onClick="goToFavoritos"
@@ -99,7 +99,7 @@
                 android:id="@+id/buttonFQA"
                 android:layout_width="wrap_content"
                 android:layout_height="55dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="6dp"
                 android:background="@null"
                 android:drawableLeft="@drawable/pf"
                 android:onClick="goToFQA"
@@ -180,7 +180,6 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="10dp"
                 android:background="@null"
                 android:drawableLeft="@drawable/creditos"
                 android:onClick="goToCreditos"

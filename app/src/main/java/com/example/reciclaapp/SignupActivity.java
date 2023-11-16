@@ -57,7 +57,6 @@ public class SignupActivity extends AppCompatActivity {
     EditText apellidosField;
     EditText correoField;
     EditText telefonoField;
-    EditText fechaField;
     EditText contrasenaField;
     EditText confirmarcontrasenaField;
 
@@ -255,19 +254,12 @@ public class SignupActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void Continuar (View v){
+    public void Continuar(View v) {
         mAuth = FirebaseAuth.getInstance();
         if (isFormValid()) {
-            String firstName, lastName, email, phoneNumber, dateOfBirth, password;
-            int rank_points, highest1;
-            firstName = nombresField.getText().toString();
-            lastName = apellidosField.getText().toString();
+            String email, password;
             email = correoField.getText().toString();
-            phoneNumber = telefonoField.getText().toString();
-            dateOfBirth = dateButton.getText().toString();
             password = contrasenaField.getText().toString();
-            rank_points = 0;
-            highest1 = 0;
 
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
@@ -308,7 +300,6 @@ public class SignupActivity extends AppCompatActivity {
                                         window.setAttributes(params);
                                     }
 
-
                                     // Configurar acciones de los botones
                                     Button btnConfirmar = dialogView.findViewById(R.id.ConfirmarButton);
                                     Button btnCancelar = dialogView.findViewById(R.id.CancelarButton);
@@ -317,135 +308,7 @@ public class SignupActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View v) {
                                             alertDialog.dismiss();
-
-                                            // Crear una vista para el fondo semitransparente
-                                            final View backgroundView = new View(SignupActivity.this);
-                                            backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-                                            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
-
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
-
-                                            // Inflar el diseño personalizado
-                                            View dialogView = getLayoutInflater().inflate(R.layout.activatucuenta, null);
-
-                                            // Configurar el diálogo
-                                            builder.setView(dialogView);
-
-                                            // Personalizar el diálogo
-                                            final AlertDialog alertDialog = builder.create();
-
-                                            // Configurar un fondo semitransparente
-                                            Window window = alertDialog.getWindow();
-                                            if (window != null) {
-                                                WindowManager.LayoutParams params = window.getAttributes();
-                                                params.gravity = Gravity.CENTER;
-                                                window.setAttributes(params);
-                                            }
-
-                                            Button btnEnviar = dialogView.findViewById(R.id.EnviarCodigo);
-                                            btnEnviar.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    EditText codigoField = dialogView.findViewById(R.id.codigoNumber);
-                                                    String codigoText = codigoField.getText().toString();
-
-                                                    if (codigoText.equals("12345")){
-                                                        // Create a User object with additional data
-                                                        User newUser = new User(
-                                                                firstName, // Get the first name from your input field
-                                                                lastName,  // Get the last name from your input field
-                                                                email,
-                                                                phoneNumber, // Get the phone number from your input field
-                                                                dateOfBirth,  // Get the date of birth from your input field
-                                                                rank_points,
-                                                                highest1
-                                                        );
-
-                                                        // Get a reference to the Firestore collection "users" and set the document with the user's UID
-                                                        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection("usuarios").document(user.getUid());
-
-                                                        // Set the user data in Firestore
-                                                        userDocRef.set(newUser)
-                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                    @Override
-                                                                    public void onSuccess(Void aVoid) {
-                                                                        Log.d(TAG, "User data saved to Firestore");
-                                                                    }
-                                                                })
-                                                                .addOnFailureListener(new OnFailureListener() {
-                                                                    @Override
-                                                                    public void onFailure(@NonNull Exception e) {
-                                                                        Log.e(TAG, "Error saving user data to Firestore", e);
-                                                                    }
-                                                                });
-                                                        updateUI(user);
-
-
-                                                        alertDialog.dismiss();
-
-                                                        // Crear una vista para el fondo semitransparente
-                                                        final View backgroundView = new View(SignupActivity.this);
-                                                        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-                                                        backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
-
-                                                        AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
-
-                                                        // Inflar el diseño personalizado
-                                                        View dialogView = getLayoutInflater().inflate(R.layout.cuentaactivada, null);
-
-                                                        // Configurar el diálogo
-                                                        builder.setView(dialogView);
-
-                                                        // Personalizar el diálogo
-                                                        final AlertDialog alertDialog = builder.create();
-
-                                                        // Configurar un fondo semitransparente
-                                                        Window window = alertDialog.getWindow();
-                                                        if (window != null) {
-                                                            WindowManager.LayoutParams params = window.getAttributes();
-                                                            params.gravity = Gravity.CENTER;
-                                                            window.setAttributes(params);
-                                                        }
-
-                                                        Button btnContinuar = dialogView.findViewById(R.id.ContinuarCA);
-                                                        btnContinuar.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                startActivity(intent);
-                                                            }
-                                                        });
-
-                                                        alertDialog.setOnDismissListener(view -> {
-                                                            alertDialog.dismiss();
-                                                            FrameLayout rootView = findViewById(android.R.id.content);
-                                                            rootView.removeView(backgroundView);
-                                                            Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                            startActivity(intent);
-                                                        });
-
-                                                        // Agregar la vista de fondo y mostrar el cuadro de diálogo
-                                                        FrameLayout rootView = findViewById(android.R.id.content);
-                                                        rootView.addView(backgroundView);
-                                                        alertDialog.show();
-
-                                                    }
-                                                    else {
-                                                        codigoField.setError("Código Incorrecto");
-                                                    }
-                                                }
-                                            });
-
-                                            alertDialog.setOnDismissListener(view -> {
-                                                alertDialog.dismiss();
-                                                FrameLayout rootView = findViewById(android.R.id.content);
-                                                rootView.removeView(backgroundView);
-                                            });
-
-                                            // Agregar la vista de fondo y mostrar el cuadro de diálogo
-                                            FrameLayout rootView = findViewById(android.R.id.content);
-                                            rootView.addView(backgroundView);
-                                            alertDialog.show();
+                                            showActivarCuentaDialog(user, backgroundView);
                                         }
                                     });
 
@@ -454,15 +317,13 @@ public class SignupActivity extends AppCompatActivity {
                                         public void onClick(View v) {
                                             // Lógica para Cancelar
                                             alertDialog.dismiss();
-                                            FrameLayout rootView = findViewById(android.R.id.content);
-                                            rootView.removeView(backgroundView);
+                                            deleteUserAndDismiss(user, backgroundView);
                                         }
                                     });
 
                                     alertDialog.setOnDismissListener(view -> {
                                         alertDialog.dismiss();
-                                        FrameLayout rootView = findViewById(android.R.id.content);
-                                        rootView.removeView(backgroundView);
+                                        deleteUserAndDismiss(user, backgroundView);
                                     });
 
                                     // Agregar la vista de fondo y mostrar el cuadro de diálogo
@@ -487,15 +348,217 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
+    private void showActivarCuentaDialog(FirebaseUser user, View backgroundView) {
+        mAuth = FirebaseAuth.getInstance();
+        String firstName, lastName, email, phoneNumber, dateOfBirth, password;
+        int rank_points, highest1;
+        firstName = nombresField.getText().toString();
+        lastName = apellidosField.getText().toString();
+        email = correoField.getText().toString();
+        phoneNumber = telefonoField.getText().toString();
+        dateOfBirth = dateButton.getText().toString();
+        password = contrasenaField.getText().toString();
+        rank_points = 0;
+        highest1 = 0;
+        user = mAuth.getCurrentUser();
+        updateUI(user);
+
+        // Crear una vista para el fondo semitransparente
+        backgroundView = new View(SignupActivity.this);
+        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+
+        // Inflar el diseño personalizado
+        View dialogView = getLayoutInflater().inflate(R.layout.activatucuenta, null);
+
+        // Configurar el diálogo
+        builder.setView(dialogView);
+
+        // Personalizar el diálogo
+        final AlertDialog alertDialog = builder.create();
+
+        // Configurar un fondo semitransparente
+        Window window = alertDialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+
+        View finalBackgroundView = backgroundView;
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            // Create a User object with additional data
+                            mAuth = FirebaseAuth.getInstance();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                            User newUser = new User(
+                                    firstName, // Get the first name from your input field
+                                    lastName,  // Get the last name from your input field
+                                    email,
+                                    phoneNumber, // Get the phone number from your input field
+                                    dateOfBirth,  // Get the date of birth from your input field
+                                    rank_points,
+                                    highest1
+                            );
+
+                            // Get a reference to the Firestore collection "users" and set the document with the user's UID
+                            DocumentReference userDocRef = FirebaseFirestore.getInstance().collection("usuarios").document(user.getUid());
+
+                            // Set the user data in Firestore
+                            userDocRef.set(newUser)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d(TAG, "User data saved to Firestore");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e(TAG, "Error saving user data to Firestore", e);
+                                        }
+                                    });
+                            updateUI(user);
+                            user.sendEmailVerification();
+                            updateUI(user);
+                            // Configurar acciones de los botones
+                            Button btnContinuar = dialogView.findViewById(R.id.ContinuarVerif);
+                            btnContinuar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mAuth = FirebaseAuth.getInstance();
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    mAuth.signOut();
+                                    //mAuth.signInWithEmailAndPassword(email, password);
+                                    //user = mAuth.getCurrentUser();
+                                    //updateUI(user);
+                                    mAuth.signInWithEmailAndPassword(email, password);
+                                    if (user.isEmailVerified()){
+                                        alertDialog.dismiss();
+                                        showCuentaActivadaDialog(user, finalBackgroundView);
+                                    }
+                                    else{
+                                        Toast.makeText(SignupActivity.this, "Verifica tu correo para poder continuar", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(SignupActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+
+        //user = mAuth.getCurrentUser();
+
+        alertDialog.setOnDismissListener(view -> {
+            alertDialog.dismiss();
+            FrameLayout rootView = findViewById(android.R.id.content);
+            rootView.removeView(finalBackgroundView);
+            //Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            //startActivity(intent);
+        });
+
+        // Agregar la vista de fondo y mostrar el cuadro de diálogo
+        FrameLayout rootView = findViewById(android.R.id.content);
+        rootView.addView(finalBackgroundView);
+        alertDialog.show();
+    }
+
+    private void showCuentaActivadaDialog(FirebaseUser user, View backgroundView) {
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        updateUI(user);
+
+        // Crear una vista para el fondo semitransparente
+        backgroundView = new View(SignupActivity.this);
+        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+
+        // Inflar el diseño personalizado
+        View dialogView = getLayoutInflater().inflate(R.layout.cuentaactivada, null);
+
+        // Configurar el diálogo
+        builder.setView(dialogView);
+
+        // Personalizar el diálogo
+        final AlertDialog alertDialog = builder.create();
+
+        // Configurar un fondo semitransparente
+        Window window = alertDialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+
+        // Configurar acciones de los botones
+        Button btnContinuar = dialogView.findViewById(R.id.ContinuarCA);
+
+        View finalBackgroundView = backgroundView;
+        btnContinuar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+        alertDialog.setOnDismissListener(view -> {
+            alertDialog.dismiss();
+            Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+
+        // Agregar la vista de fondo y mostrar el cuadro de diálogo
+        FrameLayout rootView = findViewById(android.R.id.content);
+        rootView.addView(finalBackgroundView);
+        alertDialog.show();
+    }
+
+    private void deleteUserAndDismiss(FirebaseUser user, View backgroundView) {
+        if (user != null) {
+            user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User account deleted.");
+                            }
+                        }
+                    });
+        }
+
+        FrameLayout rootView = findViewById(android.R.id.content);
+        rootView.removeView(backgroundView);
+    }
+
+
     private boolean isFormValid() {
-        final boolean[] isValid = {true};
+        boolean isValid = true;
 
         if (isEmpty(nombresField)) {
             nombresField.setError("Este campo es obligatorio");
             if (firstErrorView == null) {
                 firstErrorView = nombresTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (isEmpty(apellidosField)) {
@@ -503,7 +566,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = apellidosTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (isEmpty(correoField)) {
@@ -511,7 +574,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = correoTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (!isValidEmail(correoField.getText().toString())){
@@ -519,7 +582,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = correoTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (isEmpty(telefonoField)) {
@@ -527,7 +590,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = telefonoTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (!isValidPhoneNumber(telefonoField.getText().toString())) {
@@ -535,7 +598,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = telefonoTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (isEmpty(contrasenaField)) {
@@ -543,7 +606,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = contrasenaTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (!isValidPassword(contrasenaField.getText().toString())) {
@@ -551,7 +614,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = contrasenaTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (isEmpty(confirmarcontrasenaField)) {
@@ -559,7 +622,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = contrasenaTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         if (!(tycCheckBox.isChecked())) {
@@ -567,7 +630,7 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = tycCheckBox;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         contrasenaText = contrasenaField.getText().toString();
@@ -577,17 +640,17 @@ public class SignupActivity extends AppCompatActivity {
             if (firstErrorView == null) {
                 firstErrorView = confirmarcontrasenaTextView;
             }
-            isValid[0] = false;
+            isValid = false;
         }
 
         // If your form is inside a ScrollView, scroll to the first error message.
-        if (!isValid[0]) {
+        if (!isValid) {
             if (firstErrorView != null) {
                 ScrollView scrollView = findViewById(R.id.scrollView);
                 scrollView.smoothScrollTo(0, firstErrorView.getTop());
             }
         }
-        return isValid[0];
+        return isValid;
     }
 
     private boolean isValidPhoneNumber(String phoneNumber) {
