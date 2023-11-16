@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:breakStrategy="balanced"
             android:gravity="center"
-            android:text="@string/vie_14_de_aug_de_2023"
+            android:text="@string/_6_oct_2023"
             android:textColor="@color/black"
             android:textSize="18sp"
             tools:ignore="TextSizeCheck" />
