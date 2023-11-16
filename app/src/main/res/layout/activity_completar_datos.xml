@@ -157,6 +157,48 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
+            <CheckBox
+                android:id="@+id/checkBox1"
+                android:layout_width="255dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="24dp"
+                android:text="Acepto Términos y Condiciones y la Política de Privacidad"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.49"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/birthday" />
+
+            <TextView
+                android:id="@+id/textView125"
+                android:layout_width="258dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:onClick="goToTyC"
+                android:text="        Ver Términos y Condiciones"
+                android:textColor="@color/dark_green"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.49"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkBox1"/>
+
+            <TextView
+                android:id="@+id/textView126"
+                android:layout_width="242dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:onClick="goToAvPriv"
+                android:text="        Ver Política de Privacidad"
+                android:textColor="@color/dark_green"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.49"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView125"/>
+
             <Button
                 android:id="@+id/buttonContinuar"
                 android:layout_width="250dp"
@@ -172,7 +214,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/birthday" />
+                app:layout_constraintTop_toBottomOf="@+id/textView126" />
 
         </LinearLayout>
     </ScrollView>

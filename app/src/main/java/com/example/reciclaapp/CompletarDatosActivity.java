@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -43,6 +44,8 @@ public class CompletarDatosActivity extends AppCompatActivity {
 
     Button continuarButton;
 
+    CheckBox tycCheckBox;
+
     FirebaseAuth auth;
     FirebaseUser user;
     private static final String TAG = "EmailPassword";
@@ -66,6 +69,8 @@ public class CompletarDatosActivity extends AppCompatActivity {
 
         dateButton = findViewById(R.id.birthday);
         dateButton.setText(getTodaysDate());
+
+        tycCheckBox = findViewById(R.id.checkBox1);
 
         continuarButton = findViewById(R.id.buttonContinuar);
     }
@@ -154,6 +159,16 @@ public class CompletarDatosActivity extends AppCompatActivity {
         //rootView.removeView(backgroundView);
     }
 
+    public void goToTyC(View v){
+        Intent intent = new Intent(this, TerminosCondicionesActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToAvPriv(View v){
+        Intent intent = new Intent(this, AvisoprivacidadActivity.class);
+        startActivity(intent);
+    }
+
     public void ContinuarRegistro(View view){
         if (isFormValid()){
             String firstName, lastName, email, phoneNumber, dateOfBirth, password;
@@ -232,6 +247,14 @@ public class CompletarDatosActivity extends AppCompatActivity {
             telefonoField.setError("El número debe tener 10 dígitos");
             if (firstErrorView == null) {
                 firstErrorView = telefonoTextView;
+            }
+            isValid = false;
+        }
+
+        if (!(tycCheckBox.isChecked())) {
+            tycCheckBox.setError("Este campo es obligatorio");
+            if (firstErrorView == null) {
+                firstErrorView = tycCheckBox;
             }
             isValid = false;
         }
