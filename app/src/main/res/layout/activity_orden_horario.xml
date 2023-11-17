@@ -68,7 +68,7 @@
             android:drawableStart="@drawable/shape_img_calendar"
             android:paddingStart="16dp"
             android:paddingEnd="26dp"
-            android:text="@string/_6_oct_2023"
+            android:text="@string/vie_14_de_aug_de_2023"
             android:textSize="16sp"
             android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"

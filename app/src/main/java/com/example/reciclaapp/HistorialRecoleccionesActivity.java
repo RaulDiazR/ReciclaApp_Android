@@ -333,6 +333,12 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             // Configure button actions
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
             Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
+            Button btnCancelarOrden = dialogView.findViewById(R.id.cancelarOrdenButton);
+
+            btnCancelarOrden.setOnClickListener(v -> {
+                alertDialog.dismiss();
+                confirmarCancelarOrden(itemPos);
+            });
 
             btnVerDetalles.setOnClickListener(v -> {
                 Intent intent = new Intent(this, VerDetallesActivity.class);

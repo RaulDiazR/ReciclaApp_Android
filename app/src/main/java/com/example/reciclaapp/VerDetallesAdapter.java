@@ -99,7 +99,7 @@ public class VerDetallesAdapter extends RecyclerView.Adapter<VerDetallesAdapter.
                 // set image material
                 ImageView imgFotoMaterial = dialogView.findViewById(R.id.fotoMaterial);
                 String url = item.getFotoUrl();
-                Picasso.get().load(url).placeholder(R.drawable.icon_loading).error(R.drawable.icon_loading).into(imgFotoMaterial);
+                Picasso.get().load(url).placeholder(R.drawable.icon_loading).error(R.drawable.icon_error_image).into(imgFotoMaterial);
 
                 // Configure button actions
                 Button btnContinuar = dialogView.findViewById(R.id.continuarBtn);

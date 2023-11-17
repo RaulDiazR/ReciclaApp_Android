@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="260dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/plex_sans_condensed"
@@ -38,7 +38,7 @@
         android:id="@+id/subTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="@string/recolector"
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -179,6 +179,22 @@
         app:layout_constraintStart_toStartOf="@+id/continuarButton"
         app:layout_constraintTop_toBottomOf="@+id/subTitle2" />
 
+    <Button
+        android:id="@+id/cancelarOrdenButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_variant_red"
+        android:text="@string/cancelar_orden"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/continuarButton"
+        app:layout_constraintStart_toStartOf="@+id/continuarButton"
+        app:layout_constraintTop_toBottomOf="@+id/verDetallesButton" />
 
     <Button
         android:id="@+id/continuarButton"
@@ -196,7 +212,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/title"
         app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/verDetallesButton"
+        app:layout_constraintTop_toBottomOf="@+id/cancelarOrdenButton"
         tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

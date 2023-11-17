@@ -255,8 +255,8 @@ public class OrdenHorarioActivity extends AppCompatActivity {
     public boolean checkComentarios(EditText comentarios) {
         int currentLength = comentarios.getText().length();
 
-        if (currentLength > 300) {
-            comentarios.setError("Máximo de 300 caracteres");
+        if (currentLength > 100) {
+            comentarios.setError("Máximo de 100 caracteres");
             return false; // Return false to indicate that the input is invalid
         } else {
             comentarios.setError(null); // Clear any previous error message
