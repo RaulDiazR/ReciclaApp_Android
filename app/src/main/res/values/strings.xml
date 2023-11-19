@@ -1,9 +1,19 @@
 <resources>
     <string name="app_name">ReciclaApp</string>
 
-
+    <string name="accept">Aceptar</string>
     <string name="map">Mapa de reciclaje</string>
+    <string name="recmap">Recoleccion</string>
     <string name="filter">Filtros</string>
-    <string name="apply_filter">Aplicar</string>
-    <string name="filter_quantity">0</string>
+    <string name="place_name">Nombre del lugar</string>
+    <string name="place_clasification">Clasificación del lugar</string>
+    <string name="place_direction">Dirección del lugar</string>
+    <string name="place_hours">Horario del lugar</string>
+    <string name="contact">Contactar</string>
+    <string name="add_favorites">Agregar a favoritos</string>
+    <string name="more">Mas</string>
+    <string name="mark_image">imagen marcador</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="self_ubication">Mi ubicación</string>
 </resources>

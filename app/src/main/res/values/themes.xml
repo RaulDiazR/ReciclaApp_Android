@@ -9,4 +9,9 @@
 
     <style name="Theme.ReciclaApp" parent="Base.Theme.ReciclaApp" />
 
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/animation_in_bottom_dialog</item>
+        <item name="android:windowExitAnimation">@anim/animation_out_bottom_dialog</item>
+    </style>
+
 </resources>

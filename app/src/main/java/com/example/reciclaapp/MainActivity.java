@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +28,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OpenActivityMap() {
-        Intent intent = new Intent(MainActivity.this, MapActivity.class);
-        startActivity(intent);
+
+        try {
+
+            Intent intent = new Intent(MainActivity.this, StreetMapActivity.class);
+            intent.putExtra("postalcode", "72080");
+            intent.putExtra("state", "Puebla");
+            intent.putExtra("city", "Municipio de Puebla");
+            intent.putExtra("country", "Mexico");
+            intent.putExtra("street", "Calle 34 Poniente");
+            startActivity(intent);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Esto imprimirá el error en el Log
+            Toast.makeText(this, "Error al obtener el cliente de ubicación.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 

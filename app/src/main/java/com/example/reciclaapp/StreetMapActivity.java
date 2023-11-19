@@ -1,0 +1,636 @@
+package com.example.reciclaapp;
+
+
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
+import android.annotation.SuppressLint;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Looper;
+
+import android.support.annotation.NonNull;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
+
+
+import org.osmdroid.config.Configuration;
+import org.osmdroid.library.BuildConfig;
+
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+
+public class StreetMapActivity extends AppCompatActivity {
+
+
+    Button ActiveButtomSheet;
+    MapView MapOS = null;
+    GeoPoint StartPoint;
+    Marker Mark = null;
+    LocationRequest mLocationRequest;
+    Location mLastLocation;
+    FusedLocationProviderClient mFusedLocationClient;
+    InfoWindow customInfoWindow;
+    final Context context = this;
+    final Activity activity = this;
+    List<Category> categoryList = new ArrayList<>();
+    List<Center> centerList = new ArrayList<>();
+    Map<String, ArrayList<Integer>> CategoryCenterMap = new HashMap<>();
+    Dialog BottomDialog;
+    View BottomDialogView;
+    FirebaseFirestore db;
+    Map<String, Integer> MaterialMap = new HashMap<>();
+    List<MaterialModel> Materials = new ArrayList<>();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_street_map);
+
+        try {
+            // Load Resources from Firebase
+            db = FirebaseFirestore.getInstance();
+            //getMaterials();
+            createCategoryList();
+
+
+            // Bottom Sheet Dialog Implementations
+            ActiveButtomSheet = findViewById(R.id.activate_bottom_sheet);
+            ActiveButtomSheet.setOnClickListener(v -> showDialog());
+
+            // Ubication
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+            // Map Implementation
+            Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+            MapOS = findViewById(R.id.osmap);
+            MapOS.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
+            MapOS.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+            MapOS.setMultiTouchControls(true);
+            MapOS.setHorizontalMapRepetitionEnabled(true);
+            MapOS.setVerticalMapRepetitionEnabled(false);
+            MapOS.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
+            MapOS.getController().setZoom(20.0);
+            MapOS.setMinZoomLevel(5.0);
+            StartPoint = new GeoPoint(19.041345, -98.206119);
+            MapOS.getController().setCenter(StartPoint);
+
+            checkLocationPermission();
+
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception in Logcat
+            String errorMessage = e.getMessage(); // Get the error message
+            runOnUiThread(() -> {
+                Toast.makeText(this, "An error occurred: " + errorMessage, Toast.LENGTH_LONG).show();
+            });
+        }
+
+        createCenter();
+    }
+
+    public void createCenter() {
+
+        db.collection("centros").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        // after getting the data we are calling on success method
+                        // and inside this method we are checking if the received
+                        // query snapshot is empty or not.
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // if the snapshot is not empty we are
+                            // hiding our progress bar and adding
+                            // our data in a list.
+                            //loadingPB.setVisibility(View.GONE);
+                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                            int con = 0;
+                            for (DocumentSnapshot d : list) {
+                                // after getting this list we are passing
+                                // that list to our object class.
+
+                                CenterModel centerModel = new CenterModel(Objects.requireNonNull(d.getData()));
+                                System.out.println("CONTADOR" + con);
+                                if (centerModel.isValid()) {
+                                    centerModel.imprimirTodo();
+                                    Center center = new Center(centerModel.getNombre(), centerModel.getDireccion(), centerModel.getLatitud(), centerModel.getLongitud(), centerModel.getNum_telefonico(), centerModel.getHora_apertura(), centerModel.getHora_cierra(), centerModel.getImagen(), MapOS, context, centerModel.getCategoria(), activity);
+                                    centerList.add(center);
+                                    System.out.println(centerModel.getCategoria());
+                                    System.out.println(CategoryCenterMap.containsKey(centerModel.getCategoria()));
+                                    if (CategoryCenterMap.containsKey(centerModel.getCategoria())) {
+                                        System.out.println("Entre aqui");
+                                        CategoryCenterMap.get(centerModel.getCategoria()).add(con);
+                                    } else {
+                                        CategoryCenterMap.put(centerModel.getCategoria(), new ArrayList<>());
+                                        CategoryCenterMap.get(centerModel.getCategoria()).add(con);
+                                    }
+                                    MapOS.getOverlays().add(center.getMark());
+                                    con++;
+                                }
+
+                            }
+
+                            Toast.makeText( context, "Centros Creados", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            // if the snapshot is empty we are displaying a toast message.
+                            Toast.makeText( context, "No data found in Database", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // if we do not get any data or any error we are displaying
+                        // a toast message that we do not get any data
+                        Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    private void createCategoryList() {
+
+        db.collection("categorias").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        // after getting the data we are calling on success method
+                        // and inside this method we are checking if the received
+                        // query snapshot is empty or not.
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // if the snapshot is not empty we are
+                            // hiding our progress bar and adding
+                            // our data in a list.
+                            //loadingPB.setVisibility(View.GONE);
+                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                            int con = 0;
+                            for (DocumentSnapshot d : list) {
+                                // after getting this list we are passing
+                                // that list to our object class.
+                                CategoryModel categoryModel = new CategoryModel(Objects.requireNonNull(d.getData()));
+                                System.out.println("CONTADOR" + con);
+                                if (categoryModel.isValid()) {
+                                    categoryModel.imprimirTodo();
+                                    Category category = new Category((String) d.getId(),categoryModel.getImageURL());
+                                    categoryList.add(category);
+                                    if (!CategoryCenterMap.containsKey((String) d.getId())) {
+                                        CategoryCenterMap.put( (String) d.getId(), new ArrayList<>());
+                                    }
+                                    con++;
+                                }
+
+
+                            }
+
+                            Toast.makeText( context, "Categorias Creadas", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            // if the snapshot is empty we are displaying a toast message.
+                            Toast.makeText( context, "No data found in Database", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // if we do not get any data or any error we are displaying
+                        // a toast message that we do not get any data
+                        Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    public void getCategories(View view) {
+
+        //Get layout where is placed the categories
+        LinearLayout filter_layout = view.findViewById(R.id.filter_layout);
+
+        // Get All Categories from Firestore
+
+        // Once we get categories add them to a list to save them
+
+
+        Category category = null;
+        int h = categoryList.size() % 3;
+        int size = categoryList.size() / 3;
+        for (int i = 0; i < size; i++) {
+            LinearLayout categoryLayout = new LinearLayout(this);
+            categoryLayout.setOrientation(LinearLayout.HORIZONTAL);
+            categoryLayout.setGravity(Gravity.CENTER);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,  // Ancho MATCH_PARENT
+                    LinearLayout.LayoutParams.WRAP_CONTENT   // Alto WRAP_CONTENT
+            );
+            categoryLayout.setLayoutParams(layoutParams);
+
+
+            for (int j = i*3; j < i*3+3; j++) {
+
+                LinearLayout optionCategoryInLayout = new LinearLayout(this);
+                optionCategoryInLayout.setOrientation(LinearLayout.VERTICAL);
+                optionCategoryInLayout.setGravity(Gravity.CENTER);
+                LinearLayout.LayoutParams layoutParamsInOption = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,  // Ancho MATCH_PARENT
+                        LinearLayout.LayoutParams.WRAP_CONTENT   // Alto WRAP_CONTENT
+                );
+                layoutParamsInOption.weight = 1.0f;
+
+                optionCategoryInLayout.setLayoutParams(layoutParamsInOption);
+
+                // Get Category from Category List by Index
+                category = categoryList.get(j);
+
+                // Establish Image Button from Category
+                ImageButton imageButton = new ImageButton(this);
+                imageButton.setLayoutParams(new LinearLayout.LayoutParams(
+                        200,
+                        200
+                ));
+                imageButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageButton.setBackground(ContextCompat.getDrawable(context, R.color.blue));
+                Picasso.get().load(category.getImageResourceId()).into(imageButton);
+
+                // Establish Text View from Category
+                TextView textView = new TextView(this);
+                textView.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
+                textView.setText(category.getTitle());
+                textView.setGravity(Gravity.CENTER);
+                textView.setTextColor(Color.WHITE);
+
+                optionCategoryInLayout.addView(imageButton);
+                optionCategoryInLayout.addView(textView);
+                Category finalCategory = category;
+                imageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        putCentersCategoryInMap(finalCategory.getTitle());
+                        BottomDialog.dismiss();
+                    }
+                });
+                categoryLayout.addView(optionCategoryInLayout);
+
+            }
+            filter_layout.addView(categoryLayout);
+        }
+
+        if (h > 0) {
+            size = categoryList.size() - h ;
+            LinearLayout categoryLayout = new LinearLayout(this);
+            categoryLayout.setOrientation(LinearLayout.HORIZONTAL);
+            categoryLayout.setGravity(Gravity.CENTER);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,  // Ancho MATCH_PARENT
+                    LinearLayout.LayoutParams.WRAP_CONTENT   // Alto WRAP_CONTENT
+            );
+            categoryLayout.setLayoutParams(layoutParams);
+
+            for (int j = size; j < size + h; j++) {
+
+                LinearLayout optionCategoryInLayout = new LinearLayout(this);
+                optionCategoryInLayout.setOrientation(LinearLayout.VERTICAL);
+                optionCategoryInLayout.setGravity(Gravity.CENTER);
+                LinearLayout.LayoutParams layoutParamsInOption = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,  // Ancho MATCH_PARENT
+                        LinearLayout.LayoutParams.WRAP_CONTENT   // Alto WRAP_CONTENT
+                );
+                layoutParamsInOption.weight = 1.0f;
+
+                optionCategoryInLayout.setLayoutParams(layoutParamsInOption);
+
+                // Get Category from Category List by Index
+                category = categoryList.get(j);
+
+                // Establish Image Button from Category
+                ImageButton imageButton = new ImageButton(this);
+                imageButton.setLayoutParams(new LinearLayout.LayoutParams(
+                        200,
+                        200
+                ));
+                imageButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageButton.setBackground(ContextCompat.getDrawable(context, R.color.blue));
+                Picasso.get().load(category.getImageResourceId()).into(imageButton);
+
+                // Establish Text View from Category
+                TextView textView = new TextView(this);
+                textView.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
+                textView.setText(category.getTitle());
+                textView.setGravity(Gravity.CENTER);
+                textView.setTextColor(Color.WHITE);
+
+                optionCategoryInLayout.addView(imageButton);
+                optionCategoryInLayout.addView(textView);
+
+                Category finalCategory = category;
+                imageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        putCentersCategoryInMap(finalCategory.getTitle());
+                        BottomDialog.dismiss();
+                    }
+                });
+
+                categoryLayout.addView(optionCategoryInLayout);
+
+            }
+
+            filter_layout.addView(categoryLayout);
+        }
+    }
+
+    private void putCentersCategoryInMap(String category) {
+        ArrayList<Integer> aux;
+        putCentersHidden();
+        if (CategoryCenterMap.containsKey(category)) {
+            aux = CategoryCenterMap.get(category);
+            for (int i = 0; i < CategoryCenterMap.get(category).size(); i++) {
+                centerList.get(aux.get(i)).getMark().setVisible(true);
+            }
+        }
+
+        for (Map.Entry<String, ArrayList<Integer>> entry : CategoryCenterMap.entrySet()) {
+            String clave = entry.getKey();
+            ArrayList<Integer> valores = entry.getValue();
+
+            System.out.println("Clave: " + clave);
+            System.out.println("Valores: " + valores);
+            System.out.println("---");
+        }
+
+    }
+
+    private void putCentersHidden() {
+        Marker marker = null;
+        for(int i = 0; i < centerList.size(); i++) {
+            marker = centerList.get(i).getMark();
+            marker.setVisible(false);
+
+            if (marker.isInfoWindowOpen()) {
+                marker.closeInfoWindow();
+            }
+        }
+    }
+
+    private void putCentersVisible() {
+        for(int i = 0; i < centerList.size(); i++) {
+            centerList.get(i).getMark().setVisible(true);
+        }
+    }
+
+    private void showDialog() {
+        if (isFinishing()) {
+            return;
+        }
+
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        // Inflar el layout personalizado dentro del diálogo
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_dialog, null);
+        dialog.setContentView(dialogView);
+
+        BottomDialog = dialog;
+        BottomDialogView = dialogView;
+
+        Button showAllButton = dialogView.findViewById(R.id.show_all);
+        if (showAllButton != null) {
+            showAllButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    putCentersVisible();
+                }
+            });
+        }
+
+        // Configuración del diseño y estilo del diálogo
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            int dialogAnimationStyle = R.style.DialogAnimation;
+            if (dialogAnimationStyle != 0) {
+                dialog.getWindow().getAttributes().windowAnimations = dialogAnimationStyle;
+            }
+
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+            try {
+                getCategories(dialogView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialog.show();
+        }
+    }
+
+    private void getMaterials() {
+
+        db.collection("materiales").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+
+                            int con = 0;
+                            for (DocumentSnapshot d : list) {
+                                MaterialModel materialModel = new MaterialModel(Objects.requireNonNull(d.getData()));
+
+                                if (materialModel.isValid()) {
+                                    materialModel.imprimirTodo();
+                                    Materials.add(materialModel);
+                                    MaterialMap.put((String) d.getId(), con);
+                                    con++;
+                                }
+                            }
+
+                            Toast.makeText( context, "Materiales Listos", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            // if the snapshot is empty we are displaying a toast message.
+                            Toast.makeText( context, "No data found in Database", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // if we do not get any data or any error we are displaying
+                        // a toast message that we do not get any data
+                        Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+    LocationCallback mLocationCallback = new LocationCallback() {
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            List<Location> locationList = locationResult.getLocations();
+            if (locationList.size() > 0) {
+                //The last location in the list is the newest
+                Location location = locationList.get(locationList.size() - 1);
+                mLastLocation = location;
+
+                if (customInfoWindow == null) {
+                     customInfoWindow = new InfoWindow(R.layout.custom_window_self_ubication, MapOS) {
+                        @Override
+                        public void onOpen(Object item) {
+
+                        }
+                        @Override
+                        public void onClose() {
+
+                        }
+                    };
+                }
+
+                if (StartPoint == null) {
+                    StartPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                } else {
+                    StartPoint.setLatitude(location.getLatitude());
+                    StartPoint.setLongitude(location.getLongitude());
+                }
+
+                if (Mark == null) {
+                    Mark = new Marker(MapOS);
+                    Mark.setPosition(StartPoint);
+                    Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                    Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.icon_pin_self));
+                    Mark.setInfoWindow(customInfoWindow);
+                    MapOS.getController().setCenter(StartPoint);
+
+                } else {
+                    Mark.setPosition(StartPoint);
+                    Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+                }
+
+                Mark.setOnMarkerClickListener((marker, mapView) -> {
+                    if (marker.isInfoWindowOpen()) {
+                        marker.closeInfoWindow();
+                    } else {
+                        marker.showInfoWindow();
+                    }
+
+                    return true;
+                });
+
+
+                MapOS.getOverlays().add(Mark);
+            }
+        }
+    };
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Se necesita permiso de ubicación")
+                        .setMessage("Esta aplicación necesita el permiso de ubicación, por favor acepta para utilizar la funcionalidad de ubicación")
+                        .setPositiveButton("OK", (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(StreetMapActivity.this,
+                                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST_LOCATION);
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        } else {
+            requestLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    requestLocationUpdates();
+
+                } else {
+                    Toast.makeText(this, "Permiso Denegado", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+    @SuppressLint("MissingPermission")
+    private void requestLocationUpdates() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+                .setWaitForAccurateLocation(true)
+                .build();
+
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
+}

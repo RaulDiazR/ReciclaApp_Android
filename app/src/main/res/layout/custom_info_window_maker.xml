@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/shape_rounded_all_white">
+
+    <ImageView
+        android:id="@+id/iconImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/mark_image"
+        android:src="@drawable/centro_ejemplo"
+        />
+
+    <TextView
+        android:id="@+id/nameCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iconImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/place_name"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/contactCenterLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/nameCenter"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/phone_contact"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/contact"
+            android:background="@color/white"
+            android:src="@drawable/icon_phone" />
+
+        <TextView
+            android:id="@+id/contactCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/contact"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10sp"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/favoriteCenterLayout"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/contactCenterLayout"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="start">
+
+        <ToggleButton
+            android:id="@+id/add_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:textOff=""
+            android:textOn=""
+            android:button="@drawable/selector_favorite"
+            android:background="#FFFFFF"
+            android:contentDescription="@string/add_favorites" />
+
+        <TextView
+            android:id="@+id/addToFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_favorites"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10sp"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/moreCenterLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/favoriteCenterLayout"
+        android:padding="8dp"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/more_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon_more"
+            android:contentDescription="@string/more"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/more"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10sp"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+</RelativeLayout>
+
