@@ -12,7 +12,10 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+/**
+ * Adaptador para el encabezado de la RecyclerView en la actividad MaterialesActivity.
+ * Muestra información general y proporciona un botón para crear nuevos materiales.
+ */
 public class MaterialesHeaderAdapter extends RecyclerView.Adapter<MaterialesHeaderAdapter.HeaderViewHolder> {
     private final Context context;
     private final MaterialesHeaderItem headerData;

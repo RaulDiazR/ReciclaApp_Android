@@ -6,7 +6,11 @@ import com.example.reciclaapp.models.McqMaterial;
 import com.example.reciclaapp.models.McqRecolector;
 
 import java.util.List;
-
+/*
+   Clase HistorialItem: Representa un elemento de historial que se muestra en el RecyclerView.
+   Contiene información sobre la fecha, horario, materiales, estado, etc. de una actividad histórica.
+   También incluye métodos getter y setter para acceder y modificar sus atributos.
+*/
 public class HistorialItem {
     Drawable backgroundDrawable; // New variable for background
     String fecha, horario, totalMateriales, estado;

@@ -1,22 +1,28 @@
 package com.example.reciclaapp.models;
 
 import java.util.Map;
-
+/**
+ * La clase McqRecoleccion encapsula información sobre la recolección de materiales reciclables.
+ * Contiene detalles como el identificador de la recolección, el usuario cliente asociado, fecha y
+ * horarios de recolección, comentarios, estado de la recolección, entre otros atributos.
+ */
 public class McqRecoleccion {
-    private String Rid;
-    private String idUsuarioCliente;
-    private String fechaRecoleccion;
-    private String horaRecoleccionInicio;
-    private String horaRecoleccionFinal;
-    private String comentarios;
-    private boolean enPersona;
-    private boolean calificado;
-    private boolean recolectada;
-    private String estado;
-    private Long timeStamp;
-    private Map<String, Object> recolector;
 
-    private Map<String, Map<String, Object>> materiales;
+    private String Rid;                      // Identificador único de la recolección
+    private String idUsuarioCliente;         // Identificador del usuario cliente asociado
+    private String fechaRecoleccion;         // Fecha de la recolección
+    private String horaRecoleccionInicio;    // Hora de inicio de la recolección
+    private String horaRecoleccionFinal;     // Hora de finalización de la recolección
+    private String comentarios;              // Comentarios relacionados con la recolección
+    private boolean enPersona;               // Indica si la recolección se realiza en persona
+    private boolean calificado;              // Indica si la recolección ha sido calificada
+    private boolean recolectada;             // Indica si la recolección ha sido completada
+    private String estado;                   // Estado actual de la recolección
+    private Long timeStamp;                  // Marca de tiempo asociada a la recolección
+    private Map<String, Object> recolector;  // Información del recolector asociado
+
+    private Map<String, Map<String, Object>> materiales;  // Información detallada de los materiales recolectados
+
 
     public McqRecoleccion() {
     }

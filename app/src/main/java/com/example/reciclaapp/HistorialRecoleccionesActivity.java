@@ -49,7 +49,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
+/*
+   Actividad HistorialRecoleccionesActivity: Muestra el historial de recolecciones del usuario.
+   - Utiliza un RecyclerView para mostrar la lista de recolecciones pasadas.
+   - Incluye lógica para actualizar el estado de las recolecciones según el tiempo transcurrido.
+   - Permite cancelar recolecciones y muestra confirmaciones al usuario.
 
+*/
 public class HistorialRecoleccionesActivity extends AppCompatActivity implements HistorialItemClickListener {
 
     // 1- AdapterView
@@ -69,7 +75,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     FirebaseFirestore firestore;
 
-    // Define a handler for scheduling periodic tasks
+    // Se define un handler para agendar actividades cada cierto tiempo
     private final Handler handler = new Handler();
 
     @Override
@@ -77,10 +83,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historial_recolecciones);
 
-        // Find the Toolbar by its ID and et the Toolbar as the app bar
+        // Encuentra la barra de herramientas por su ID y configura la barra de herramientas como la barra de aplicaciones
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Remove default title for app bar
+        // Eliminar el título predeterminado de la barra de aplicaciones
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         firestore = FirebaseFirestore.getInstance();
@@ -90,14 +96,13 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     }
 
+    // Inicializa el RecyclerView y sus componentes asociados
     private void initializeRecyclerView() {
-        // Create and set the linear layout manager so the RecyclerView works properly.
         recyclerView = findViewById(R.id.recyclerViewHistorial);
         itemList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // Initialize your RecyclerView with the itemList that now contains data from Firebase.
         historialAdapter = new HistorialAdapter(itemList);
         recyclerView.setAdapter(historialAdapter);
 
@@ -105,6 +110,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         historialAdapter.setClickListener(this);
     }
 
+    // Recupera datos de Firebase y crea elementos del historial para mostrar en el RecyclerView
     @SuppressLint("NotifyDataSetChanged")
     private void retrieveAndCreateHistorialItems() {
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -138,10 +144,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     boolean enPersona = recoleccion.getEnPersona();
                     boolean recolectada = recoleccion.getRecolectada();
 
-                    // Access the recolector data from the recoleccion document
+
                     Map<String, Object> recolectorData = recoleccion.getRecolector();
 
-                    // Now, you can access fields within recolectorData
+
                     String recolectorNombre = (String) recolectorData.get("nombre");
                     String recolectorApellidos = (String) recolectorData.get("apellidos");
                     String recolectorTelefono = (String) recolectorData.get("telefono");
@@ -170,17 +176,15 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     Long recolectorCantidadResenas = (Long) recolectorData.get("cantidad_reseñas");
                     Long recolectorSumaResenas = (Long) recolectorData.get("suma_reseñas");
 
-                    // Check if recolectorCantidadResenas and recolectorSumaResenas are not null before unboxing.
                     int cantidadResenas = recolectorCantidadResenas != null ? recolectorCantidadResenas.intValue() : 0;
                     int sumaResenas = recolectorSumaResenas != null ? recolectorSumaResenas.intValue() : 0;
 
                     McqRecolector recolector = new McqRecolector(recolectorNombre, recolectorApellidos, recolectorTelefono, recolectorFoto, cantidadResenas, sumaResenas, recolectorId);
 
-                    // Access the "materiales" field
                     Map<String, Map<String, Object>> materialesMap = recoleccion.getMateriales();
 
                     List<McqMaterial> materialesList = new ArrayList<>();
-                    // Loop through the materials in your Firestore document
+
                     for (String materialId : materialesMap.keySet()) {
                         Map<String, Object> materialData = materialesMap.get(materialId);
                         if (materialData != null) {
@@ -197,7 +201,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                             materialesList.add(material);
                         }
                     }
-                    // Create a new HistorialItem with Recolector data
+
                     HistorialItem newItem = new HistorialItem(squareDrawable, date, time, materialsInfo, estado, color, isRated, id, recolector, timeStamp, materialesList, enPersona);
 
                     itemList.add(newItem);
@@ -208,27 +212,23 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         });
     }
 
+    // Muestra un cuadro de diálogo de confirmación antes de cancelar una orden
     public void showCorrectPopup(String estado, int itemPos) {
         HistorialItem curItem = itemList.get(itemPos);
 
         if(estado.equals(this.iniciada)) {
-            // Create a view for the semitransparent background
             final View backgroundView = new View(this);
             backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Semitransparent color
+            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color Semitransparente
 
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme); // Apply the custom theme
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme);
 
-            // Inflate the custom layout
             View dialogView = getLayoutInflater().inflate(R.layout.historial_popup_iniciada, null);
 
-            // Configure the dialog
             builder.setView(dialogView);
 
-            // Customize the dialog
             final AlertDialog alertDialog = builder.create();
 
-            // Configure a semitransparent background
             Window window = alertDialog.getWindow();
             if (window != null) {
                 WindowManager.LayoutParams params = window.getAttributes();
@@ -238,8 +238,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             alertDialog.show();
 
-
-            // Configure button actions
             Button btnCancelarOrden = dialogView.findViewById(R.id.cancelarOrdenButton);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
             Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
@@ -275,29 +273,23 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 rootView.removeView(backgroundView); // Remove the background
             });
 
-            // Add the background view and show the dialog
             FrameLayout rootView = findViewById(android.R.id.content);
             rootView.addView(backgroundView);
         }
 
         else if(estado.equals(this.enProceso)) {
-            // Create a view for the semitransparent background
             final View backgroundView = new View(this);
             backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Semitransparent color
+            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0));
 
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme); // Apply the custom theme
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme);
 
-            // Inflate the custom layout
             View dialogView = getLayoutInflater().inflate(R.layout.historial_popup_en_proceso, null);
 
-            // Configure the dialog
             builder.setView(dialogView);
 
-            // Customize the dialog
             final AlertDialog alertDialog = builder.create();
 
-            // Configure a semitransparent background
             Window window = alertDialog.getWindow();
             if (window != null) {
                 WindowManager.LayoutParams params = window.getAttributes();
@@ -330,7 +322,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             String calificacion = String.format(Locale.getDefault(), "%.1f", curItem.getRecolector().calcularCalificacion());
             ratingRecolector.setText(calificacion);
 
-            // Configure button actions
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
             Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
             Button btnCancelarOrden = dialogView.findViewById(R.id.cancelarOrdenButton);
@@ -373,23 +364,18 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
         else if(estado.equals(this.completada)) {
 
-            // Create a view for the semitransparent background
             final View backgroundView = new View(this);
             backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Semitransparent color
 
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme); // Apply the custom theme
 
-            // Inflate the custom layout
             View dialogView = getLayoutInflater().inflate(R.layout.historial_popup_completada, null);
 
-            // Configure the dialog
             builder.setView(dialogView);
 
-            // Customize the dialog
             final AlertDialog alertDialog = builder.create();
 
-            // Configure a semitransparent background
             Window window = alertDialog.getWindow();
             if (window != null) {
                 WindowManager.LayoutParams params = window.getAttributes();
@@ -399,11 +385,9 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             alertDialog.show();
 
-            // Set the correct name for the recolector
             TextView recolector = dialogView.findViewById(R.id.recolector);
             recolector.setText(curItem.getRecolector().generarNombreCompleto());
 
-            // Configure button actions
             LinearLayout linearLayoutRatingSection = dialogView.findViewById(R.id.linearLayoutRating);
             RatingBar ratingBar = dialogView.findViewById(R.id.ratingBar);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
@@ -479,23 +463,19 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
         else if(estado.equals(this.cancelada)) {
 
-            // Create a view for the semitransparent background
             final View backgroundView = new View(this);
             backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Semitransparent color
+            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0));
 
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme); // Apply the custom theme
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme);
 
-            // Inflate the custom layout
             View dialogView = getLayoutInflater().inflate(R.layout.historial_popup_cancelada, null);
 
-            // Configure the dialog
+
             builder.setView(dialogView);
 
-            // Customize the dialog
             final AlertDialog alertDialog = builder.create();
 
-            // Configure a semitransparent background
             Window window = alertDialog.getWindow();
             if (window != null) {
                 WindowManager.LayoutParams params = window.getAttributes();
@@ -505,8 +485,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             alertDialog.show();
 
-
-            // Configure button actions
             Button btnVerCentros = dialogView.findViewById(R.id.verCentrosButton);
             Button btnContinuar = dialogView.findViewById(R.id.continuarButton);
             Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
@@ -542,25 +520,23 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 rootView.removeView(backgroundView); // Remove the background
             });
 
-            // Add the background view and show the dialog
             FrameLayout rootView = findViewById(android.R.id.content);
             rootView.addView(backgroundView);
         }
 
     }
 
-    // Define a task that checks and updates the status
+    // Se define un TASK que se repite cada cierto tiempo
     private final Runnable updateStatusTask = new Runnable() {
         @SuppressLint("NotifyDataSetChanged")
         @Override
         public void run() {
-            // Get the current date and time in CST
+
             TimeZone cstTimeZone = TimeZone.getTimeZone("America/Chicago"); // CST time zone
             Calendar currentCalendar = Calendar.getInstance(cstTimeZone);
             Date currentDate = currentCalendar.getTime();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy HH:mm");
 
-            // Iterate through recolecciones and update as needed
             for (HistorialItem item : itemList) {
                 String fechaRecoleccionString = item.getFecha();
                 String horaRecoleccionFinalString = item.getHorario();
@@ -572,8 +548,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 }
 
                 if (currentDate.after(horaRecoleccionFinal) && item.getEstado().equals("Iniciada") && !item.getEstado().equals("Cancelada")) {
-                    // Current time and date are ahead of 'fechaRecoleccion' and 'horaRecoleccionFinal'
-                    // Update the 'estado' attribute to "Cancelada"
+
                     String estado = "Cancelada";
                     item.setEstado(estado);
                     item.setEstadoColor(ResourcesCompat.getColor(getResources(), R.color.red, null));
@@ -582,16 +557,14 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                 }
             }
 
-            // Notify the adapter to update the RecyclerView
             historialAdapter.notifyDataSetChanged();
 
             int minutes = 1;
-            // Schedule the task to run again after a certain interval (e.g., every 5 minutes)
-            handler.postDelayed(this, minutes * 60 * 1000); // 1 minute in milliseconds
+            handler.postDelayed(this, minutes * 60 * 1000); // 1 minuto en milisegundos
         }
     };
 
-    // Start the task when your activity is created or resumed
+    // Comienza la tarea de actualización periódica cuando la actividad se crea o se reanuda
     @Override
     protected void onResume() {
         super.onResume();
@@ -599,7 +572,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         handler.post(updateStatusTask);
     }
 
-    // Stop the task when your activity is paused or destroyed
+    // Detiene la tarea de actualización periódica cuando la actividad se pausa o se destruye
     @Override
     protected void onPause() {
         super.onPause();
@@ -669,6 +642,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         rootView.addView(backgroundView);
     }
 
+    // Lógica para manejar clicks en elementos del RecyclerView
     @Override
     public void onClick(View v, int pos) {
 
@@ -678,6 +652,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         showCorrectPopup(estado, pos);
     }
 
+    // Actualiza el estado de una recolección en Firebase
     private void updateRecoleccionEstado(String recoleccionIdToUpdate, String newEstado) {
         // Initialize a Firestore DocumentReference for the recolección document
         firestore.collection("recolecciones").document(recoleccionIdToUpdate).update("estado", newEstado).addOnCompleteListener(task -> {
@@ -688,6 +663,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     }
 
+    // Actualiza el atributo "calificado" de una recolección en Firebase
     private void updateRecoleccionCalificadoBool(String recoleccionIdToUpdate) {
         // Initialize a Firestore DocumentReference for the recolección document
         firestore.collection("recolecciones").document(recoleccionIdToUpdate).update("calificado", true).addOnCompleteListener(task -> {
@@ -697,7 +673,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         });
     }
 
-    // Implement a function to map estado to color
+    // Implementa una función para asignar color según el estado
     private int getColorForEstado(String estado) {
         Resources res = getResources();
         // Implement your logic to map estado to a color here
@@ -718,7 +694,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         }
     }
 
-    // Implement a function to map estado to Drawable
+    // Implementa una función para asignar Drawable según el estado
     private Drawable getDrawableForEstado(String estado) {
         Resources res = getResources();
         // Implement your logic to map estado to a color here
@@ -739,6 +715,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         }
     }
 
+    // Agrega una nueva orden
     public void addOrder (View v) {
         Intent intent = new Intent(this, OrdenHorarioActivity.class);
         startActivity(intent);

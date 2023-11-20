@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
 
+/**
+ * Tarea asincrónica para realizar la geocodificación inversa y obtener información de ubicación a partir de coordenadas.
+ */
 public class ReverseGeocodingTask extends AsyncTask<GeoPoint, Void, List<String>> {
     GeoPoint startPoint = null;
     Double Latitud = null;
     Double Longitud = null;
-
+    // URL de la API de Nominatim para la geocodificación inversa
     public String nominatimApiUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2";
     @Override
     protected List<String> doInBackground(GeoPoint... geoPoints) {
@@ -59,7 +62,9 @@ public class ReverseGeocodingTask extends AsyncTask<GeoPoint, Void, List<String>
 
         return locationInfoList;
     }
-
+    /**
+     * Procesa la respuesta de la geocodificación inversa y extrae la información relevante.
+     */
     private List<String> processReverseGeocodingResponse(String response) {
 
         List<String> result = new ArrayList<>();

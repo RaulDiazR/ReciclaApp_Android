@@ -1,13 +1,21 @@
 package com.example.reciclaapp.models;
-
+/**
+ * La clase McqRecolector modela a un recolector de materiales reciclables.
+ * Contiene información sobre el nombre, apellidos, teléfono, foto de perfil,
+ * cantidad de reseñas recibidas, suma total de calificaciones y un identificador único.
+ * Además, proporciona métodos para calcular la calificación promedio y generar el
+ * nombre completo del recolector.
+ */
 public class McqRecolector {
-    String nombre;
-    String apellidos;
-    String telefono;
-    String fotoUrl;
-    int cantidadResenas;
-    int sumaResenas;
-    String id;
+
+    String nombre;               // Nombre del recolector
+    String apellidos;            // Apellidos del recolector
+    String telefono;             // Número de teléfono del recolector
+    String fotoUrl;              // URL de la foto de perfil del recolector
+    int cantidadResenas;         // Cantidad total de reseñas recibidas por el recolector
+    int sumaResenas;             // Suma total de calificaciones recibidas por el recolector
+    String id;                   // Identificador único del recolector
+
 
     public McqRecolector() {
     }

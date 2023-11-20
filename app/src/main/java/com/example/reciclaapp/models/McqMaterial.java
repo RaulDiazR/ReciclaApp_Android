@@ -1,10 +1,15 @@
 package com.example.reciclaapp.models;
-
+/**
+ * La clase McqMaterial representa un material reciclable y sus atributos asociados.
+ * Los objetos de esta clase contienen información sobre la unidad de medida, cantidad,
+ * URL de la foto y nombre del material.
+ */
 public class McqMaterial {
-    private String unidad;
-    private int cantidad;
-    private String fotoUrl;
-    private String nombre;
+
+    private String unidad; // Unidad de medida del material (por ejemplo, kilogramos)
+    private int cantidad; // Cantidad del material disponible
+    private String fotoUrl; // URL de la foto que representa el material
+    private String nombre; // Nombre del material reciclable
 
     public McqMaterial() {
     }

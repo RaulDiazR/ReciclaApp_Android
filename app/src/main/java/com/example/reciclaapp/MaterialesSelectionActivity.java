@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * Actividad para la selección de materiales.
+ * Implementa la interfaz MaterialesSelectionClickListener para manejar los clics en los elementos.
+ */
 public class MaterialesSelectionActivity extends AppCompatActivity implements MaterialesSelectionClickListener {
     // 1- AdapterView
     RecyclerView recyclerView;
@@ -65,12 +68,14 @@ public class MaterialesSelectionActivity extends AppCompatActivity implements Ma
         selectionAdapter.setClickListener(this);
     }
 
+    // Maneja el evento de clic en el botón de navegación hacia atrás.
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
 
+    // Maneja el evento de click en un elemento de la lista de materiales seleccionables.
     @Override
     public void onClick(View v, int position) {
         Intent intent = new Intent(this, MaterialesActivity.class);

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeocodingTask extends AsyncTask<String, Void, List<Double>> {
-
+    // Lista para almacenar las coordenadas resultantes
     List<Double> result = new ArrayList<>();
 
     @Override
@@ -50,6 +50,7 @@ public class GeocodingTask extends AsyncTask<String, Void, List<Double>> {
 
     }
 
+    // Función para procesar la respuesta JSON y extraer las coordenadas
     private List<Double> processGeocodingResponse(String response) {
 
         List<Double> result = new ArrayList<>();

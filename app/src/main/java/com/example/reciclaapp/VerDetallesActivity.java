@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Actividad que muestra los detalles de una orden de reciclaje, incluyendo la fecha, horario,
+ * tipo de entrega y los materiales seleccionados.
+ */
 public class VerDetallesActivity extends AppCompatActivity {
 
     @Override
@@ -85,7 +89,7 @@ public class VerDetallesActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
     }
-
+    // Obtener el icono del material basado en su nombre
     private int getMaterialIcon(String materialName) {
         // Define arrays for image resource IDs and corresponding text
         int[] imageResources = {
@@ -103,7 +107,7 @@ public class VerDetallesActivity extends AppCompatActivity {
         }
         return -1; // Return -1 if the name is not found
     }
-
+    // Manejar la acción de navegación hacia arriba
     @Override
     public boolean onSupportNavigateUp() {
         finish();

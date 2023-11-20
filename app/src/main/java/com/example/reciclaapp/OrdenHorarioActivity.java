@@ -16,7 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
-
+/**
+ * Actividad que permite al usuario seleccionar la fecha y el horario para la recolección de materiales.
+ */
 public class OrdenHorarioActivity extends AppCompatActivity {
 
     private DatePickerDialog datePickerDialog;
@@ -70,7 +72,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         timeEnd = findViewById(R.id.tiempo_final);
         timeEnd.setText(getTodaysTimeEnd());
     }
-
+    /**
+     * Obtiene la hora actual y la formatea para la hora de inicio, considerando restricciones de horario.
+     */
     private String getTodaysTimeIni() {
         int hourIni = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int minuteIni = Calendar.getInstance().get(Calendar.MINUTE);
@@ -83,7 +87,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         this.minuteIni = minuteIni;
         return String.format(Locale.getDefault(), "%02d:%02d", hourIni, minuteIni);
     }
-
+    /**
+     * Obtiene la hora actual y la formatea para la hora final, considerando restricciones de horario.
+     */
     private String getTodaysTimeEnd() {
         int hourEnd = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int minuteEnd = Calendar.getInstance().get(Calendar.MINUTE);
@@ -104,7 +110,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         this.minuteEnd = minuteEnd;
         return String.format(Locale.getDefault(), "%02d:%02d", hourEnd, minuteEnd);
     }
-
+    /**
+     * Obtiene la fecha actual y la formatea, considerando restricciones de horario.
+     */
     private String getTodaysDate() {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -120,7 +128,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         this.curDate = formatDate(day, month, year);
         return curDate;
     }
-
+    /**
+     * Inicializa el DatePickerDialog con configuraciones personalizadas.
+     */
     private void initDatePicker() {
         DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
             month = month + 1;
@@ -153,7 +163,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
             datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         }
     }
-
+    /**
+     * Formatea la fecha en el formato deseado.
+     */
     private String formatDate(int day, int month, int year) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month - 1, day); // Subtract 1 from the month since Calendar uses 0-based indexing.
@@ -166,12 +178,15 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         finish();
         return true;
     }
-
+    /**
+     * Muestra el DatePickerDialog cuando se hace clic en el botón de fecha.
+     */
     public void openDatePicker(View view) {
         datePickerDialog.show();
     }
-
-    // Create a separate method to handle the "Hora de Inicio" button click
+    /**
+     * Abre el diálogo personalizado de selección de tiempo para la hora de inicio.
+     */
     public void openTimePickerIni(View view) {
         int minH = hourIni;
         int minM = minuteIni;
@@ -186,7 +201,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         showCustomTimePickerDialog(timeIni, startHour, startMinute, minH, minM);
     }
 
-    // Create a separate method to handle the "Hora Final" button click
+    /**
+     * Abre el diálogo personalizado de selección de tiempo para la hora final.
+     */
     public void openTimePickerEnd(View view) {
         int minH = hourIni+1;
         int minM = 0;
@@ -205,20 +222,26 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         showCustomTimePickerDialog(timeEnd, endHour, endMinute, minH, minM);
     }
 
-    // checks if the user's selected date is different from the current phone's date
+    /**
+     * Verifica si la fecha seleccionada por el usuario es diferente a la fecha actual.
+     */
     private boolean notSameDay() {
         String curDate = this.curDate;
         String dateSelected = dateButton.getText().toString();
         return !dateSelected.equals(curDate);
     }
 
-    // Define the method to show the custom time picker dialog
+    /**
+     * Muestra el diálogo personalizado de selección de tiempo.
+     */
     private void showCustomTimePickerDialog(Button buttonToUpdate, int hour, int minute, int minH, int minM) {
         OrdenHorarioTimePickerDialog customDialog = new OrdenHorarioTimePickerDialog(buttonToUpdate, hour, minute, minH, minM);
         customDialog.show(getSupportFragmentManager(), "historial_time_picker");
     }
 
-    // Checks if the user's selected time range is valid
+    /**
+     * Verifica si la diferencia de tiempo seleccionada por el usuario es válida.
+     */
     private boolean isTimeDifferenceValid() {
         // Parse the selected time from timeEnd button
         String endTimeText = timeEnd.getText().toString();
@@ -239,24 +262,29 @@ public class OrdenHorarioActivity extends AppCompatActivity {
 
         // Check if the time difference is positive
         if (timeDifference < 0) {
-            Toast.makeText(this, "El tiempo seleccionado es Inválido", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "La hora de finalización debe ser después de la hora de inicio", Toast.LENGTH_LONG).show();
             return false;
         }
-        // Check if the time difference is at least 30 minutes
-        else if (timeDifference < 30) {
-            Toast.makeText(this, "La recolección debe tener al menos 30 minutos de tiempo disponible", Toast.LENGTH_LONG).show();
+        // Check if the time difference is at least 60 minutes
+        else if (timeDifference < 60) {
+            Toast.makeText(this, "La recolección debe tener al menos 60 minutos de tiempo disponible", Toast.LENGTH_LONG).show();
             return false;
         }
 
         return true;
     }
 
-
+    /**
+     * Verifica la longitud del texto en el campo de comentarios y muestra un mensaje de error si es necesario.
+     */
     public boolean checkComentarios(EditText comentarios) {
         int currentLength = comentarios.getText().length();
 
         if (currentLength > 100) {
             comentarios.setError("Máximo de 100 caracteres");
+            String truncatedText = comentarios.getText().subSequence(0, 100).toString();
+            comentarios.setText(truncatedText);
+            comentarios.setSelection(100); // Move the cursor to the end
             return false; // Return false to indicate that the input is invalid
         } else {
             comentarios.setError(null); // Clear any previous error message
@@ -264,7 +292,9 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Finaliza la selección de tiempo y pasa a la siguiente actividad si la selección es válida.
+     */
     public void finishTimeSelection (View v) {
         // Retrieve text from the EditText
         EditText editTextComentarios = findViewById(R.id.editTextComentarios);

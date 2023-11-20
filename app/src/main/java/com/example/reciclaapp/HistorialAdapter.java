@@ -26,8 +26,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // creates new view holders for you items
-
+        // Se crea un viewHolder para los elementos a utilizar
         View itemView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.historial_item, parent, false);
@@ -50,20 +49,22 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
         holder.estadoColor.setBackground(item.getBackgroundDrawable());
     }
 
+    // Devolver el tamaño de la lista de elementos
     @Override
     public int getItemCount() {
         return itemList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        // Holds references to the views within the item layout
-
+        // Clase interna que contiene referencias a las vistas dentro del diseño del elemento
         View estadoColor;
 
         TextView fecha;
         TextView horario;
         TextView materiales;
         TextView estadoTexto;
+
+        // Constructor que inicializa las vistas y configura el listener de clics en la vista
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             estadoColor = itemView.findViewById(R.id.estado_orden_color);
@@ -77,6 +78,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.MyVi
 
         @Override
         public void onClick(View v) {
+            // Manejar el click en el elemento del RecyclerView y notificar al listener si está configurado
             if (clickListener != null) {
                 clickListener.onClick(v, getBindingAdapterPosition());
             }

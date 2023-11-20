@@ -47,6 +47,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+/*
+   MaterialesActivity: Esta clase representa la actividad principal para la selección de materiales
+                        en el proceso de solicitud de recolección de materiales reciclables.
+
+   Funciones Principales:
+   - Configura la interfaz de usuario, incluyendo la barra de herramientas, el RecyclerView y los adaptadores.
+   - Gestiona la interacción con la cámara y la galería para capturar fotos de materiales.
+   - Envía los datos de la recolección y los materiales seleccionados a Firebase Firestore y Storage.
+   - Proporciona una confirmación visual al usuario después de completar la solicitud de recolección.
+
+*/
 public class MaterialesActivity extends AppCompatActivity{
     private static final int CAMERA_PERMISSION_REQUEST = 1001;
     private static final int PICK_FROM_GALLERY = 1;
@@ -183,6 +194,7 @@ public class MaterialesActivity extends AppCompatActivity{
         recyclerView.setAdapter(concatAdapter);
     }
 
+    // getInfoFromIntent: Obtiene información relevante de la intención que inició esta actividad.
     private String[] getInfoFromIntent() {
         receivedIntent = getIntent();
         int[] fecha = receivedIntent.getIntArrayExtra("fecha");
@@ -205,6 +217,7 @@ public class MaterialesActivity extends AppCompatActivity{
         return new String[]{fechaStr, formattedTime};
     }
 
+    // formatDate: Formatea la fecha en un formato específico.
     private String formatDate(int day, int month, int year) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month - 1, day); // Subtract 1 from the month since Calendar uses 0-based indexing.
@@ -212,6 +225,8 @@ public class MaterialesActivity extends AppCompatActivity{
         return dateFormat.format(cal.getTime());
     }
 
+    // finishMaterialSelection: Método llamado al finalizar la selección de materiales.
+    // Muestra una confirmación o un mensaje de error según sea necesario.
     public void finishMaterialSelection(View v) {
         if (materialesAdapter.getItemCount() > 0) {
             confirmarOrden(v);
@@ -222,12 +237,14 @@ public class MaterialesActivity extends AppCompatActivity{
         }
     }
 
+    // onRequestPermissionsResult: Método llamado cuando se obtienen los resultados de solicitudes de permisos.
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
 
+    // se confirma la orden y se regresa a una actividad previa
     public void confirmarOrden(View view) {
         // Create a view for the semitransparent background
         final View backgroundView = new View(this);
@@ -285,6 +302,7 @@ public class MaterialesActivity extends AppCompatActivity{
         rootView.addView(backgroundView);
     }
 
+    // se muestra un popUp de confirmación de la orden
     public void mostrarConfirmacion(View view) {
         // Create a view for the semitransparent background
         final View backgroundView = new View(this);
@@ -324,6 +342,7 @@ public class MaterialesActivity extends AppCompatActivity{
         rootView.addView(backgroundView);
     }
 
+    // Se manda a FireBase la información relacionada a las recolecciones
     private void sendDataToDBRecolecciones() {
         receivedIntent = getIntent();
 
@@ -450,6 +469,7 @@ public class MaterialesActivity extends AppCompatActivity{
                 });
     }
 
+    // Se actualiza la información del usuario en la base de datos
     public void sendDataToDBUsuarios() {
         // Retrieve data from the Intent
         receivedIntent = getIntent();
@@ -483,6 +503,7 @@ public class MaterialesActivity extends AppCompatActivity{
                 });
     }
 
+    // se suben las fotos de los materiales a Firebase
     private void uploadPictureToFirebase(Uri imageUri, int count, String recoleccionId) {
         final String randomKey = UUID.randomUUID().toString();
         StorageReference imagesRef = storageReference.child("fotosMateriales/" + randomKey);
@@ -494,6 +515,7 @@ public class MaterialesActivity extends AppCompatActivity{
         })).addOnFailureListener(e -> Log.d("Firebase", "No se pudo subir la foto" + imageUri));
     }
 
+    // Se agrega la foto de un material a su elemento asociado en el recycler view
     private void setFotoEvidenciaForItem(String imageURL, int count, String recoleccionId) {
         if (count >= 0 && count < itemList.size()) {
             itemList.get(count).setUrlFotoMaterial(imageURL);
@@ -503,6 +525,7 @@ public class MaterialesActivity extends AppCompatActivity{
         }
     }
 
+    // se actualizan las fotos de los materiales de la recolección una vez las fotos se hayan subido a Fire Storage
     private void updateMaterialWithFotoUrl(String imageURL, int count, String recoleccionId) {
 
         // Initialize a Firestore DocumentReference for the recolección document
@@ -521,6 +544,7 @@ public class MaterialesActivity extends AppCompatActivity{
                 .addOnFailureListener(e -> Log.d("FirebaseFailureUpdateImageMaterial", "Image could not be uploaded"));
     }
 
+    // Se crea un archivo de imagen
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -537,6 +561,7 @@ public class MaterialesActivity extends AppCompatActivity{
         return image;
     }
 
+    // Se termina la orden
     private void finishOrder() {
         // Logic for Confirm
         Intent intent = new Intent(MaterialesActivity.this, HistorialRecoleccionesActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -549,6 +574,7 @@ public class MaterialesActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    // Se piden permisos para la cámara y galería del teléfono
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -591,6 +617,7 @@ public class MaterialesActivity extends AppCompatActivity{
         }
     }
 
+    // onSaveInstanceState: Método llamado para guardar el estado de la actividad antes de ser destruida.
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -599,7 +626,7 @@ public class MaterialesActivity extends AppCompatActivity{
         outState.putParcelableArrayList("itemList", itemListToSave);
     }
 
-
+    // onRestoreInstanceState: Método llamado al restaurar el estado de la actividad después de ser recreada.
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {

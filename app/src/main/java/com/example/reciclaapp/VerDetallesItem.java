@@ -1,5 +1,7 @@
 package com.example.reciclaapp;
-
+/**
+ * Clase que representa un elemento de la lista de detalles de materiales seleccionados en una orden de reciclaje.
+ */
 public class VerDetallesItem {
     private int iconoMaterial;
     private String nombreMaterial;

@@ -23,7 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
+/**
+ * Adaptador para mostrar los detalles de los materiales seleccionados en una orden de reciclaje.
+ */
 public class VerDetallesAdapter extends RecyclerView.Adapter<VerDetallesAdapter.ViewHolder> {
     private final List<VerDetallesItem> items;
     private final Context context;

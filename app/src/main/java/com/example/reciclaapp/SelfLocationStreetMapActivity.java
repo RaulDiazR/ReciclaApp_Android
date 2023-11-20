@@ -36,6 +36,9 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.Objects;
 
+/**
+ * Actividad que permite al usuario ubicar su posición en el mapa.
+ */
 public class SelfLocationStreetMapActivity extends AppCompatActivity {
 
     MapView MapOS = null;
@@ -81,7 +84,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
         }
 
     }
-
+    // Inicializa el mapa y configura la interfaz.
     private void InitializeMap() {
         MapOS = findViewById(R.id.osmap);
         MapOS.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
@@ -96,7 +99,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
+    // Verifica y solicita permisos de ubicación.
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -127,7 +130,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
             requestLocation();
         }
     }
-
+    // Maneja la respuesta de la solicitud de permisos de ubicación.
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -143,7 +146,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
             }
         }
     }
-
+    // Obtiene la ubicación actual del usuario.
     @SuppressLint("MissingPermission")
     private void requestLocation() {
         mFusedLocationClient.getLastLocation()
@@ -220,12 +223,14 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
                 });
     }
 
+    // Acciones al hacer clic en el marcador.
     private void MarkOnClick() {
         StartPoint = Mark.getPosition();
         Latitud = StartPoint.getLatitude();
         Longitud = StartPoint.getLongitude();
     }
 
+    // Finaliza la actividad y muestra la ubicación en otra actividad.
     public void onFinishGpsLocation(View view) {
         Intent intent = new Intent(this, MaterialesActivity.class);
         // Se pasa la información de la actividad previa
@@ -241,6 +246,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Muestra el cuadro de diálogo de explicación del mapa.
     public void showPopupMapExplanation() {
 
         // Create a view for the semitransparent background
@@ -289,6 +295,7 @@ public class SelfLocationStreetMapActivity extends AppCompatActivity {
         rootView.addView(backgroundView);
     }
 
+    // Muestra el cuadro de diálogo de explicación del mapa.
     public void onHelpMap(View view) {
         showPopupMapExplanation();
     }

@@ -39,7 +39,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
+/**
+ * Adaptador personalizado para la RecyclerView en la actividad MaterialesActivity.
+ * Permite la visualización y manipulación de elementos de materiales.
+ */
 public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.MaterialesViewHolder> {
     private final Context context;
     private final List<MaterialesItem> itemList;

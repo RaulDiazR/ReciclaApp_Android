@@ -3,7 +3,10 @@ package com.example.reciclaapp;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-
+/**
+ * Clase que representa un elemento de materiales.
+ * Implementa Parcelable para permitir la transferencia de instancias entre componentes de Android.
+ */
 public class MaterialesItem implements Parcelable {
     private final int imageResource; // Resource ID for the item's image
     private final String name; // Name or text associated with the item

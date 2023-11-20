@@ -15,6 +15,9 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Locale;
 
+/**
+ * Diálogo personalizado que muestra un NumberPicker para seleccionar la hora y los minutos.
+ */
 public class OrdenHorarioTimePickerDialog extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
     private final Button buttonToUpdate;
     int initialHour, initialMinute;
@@ -68,7 +71,9 @@ public class OrdenHorarioTimePickerDialog extends DialogFragment implements Time
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         // Not used, as we handle time selection in the positive button click.
     }
-
+    /**
+     * Actualiza el texto del botón con la hora seleccionada.
+     */
     private void updateTimeButtonText(Button buttonToUpdate, int hourOfDay, int minute) {
         String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
         buttonToUpdate.setText(selectedTime);

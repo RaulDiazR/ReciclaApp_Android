@@ -23,10 +23,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 import java.util.Objects;
-
+/**
+ * DireccionActivity es una actividad de Android que permite a los usuarios ingresar y editar información de dirección.
+ * Esta actividad recupera información del usuario, incluyendo nombre, apellidos, teléfono y dirección, desde Firestore
+ * y permite a los usuarios actualizar su dirección y luego proceder a localizarla en un mapa.
+ */
 public class DireccionActivity extends AppCompatActivity {
 
-    // Declare references to form fields and error message TextView
+    // Declarar referencias a campos de formulario y mensaje de error TextView
     EditText calleField;
     EditText numeroField;
     EditText coloniaField;
@@ -34,7 +38,7 @@ public class DireccionActivity extends AppCompatActivity {
     EditText codigoPostalField;
     EditText telefonoField;
 
-    // Get references to TextView elements for required fields
+    // Obtenga referencias a elementos TextView para los campos obligatorios
     TextView calleTextView;
     TextView numeroTextView;
     TextView coloniaTextView;
@@ -51,32 +55,30 @@ public class DireccionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direccion);
-        // Find the Toolbar by its ID and set the Toolbar as the app bar
+        // Busque la barra de herramientas por su ID y configúrela como barra de aplicaciones
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Remove default title for the app bar
+        // Eliminar el título predeterminado de la barra de aplicaciones
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        // Enable the back button (up navigation)
+        // Habilitar el botón Atrás (navegación hacia arriba)
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
 
-        // Create a view for the semitransparent background
+        // Crea una vista para el fondo semitransparente.
         final View backgroundView = new View(this);
         backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Semitransparent color
 
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme); // Apply the custom theme
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, R.style.CustomAlertDialogTheme);
 
-        // Inflate the custom layout
         View dialogView = getLayoutInflater().inflate(R.layout.popup_progress, null);
 
-        // Configure the dialog
+        // Configurar el diálogo
         builder.setView(dialogView);
 
-        // Customize the dialog
+        // Personaliza el diálogo
         final AlertDialog alertDialog = builder.create();
 
-        // Configure a semitransparent background
         Window window = alertDialog.getWindow();
         if (window != null) {
             WindowManager.LayoutParams params = window.getAttributes();
@@ -88,11 +90,11 @@ public class DireccionActivity extends AppCompatActivity {
         
         alertDialog.show();
 
-        // Add the background view and show the dialog
+        // Agregue la vista de fondo y muestre el diálogo.
         FrameLayout rootView = findViewById(android.R.id.content);
         rootView.addView(backgroundView);
 
-        // Initialize the references to form fields and error message
+        // Inicialice las referencias a los campos del formulario y el mensaje de error.
         calleField = findViewById(R.id.Calle);
         numeroField = findViewById(R.id.numeroCasa);
         coloniaField = findViewById(R.id.colonia);
@@ -100,7 +102,7 @@ public class DireccionActivity extends AppCompatActivity {
         codigoPostalField = findViewById(R.id.codigoPostal);
         telefonoField = findViewById(R.id.telefono);
 
-        // Get references to TextView elements for required fields
+        // Obtenga referencias a elementos TextView para los campos obligatorios
         calleTextView = findViewById(R.id.textView4);
         numeroTextView = findViewById(R.id.textView3);
         coloniaTextView = findViewById(R.id.textView2);
@@ -108,19 +110,19 @@ public class DireccionActivity extends AppCompatActivity {
         codigoPostalTextView = findViewById(R.id.textView5);
         telefonoTextView = findViewById(R.id.textView6);
 
-        // Get a reference to the Firestore document
-        userId = "user_id_2"; // Replace with the actual user ID
+        // Obtenga una referencia al documento de Firestore
+        userId = "user_id_2";
         // Se accede a la base de datos de FireStore
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         DocumentReference userRef = firestore.collection("usuarios").document(userId);
 
-        // Fetch the data from Firestore
+        // Obtener los datos de Firestore
         userRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot documentSnapshot = task.getResult();
 
                 if (documentSnapshot.exists()) {
-                    // The document exists in Firestore
+                    // EL documento existe
                     Map<String, Object> userData = documentSnapshot.getData();
 
                     if (userData != null) {
@@ -152,6 +154,7 @@ public class DireccionActivity extends AppCompatActivity {
         });
     }
 
+    // Método llamado cuando se presiona el botón para localizar en el mapa
     public void localizar_en_mapa(View view) {
         String calleText = calleField.getText().toString();
         String numeroText = numeroField.getText().toString();
@@ -160,7 +163,7 @@ public class DireccionActivity extends AppCompatActivity {
         String codigoPostalText = codigoPostalField.getText().toString();
         String telefonoText = telefonoField.getText().toString();
 
-        // Check if the form is valid
+        // Se checa si el formulario es válido
         if (isFormValid()) {
             Intent intent = new Intent(this, SelfLocationStreetMapActivity.class);
             // se crea una dirección completa para agregar al apartado de userInfo de la recolección
@@ -187,12 +190,14 @@ public class DireccionActivity extends AppCompatActivity {
         }
     }
 
+    // Método llamado cuando se presiona el botón de navegación hacia arriba
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
 
+    // Verificar si el formulario es válido
     private boolean isFormValid() {
         boolean isValid = true;
 
@@ -232,7 +237,7 @@ public class DireccionActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // If your form is inside a ScrollView, scroll to the first error message.
+        // Si el formulario es inválido, se hace un scroll hasta el primer error
         if (!isValid) {
             ScrollView scrollView = findViewById(R.id.scrollView);
             scrollView.smoothScrollTo(0, errorTextView.getTop());
@@ -241,6 +246,7 @@ public class DireccionActivity extends AppCompatActivity {
         return isValid;
     }
 
+    // Verificar si un EditText está vacío
     private boolean isEmpty(EditText editText) {
         return editText.getText().toString().trim().isEmpty();
     }

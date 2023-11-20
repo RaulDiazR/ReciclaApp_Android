@@ -49,21 +49,24 @@
 
     <Button
         android:id="@+id/continuarButton"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/button_variant_green"
-        android:onClick="onFinishGpsLocation"
         android:text="@string/aceptar"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="TextContrastCheck" />
+        android:onClick="onFinishGpsLocation"
+        tools:ignore="VisualLintButtonSize,TextContrastCheck" />
 
     <ImageButton
         android:id="@+id/add_order"
