@@ -18,6 +18,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +27,9 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Center extends AppCompatActivity {
 
@@ -44,8 +49,12 @@ public class Center extends AppCompatActivity {
     private String categoria;
     private Activity activity;
     private boolean isFavorite;
+    private ArrayList<MaterialModel> materiales;
+    private List<String> dias;
+    private RecyclerView materialesRV;
+    private MaterialRVAdapter materialRVAdapter;
 
-    public Center(String nombre, String direccion, Double latitud, Double longitud, String num_telefonico, String hora_apertura, String hora_cierre, String imagen, MapView map, Context context1, String category, Activity activity) {
+    public Center(String nombre, String direccion, Double latitud, Double longitud, String num_telefonico, String hora_apertura, String hora_cierre, String imagen, MapView map, Context context1, String category, Activity activity, ArrayList<MaterialModel> mate, List<String> days) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.latitud = latitud;
@@ -59,6 +68,8 @@ public class Center extends AppCompatActivity {
         this.categoria = category;
         this.activity = activity;
         this.isFavorite = false;
+        this.materiales = mate;
+        this.dias = days;
 
         StartPoint = new GeoPoint(this.latitud, this.longitud);
         this.Mark = new Marker(this.Map);
@@ -105,6 +116,7 @@ public class Center extends AppCompatActivity {
                     } else {
                         addToFavorites.setText("Agregar a favoritos");
                     }
+                    centerImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     Picasso.get().load(imagen).into(centerImage);
 
                     phoneContact.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +166,21 @@ public class Center extends AppCompatActivity {
         }
     }
 
+    public ArrayList<MaterialModel> getMateriales() {
+        return materiales;
+    }
+
+    public void setMateriales(ArrayList<MaterialModel> materiales) {
+        this.materiales = materiales;
+    }
+
+    public List<String> getDias() {
+        return dias;
+    }
+
+    public void setDias(List<String> dias) {
+        this.dias = dias;
+    }
     private void phoneCall() {
         try {
 
@@ -182,12 +209,26 @@ public class Center extends AppCompatActivity {
         TextView centerName = mView.findViewById(R.id.titleTextView);
         TextView centerDirectiion = mView.findViewById(R.id.descriptionTextView);
         TextView centerHours = mView.findViewById(R.id.horarioTextView);
+        TextView centerDays = mView.findViewById(R.id.diasTextView);
         ImageView centerImage = mView.findViewById(R.id.imageViewCenter);
+        materialesRV = mView.findViewById(R.id.materialesRecyclerView);
+
 
         centerName.setText(getNombre());
         centerDirectiion.setText(getDireccion());
         centerHours.setText(getHora_apertura() + " - " + getHora_cierre());
+        centerDays.setText(String.join("-", this.dias));
+        centerImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Picasso.get().load(getImagen()).into(centerImage);
+
+        materialesRV.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        materialesRV.setLayoutManager(layoutManager);
+
+        materialRVAdapter = new MaterialRVAdapter(materiales, context);
+
+        materialesRV.setAdapter(materialRVAdapter);
+
 
         closeButton.setOnClickListener(view1 -> {
             if (alertDialog.isShowing()) {

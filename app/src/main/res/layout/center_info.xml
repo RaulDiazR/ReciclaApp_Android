@@ -41,23 +41,31 @@
         android:textStyle="bold" />
 
     <!-- Imagen -->
-    <ImageView
-        android:id="@+id/imageViewCenter"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/CardImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/centro_ejemplo"
-        android:contentDescription="Imagen"
-        android:padding="20sp"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
         app:layout_constraintTop_toBottomOf="@id/TittleCenterDetails"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" > <!-- Si no deseas sombra, puedes establecer la elevación a 0 -->
+
+        <ImageView
+            android:id="@+id/imageViewCenter"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/centro_ejemplo"
+            android:contentDescription="Imagen" />
+    </androidx.cardview.widget.CardView>
 
     <!-- Título -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/imageViewCenter"
+        app:layout_constraintTop_toBottomOf="@id/CardImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Título"
@@ -75,14 +83,28 @@
         android:text="Texto descriptivo" />
 
     <!-- Horario -->
+
+    <TextView
+        android:id="@+id/diasTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Texto descriptivo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+
     <TextView
         android:id="@+id/horarioTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
+        android:text="Horario"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Horario" />
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
 
     <TextView
         android:id="@+id/title_component"
@@ -109,18 +131,20 @@
         android:gravity="center">
 
 
-        <ImageView
+        <ImageButton
             android:id="@+id/imagenIndicacion1"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/compra_venta"
+            android:src="@drawable/maps"
+            android:scaleType="centerCrop"
             android:contentDescription="Indicación 1" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/imagenIndicacion2"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/compra_venta"
+            android:src="@drawable/waze"
+            android:scaleType="centerCrop"
             android:contentDescription="Indicación 2" />
 
     </LinearLayout>

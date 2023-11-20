@@ -5,6 +5,7 @@ import java.util.Map;
 public class MaterialModel {
     private String filename = "";
     private String imageURL = "";
+    private String name = "";
 
     public MaterialModel(String filename, String imageURL) {
         this.filename = filename;
@@ -28,6 +29,14 @@ public class MaterialModel {
 
     public boolean isValid() {
         return !this.imageURL.equals("") && !this.imageURL.isEmpty();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getFilename() {

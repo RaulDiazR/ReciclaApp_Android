@@ -85,7 +85,7 @@ public class StreetMapActivity extends AppCompatActivity {
     View BottomDialogView;
     FirebaseFirestore db;
     Map<String, Integer> MaterialMap = new HashMap<>();
-    List<MaterialModel> Materials = new ArrayList<>();
+    ArrayList<MaterialModel> Materials = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -95,7 +95,7 @@ public class StreetMapActivity extends AppCompatActivity {
         try {
             // Load Resources from Firebase
             db = FirebaseFirestore.getInstance();
-            //getMaterials();
+            getMaterials();
             createCategoryList();
 
 
@@ -122,6 +122,7 @@ public class StreetMapActivity extends AppCompatActivity {
 
             checkLocationPermission();
 
+            createCenter();
 
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception in Logcat
@@ -131,7 +132,7 @@ public class StreetMapActivity extends AppCompatActivity {
             });
         }
 
-        createCenter();
+
     }
 
     public void createCenter() {
@@ -158,7 +159,15 @@ public class StreetMapActivity extends AppCompatActivity {
                                 System.out.println("CONTADOR" + con);
                                 if (centerModel.isValid()) {
                                     centerModel.imprimirTodo();
-                                    Center center = new Center(centerModel.getNombre(), centerModel.getDireccion(), centerModel.getLatitud(), centerModel.getLongitud(), centerModel.getNum_telefonico(), centerModel.getHora_apertura(), centerModel.getHora_cierra(), centerModel.getImagen(), MapOS, context, centerModel.getCategoria(), activity);
+                                    ArrayList<MaterialModel> mate = new ArrayList<>();
+
+                                    for ( String j : centerModel.getMateriales()) {
+                                        if (MaterialMap.containsKey(j)) {
+                                            mate.add(Materials.get(MaterialMap.get(j)));
+                                        }
+                                    }
+
+                                    Center center = new Center(centerModel.getNombre(), centerModel.getDireccion(), centerModel.getLatitud(), centerModel.getLongitud(), centerModel.getNum_telefonico(), centerModel.getHora_apertura(), centerModel.getHora_cierra(), centerModel.getImagen(), MapOS, context, centerModel.getCategoria(), activity, mate, centerModel.getDias());
                                     centerList.add(center);
                                     System.out.println(centerModel.getCategoria());
                                     System.out.println(CategoryCenterMap.containsKey(centerModel.getCategoria()));
@@ -489,6 +498,7 @@ public class StreetMapActivity extends AppCompatActivity {
                                 MaterialModel materialModel = new MaterialModel(Objects.requireNonNull(d.getData()));
 
                                 if (materialModel.isValid()) {
+                                    materialModel.setName((String) d.getId());
                                     materialModel.imprimirTodo();
                                     Materials.add(materialModel);
                                     MaterialMap.put((String) d.getId(), con);
