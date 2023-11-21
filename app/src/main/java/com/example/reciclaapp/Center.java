@@ -53,8 +53,9 @@ public class Center extends AppCompatActivity {
     private List<String> dias;
     private RecyclerView materialesRV;
     private MaterialRVAdapter materialRVAdapter;
+    private StreetMapActivity parent;
 
-    public Center(String nombre, String direccion, Double latitud, Double longitud, String num_telefonico, String hora_apertura, String hora_cierre, String imagen, MapView map, Context context1, String category, Activity activity, ArrayList<MaterialModel> mate, List<String> days) {
+    public Center(String nombre, String direccion, Double latitud, Double longitud, String num_telefonico, String hora_apertura, String hora_cierre, String imagen, MapView map, Context context1, String category, Activity activity, ArrayList<MaterialModel> mate, List<String> days, StreetMapActivity par) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.latitud = latitud;
@@ -70,6 +71,7 @@ public class Center extends AppCompatActivity {
         this.isFavorite = false;
         this.materiales = mate;
         this.dias = days;
+        this.parent = par;
 
         StartPoint = new GeoPoint(this.latitud, this.longitud);
         this.Mark = new Marker(this.Map);
@@ -80,17 +82,8 @@ public class Center extends AppCompatActivity {
         createInfoWindow();
     }
 
-    private void setFavorite() {
-        if (this.isFavorite) {
-            this.isFavorite = false;
-        } else {
-            this.isFavorite = true;
-        }
-        changeFavoriteBD();
-    }
-
-    private void changeFavoriteBD() {
-        //Modify in BD with new value
+    public void setFavorite(Boolean val) {
+        this.isFavorite = val;
     }
 
     private void createInfoWindow() {
@@ -129,13 +122,18 @@ public class Center extends AppCompatActivity {
                     favoriteCenter.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            setFavorite();
+                            setFavorite(!isFavorite);
 
                             if (isFavorite) {
                                 addToFavorites.setText("Favorito");
+                                parent.FavoriteMap.get(nombre).set(1, 1);
                             } else {
                                 addToFavorites.setText("Agregar a favoritos");
+                                parent.FavoriteMap.get(nombre).set(1, 0);
                             }
+
+                            System.out.println(parent.FavoriteMap);
+                            parent.udpateCollectionFavorites();
                         }
                     });
                     moreCenterLayout.setOnClickListener(new View.OnClickListener() {

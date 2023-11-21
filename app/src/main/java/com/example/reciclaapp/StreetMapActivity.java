@@ -40,10 +40,15 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
@@ -59,6 +64,7 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +73,7 @@ import java.util.Objects;
 
 public class StreetMapActivity extends AppCompatActivity {
 
-
+    StreetMapActivity father = this;
     Button ActiveButtomSheet;
     MapView MapOS = null;
     GeoPoint StartPoint;
@@ -80,12 +86,15 @@ public class StreetMapActivity extends AppCompatActivity {
     final Activity activity = this;
     List<Category> categoryList = new ArrayList<>();
     List<Center> centerList = new ArrayList<>();
+    Map<String, ArrayList<Integer>> FavoriteMap = new HashMap<>();
     Map<String, ArrayList<Integer>> CategoryCenterMap = new HashMap<>();
     Dialog BottomDialog;
     View BottomDialogView;
     FirebaseFirestore db;
     Map<String, Integer> MaterialMap = new HashMap<>();
     ArrayList<MaterialModel> Materials = new ArrayList<>();
+    FavoriteModel Favorites;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -95,6 +104,7 @@ public class StreetMapActivity extends AppCompatActivity {
         try {
             // Load Resources from Firebase
             db = FirebaseFirestore.getInstance();
+            getFavorites();
             getMaterials();
             createCategoryList();
 
@@ -135,6 +145,84 @@ public class StreetMapActivity extends AppCompatActivity {
 
     }
 
+    public void updateFavorites() {
+
+        for (String name : Favorites.getCenterNames()) {
+            System.out.println(name);
+            if (FavoriteMap.containsKey(name)) {
+                FavoriteMap.get(name).set(1, 1);
+                centerList.get(FavoriteMap.get(name).get(0)).setFavorite(true);
+            }
+        }
+
+    }
+
+    public void addFavorite() {
+
+    }
+
+    public void udpateCollectionFavorites() {
+
+        // Get uid of the user
+        String user = "toncUoDSNGceFkUvLmEcE0vB6Mf2";
+        //String user = "prueba";
+
+        DocumentReference favoritesReferenceUser = db.collection("usuario_favoritos").document(user);
+
+        ArrayList<String> oldFavorites = Favorites.getCenterNames();
+        ArrayList<DocumentReference> newFavorites = new ArrayList<>();
+        DocumentReference ref;
+        List<Task<DocumentReference>> tasks = new ArrayList<>(); // Lista para almacenar las tareas
+
+        for (Map.Entry<String, ArrayList<Integer>> entry : FavoriteMap.entrySet()) {
+            String key = entry.getKey();
+            ArrayList<Integer> value = entry.getValue();
+
+            if (oldFavorites.contains(key)) {// Old Favorites
+
+                ref = Favorites.getCentros().get(oldFavorites.indexOf(key));
+                if (value.get(1) == 1) {
+                    newFavorites.add(ref);
+                }
+
+
+
+            } else if ( !oldFavorites.contains(key) && value.get(1) == 1) { // New Added Favorites
+
+
+                Task<QuerySnapshot> center = db.collection("centros").whereEqualTo("nombre", key).get();
+                Task<DocumentReference> task = center.continueWithTask(taskk -> {
+                    if (taskk.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : taskk.getResult()) {
+                            DocumentReference reference = db.collection("centros").document(document.getId());
+                            newFavorites.add(reference);
+                        }
+                    } else {
+                        System.out.println("Error retrieving document");
+                    }
+                    return null;
+                });
+
+                tasks.add(task); // Agrega cada tarea a la lista de tareas
+
+            }
+
+        }
+
+        Tasks.whenAllComplete(tasks).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<List<Task<?>>> task) {
+                favoritesReferenceUser.update("centros" , newFavorites ).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
+                        getFavorites();
+                    }
+                });
+            }
+        });
+
+    }
+
     public void createCenter() {
 
         db.collection("centros").get()
@@ -156,9 +244,9 @@ public class StreetMapActivity extends AppCompatActivity {
                                 // that list to our object class.
 
                                 CenterModel centerModel = new CenterModel(Objects.requireNonNull(d.getData()));
-                                System.out.println("CONTADOR" + con);
+
                                 if (centerModel.isValid()) {
-                                    centerModel.imprimirTodo();
+
                                     ArrayList<MaterialModel> mate = new ArrayList<>();
 
                                     for ( String j : centerModel.getMateriales()) {
@@ -167,12 +255,10 @@ public class StreetMapActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                    Center center = new Center(centerModel.getNombre(), centerModel.getDireccion(), centerModel.getLatitud(), centerModel.getLongitud(), centerModel.getNum_telefonico(), centerModel.getHora_apertura(), centerModel.getHora_cierra(), centerModel.getImagen(), MapOS, context, centerModel.getCategoria(), activity, mate, centerModel.getDias());
+                                    Center center = new Center(centerModel.getNombre(), centerModel.getDireccion(), centerModel.getLatitud(), centerModel.getLongitud(), centerModel.getNum_telefonico(), centerModel.getHora_apertura(), centerModel.getHora_cierra(), centerModel.getImagen(), MapOS, context, centerModel.getCategoria(), activity, mate, centerModel.getDias(), father);
                                     centerList.add(center);
-                                    System.out.println(centerModel.getCategoria());
-                                    System.out.println(CategoryCenterMap.containsKey(centerModel.getCategoria()));
+                                    FavoriteMap.put(center.getNombre(), new ArrayList<>(Arrays.asList(con, 0)));
                                     if (CategoryCenterMap.containsKey(centerModel.getCategoria())) {
-                                        System.out.println("Entre aqui");
                                         CategoryCenterMap.get(centerModel.getCategoria()).add(con);
                                     } else {
                                         CategoryCenterMap.put(centerModel.getCategoria(), new ArrayList<>());
@@ -222,9 +308,8 @@ public class StreetMapActivity extends AppCompatActivity {
                                 // after getting this list we are passing
                                 // that list to our object class.
                                 CategoryModel categoryModel = new CategoryModel(Objects.requireNonNull(d.getData()));
-                                System.out.println("CONTADOR" + con);
+
                                 if (categoryModel.isValid()) {
-                                    categoryModel.imprimirTodo();
                                     Category category = new Category((String) d.getId(),categoryModel.getImageURL());
                                     categoryList.add(category);
                                     if (!CategoryCenterMap.containsKey((String) d.getId())) {
@@ -252,6 +337,62 @@ public class StreetMapActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    public void getFavorites() {
+
+        //Get the user UID
+        String user = "toncUoDSNGceFkUvLmEcE0vB6Mf2";
+        //String user = "prueba";
+
+        DocumentReference favoritesReferenceUser = db.collection("usuario_favoritos").document(user);
+        favoritesReferenceUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    System.out.println("Obtuve el documento");
+                    Favorites = new FavoriteModel(documentSnapshot.getData());
+                    for (DocumentReference documentReference: Favorites.getCentros()) {
+                        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    Favorites.getCenterNames().add( (String) documentSnapshot.getData().get("nombre"));
+                                    System.out.println(Favorites.getCenterNames());
+                                } else {
+                                    System.out.println("El centro no existe");
+                                }
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                                updateFavorites();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@androidx.annotation.NonNull Exception e) {
+                                System.out.println("Error al obtener nombre del centro");
+                            }
+                        });
+                    }
+
+                } else {
+                    System.out.println("Agregue el documento");
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("centros", new ArrayList<>());
+                    data.put("recolectores", new ArrayList<>());
+
+                    favoritesReferenceUser.set(data);
+                    Favorites = new FavoriteModel(data);
+                }
+                Toast.makeText(context, "Centros Favoritos", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@androidx.annotation.NonNull Exception e) {
+                Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void getCategories(View view) {
@@ -499,7 +640,7 @@ public class StreetMapActivity extends AppCompatActivity {
 
                                 if (materialModel.isValid()) {
                                     materialModel.setName((String) d.getId());
-                                    materialModel.imprimirTodo();
+
                                     Materials.add(materialModel);
                                     MaterialMap.put((String) d.getId(), con);
                                     con++;
