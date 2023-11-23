@@ -44,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -130,6 +131,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             if (queryDocumentSnapshots != null) {
                 for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                     McqRecoleccion recoleccion = snapshot.toObject(McqRecoleccion.class);
+
+                    if (recoleccion.getMateriales() == null) {
+                        recoleccion.setMateriales(new HashMap<>());
+                    }
 
                     String materialesQuantityText = (recoleccion.getMateriales().size() != 1) ? " materiales" : " material";
                     String date = recoleccion.getFechaRecoleccion();
