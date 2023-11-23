@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imageNoticia"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_margin="16dp"
+        android:src="@drawable/img_mapa_explicacion"
+        android:contentDescription="@string/imagen_de_noticia"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tituloNoticia"
+        android:layout_width="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:breakStrategy="balanced"
+        android:gravity="start"
+        android:text="@string/paneles_solares_cu_les_son_los_beneficios_que_tienen_para_el_medio_ambiente"
+        android:ellipsize="end"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageNoticia"
+        app:layout_constraintTop_toTopOf="@+id/imageNoticia" />
+
+    <TextView
+        android:id="@+id/cuerpoNoticia"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:breakStrategy="balanced"
+        android:gravity="start"
+        android:text="@string/seg_n_un_art_culo_de_msn_noticias1_los_paneles_solares_se_han_destacado_como_una_soluci_n_clave_para_mitigar_los_impactos_del_cambio_clim_tico_y_la_transici_n_hacia_fuentes_de_energ_a_m_s_sostenibles_el_art_culo_destaca_que_los_paneles_solares_no_emiten_gases_de_efecto_invernadero_lo_que_los_hace_una_fuente_de_energ_a_limpia_y_renovable_adem_s_los_paneles_solares_pueden_reducir_la_dependencia_de_los_combustibles_f_siles_y_disminuir_la_huella_de_carbono"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:lines="3"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toTopOf="@+id/autorNoticia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageNoticia"
+        app:layout_constraintTop_toBottomOf="@+id/tituloNoticia"
+        tools:ignore="VisualLintLongText" />
+
+    <TextView
+        android:id="@+id/autorNoticia"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:breakStrategy="balanced"
+        android:gravity="start"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="@string/msn_noticias"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageNoticia"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageNoticia" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

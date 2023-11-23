@@ -5,4 +5,11 @@
     <color name="blue">#4489CA</color>
     <color name="green">#47BA6C</color>
     <color name="dark_green">#0B9B89</color>
+    <color name="blue">#4489CA</color>
+    <color name="light_blue">#8ABFD9</color>
+    <color name="green">#47BA6C</color>
+    <color name="light_green">#B8FFB8</color>
+    <color name="red">#E41E1D</color>
+    <color name="gray">#8D8D8D</color>
+    <color name="golden">#B59410</color>
 </resources>
