@@ -104,12 +104,12 @@ public class PerfilActivity extends AppCompatActivity {
         userRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 // Populate EditText fields with user information
-                nombreField.setText(documentSnapshot.getString("nombre_s"));
-                apellidosField.setText(documentSnapshot.getString("apellido_s"));
+                nombreField.setText(documentSnapshot.getString("nombre"));
+                apellidosField.setText(documentSnapshot.getString("apellidos"));
                 correoField.setText(documentSnapshot.getString("correo"));
                 correoField.setEnabled(false);
                 telefonoField.setText(documentSnapshot.getString("telefono"));
-                dateButton.setText(documentSnapshot.getString("fecha_nacimiento"));
+                dateButton.setText(documentSnapshot.getString("fechaNacimiento"));
             }
         }).addOnFailureListener(e -> {
             // Handle failure, if any
@@ -237,11 +237,11 @@ public class PerfilActivity extends AppCompatActivity {
                     DocumentReference userRef = db.collection("usuarios").document(user.getUid());
 
                     userRef.update(
-                            "nombre_s", nombreField.getText().toString(),
-                            "apellido_s", apellidosField.getText().toString(),
+                            "nombre", nombreField.getText().toString(),
+                            "apellidos", apellidosField.getText().toString(),
                             "correo", correoField.getText().toString(),
                             "telefono", telefonoField.getText().toString(),
-                            "fecha_nacimiento", dateButton.getText().toString()
+                            "fechaNacimiento", dateButton.getText().toString()
                     ).addOnSuccessListener(aVoid -> {
                         // Handle success
                         Toast.makeText(PerfilActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();

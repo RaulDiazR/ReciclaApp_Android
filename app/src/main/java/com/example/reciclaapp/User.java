@@ -1,11 +1,11 @@
 package com.example.reciclaapp;
 
 public class User {
-    private String nombre_s;
-    private String apellido_s;
+    private String nombre;
+    private String apellidos;
     private String correo;
     private String telefono;
-    private String fecha_nacimiento;
+    private String fechaNacimiento;
     private int rank_points;
     private int highest1;
 
@@ -13,30 +13,30 @@ public class User {
         // Default constructor required for Firestore
     }
 
-    public User(String nombre_s, String apellido_s, String correo, String telefono, String fecha_nacimiento, int rank_points, int highest1) {
-        this.nombre_s = nombre_s;
-        this.apellido_s = apellido_s;
+    public User(String nombre, String apellidos, String correo, String telefono, String fechaNacimiento, int rank_points, int highest1) {
+        this.nombre = nombre;
+        this.apellidos = apellidos;
         this.correo = correo;
         this.telefono = telefono;
-        this.fecha_nacimiento = fecha_nacimiento;
+        this.fechaNacimiento = fechaNacimiento;
         this.rank_points = rank_points;
         this.highest1 = highest1;
     }
 
-    public String getNombre_s() {
-        return nombre_s;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombre_s(String nombre_s) {
-        this.nombre_s = nombre_s;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getApellido_s() {
-        return apellido_s;
+    public String getApellidos() {
+        return apellidos;
     }
 
-    public void setApellido_s(String apellido_s) {
-        this.apellido_s = apellido_s;
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
     }
 
     public String getCorreo() { return correo; }
@@ -53,11 +53,11 @@ public class User {
         this.telefono = telefono;
     }
 
-    public String getFecha_nacimiento() {
-        return fecha_nacimiento;
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setFecha_nacimiento(String fecha_nacimiento) {this.fecha_nacimiento = fecha_nacimiento;}
+    public void setFechaNacimiento(String fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;}
 
     public int getRank_points() { return rank_points; }
 

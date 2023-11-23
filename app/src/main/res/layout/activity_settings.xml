@@ -48,11 +48,11 @@
 
             <Button
                 android:id="@+id/profilepic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="150dp"
+                android:layout_width="67dp"
+                android:layout_height="61dp"
+                android:layout_marginStart="160dp"
                 android:background="@color/white"
-                android:text="+"
+                android:drawableTop="@drawable/pf2"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="34sp"
