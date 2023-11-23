@@ -87,11 +87,11 @@ public class StreetMapActivity extends AppCompatActivity {
     List<Category> categoryList = new ArrayList<>();
     List<Center> centerList = new ArrayList<>();
     Map<String, ArrayList<Integer>> FavoriteMap = new HashMap<>();
-    Map<String, ArrayList<Integer>> CategoryCenterMap = new HashMap<>();
+    Map<String, ArrayList<Integer>> CategoryCenterMap = new HashMap<>(); //Mapa con la posicion de los materiales segun categoria
     Dialog BottomDialog;
     View BottomDialogView;
     FirebaseFirestore db;
-    Map<String, Integer> MaterialMap = new HashMap<>();
+    Map<String, Integer> MaterialMap = new HashMap<>(); //Mapa con la posicion del material en la lista de materiales
     ArrayList<MaterialModel> Materials = new ArrayList<>();
     FavoriteModel Favorites;
 
@@ -154,10 +154,6 @@ public class StreetMapActivity extends AppCompatActivity {
                 centerList.get(FavoriteMap.get(name).get(0)).setFavorite(true);
             }
         }
-
-    }
-
-    public void addFavorite() {
 
     }
 

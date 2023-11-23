@@ -41,9 +41,9 @@ public class Center extends AppCompatActivity {
     private String hora_apertura;
     private String hora_cierre;
     private String imagen;
-    private GeoPoint StartPoint;
-    private Marker Mark;
-    private InfoWindow customInfoWindow;
+    private GeoPoint StartPoint;         //CLCoordinate
+    private Marker Mark;                 //MKMarkerAnnotation
+    private InfoWindow customInfoWindow; // MKMarkerAnnotationView
     private MapView Map;
     private Context context;
     private String categoria;
