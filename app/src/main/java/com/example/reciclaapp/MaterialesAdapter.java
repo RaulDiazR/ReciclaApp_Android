@@ -186,6 +186,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
             // Configure button actions
             Button btnVerGaleria = dialogView.findViewById(R.id.verGaleria);
             Button btnTomarFoto = dialogView.findViewById(R.id.tomarFoto);
+            Button btnCancelar = dialogView.findViewById(R.id.cancelar);
 
             btnVerGaleria.setOnClickListener(v -> {
                 // Crea un intent para abrir la galería
@@ -235,6 +236,11 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
                     ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
                 }
 
+                alertDialog.dismiss();
+                this.rootView.removeView(backgroundView); // Remove the background
+            });
+
+            btnCancelar.setOnClickListener(v -> {
                 alertDialog.dismiss();
                 this.rootView.removeView(backgroundView); // Remove the background
             });

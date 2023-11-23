@@ -105,7 +105,7 @@ public class VerDetallesActivity extends AppCompatActivity {
                 return imageResources[i];
             }
         }
-        return -1; // Return -1 if the name is not found
+        return R.drawable.icon_error_image; // Return -1 if the name is not found
     }
     // Manejar la acción de navegación hacia arriba
     @Override
