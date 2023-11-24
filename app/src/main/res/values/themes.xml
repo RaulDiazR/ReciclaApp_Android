@@ -15,5 +15,33 @@
         <item name="colorControlHighlight">@color/green</item>
     </style>
 
+    // used for Time Pickers in OrdenHorarioActivity
+    <style name="TimePickerStyle" parent="Base.Theme.ReciclaApp">
+        <item name="colorControlNormal">@color/green</item>
+    </style>
+
+    <style name="Base.Theme.ReciclaApp.PopMe">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+    // used for Popup in MaterialesActivity
+    <style name="CustomAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/shape_historial_background</item>
+    </style>
+
+    // used for Rating Bar in HistorialRecoleccionesActivity
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/gray</item>
+        <item name="colorControlActivated">@color/green</item>
+    </style>
+
+
     <style name="Theme.ReciclaApp" parent="Base.Theme.ReciclaApp" />
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/animation_in_bottom_dialog</item>
+        <item name="android:windowExitAnimation">@anim/animation_out_bottom_dialog</item>
+    </style>
+
 </resources>

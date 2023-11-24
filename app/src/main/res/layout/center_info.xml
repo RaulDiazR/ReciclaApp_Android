@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_rounded_all_white"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Guideline para asegurarse de que no tape la barra de navegación inferior -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom_nav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <ImageView
+        android:id="@+id/closeButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/icon_close"
+        android:contentDescription="Cerrar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless" />
+
+    <TextView
+        android:id="@+id/TittleCenterDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Detalles del centro"
+        android:textSize="25sp"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold" />
+
+    <!-- Imagen -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/CardImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintTop_toBottomOf="@id/TittleCenterDetails"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" > <!-- Si no deseas sombra, puedes establecer la elevación a 0 -->
+
+        <ImageView
+            android:id="@+id/imageViewCenter"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/centro_ejemplo"
+            android:contentDescription="Imagen" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/CardImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Título"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Texto descriptivo -->
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Texto descriptivo" />
+
+    <!-- Horario -->
+
+    <TextView
+        android:id="@+id/diasTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Texto descriptivo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+
+    <TextView
+        android:id="@+id/horarioTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Horario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+
+    <TextView
+        android:id="@+id/title_component"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/horarioTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Indicaciones"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <!-- Apartado de indicaciones -->
+    <LinearLayout
+        android:id="@+id/indicacionesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/title_component"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:gravity="center">
+
+
+        <ImageButton
+            android:id="@+id/imagenIndicacion1"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/maps"
+            android:scaleType="centerCrop"
+            android:contentDescription="Indicación 1" />
+
+        <ImageButton
+            android:id="@+id/imagenIndicacion2"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/waze"
+            android:scaleType="centerCrop"
+            android:contentDescription="Indicación 2" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/materialsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/indicacionesLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Materiales que reciben"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <!-- Apartado de materiales -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/materialesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/materialsLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
