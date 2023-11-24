@@ -182,34 +182,17 @@ public class CompletarDatosActivity extends AppCompatActivity {
             rank_points = 0;
             highest1 = 0;
             updateUI(user);
-            // Create a User object with additional data
-            User newUser = new User(
-                    firstName, // Get the first name from your input field
-                    lastName,  // Get the last name from your input field
-                    email,
-                    phoneNumber, // Get the phone number from your input field
-                    dateOfBirth,  // Get the date of birth from your input field
-                    rank_points,
-                    highest1
-            );
 
             // Get a reference to the Firestore collection "users" and set the document with the user's UID
-            DocumentReference userDocRef = FirebaseFirestore.getInstance().collection("usuarios").document(user.getUid());
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference userRef = db.collection("usuarios").document(user.getUid());
 
-            // Set the user data in Firestore
-            userDocRef.set(newUser)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "User data saved to Firestore");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, "Error saving user data to Firestore", e);
-                        }
-                    });
+            userRef.update(
+                    "nombre", nombreField.getText().toString(),
+                    "apellidos", apellidosField.getText().toString(),
+                    "telefono", telefonoField.getText().toString(),
+                    "fechaNacimiento", dateButton.getText().toString()
+            );
             updateUI(user);
             startActivity(new Intent(CompletarDatosActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }

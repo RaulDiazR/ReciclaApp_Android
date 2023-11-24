@@ -38,6 +38,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -140,6 +141,46 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(AuthResult authResult) {
                                 if (authResult.getAdditionalUserInfo().isNewUser()) {
+                                    String firstName, lastName, email, phoneNumber, dateOfBirth, password;
+                                    int rank_points, highest1;
+                                    FirebaseUser user = gAuth.getCurrentUser();
+                                    firstName = "";
+                                    lastName = "";
+                                    email = user.getEmail();
+                                    phoneNumber = "";
+                                    dateOfBirth = "";
+                                    rank_points = 0;
+                                    highest1 = 0;
+                                    updateUI(user);
+                                    // Create a User object with additional data
+                                    User newUser = new User(
+                                            firstName, // Get the first name from your input field
+                                            lastName,  // Get the last name from your input field
+                                            email,
+                                            phoneNumber, // Get the phone number from your input field
+                                            dateOfBirth,  // Get the date of birth from your input field
+                                            rank_points,
+                                            highest1
+                                    );
+
+                                    // Get a reference to the Firestore collection "users" and set the document with the user's UID
+                                    DocumentReference userDocRef = FirebaseFirestore.getInstance().collection("usuarios").document(user.getUid());
+
+                                    // Set the user data in Firestore
+                                    userDocRef.set(newUser)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "User data saved to Firestore");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.e(TAG, "Error saving user data to Firestore", e);
+                                                }
+                                            });
+                                    updateUI(user);
                                     // When task is successful redirect to profile activity display Toast
                                     startActivity(new Intent(LoginActivity.this, CompletarDatosActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                                     displayToast("Firebase authentication successful");
