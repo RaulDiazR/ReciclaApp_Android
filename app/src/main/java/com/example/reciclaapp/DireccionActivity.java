@@ -126,7 +126,7 @@ public class DireccionActivity extends AppCompatActivity {
                     Map<String, Object> userData = documentSnapshot.getData();
 
                     if (userData != null) {
-                        String nombre = (String) userData.get("nombre");
+                        String nombre = (String) userData.get("nombres");
                         String apellidos = (String) userData.get("apellidos");
                         nombreCompleto = nombre + " " + apellidos;
 

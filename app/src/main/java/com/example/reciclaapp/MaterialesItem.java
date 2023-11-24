@@ -73,7 +73,7 @@ public class MaterialesItem implements Parcelable {
     }
 
     public int getMaterialQuantity() {
-        return materialQuantity;
+        return this.materialQuantity;
     }
 
     public void setMaterialQuantity(int materialQuantity) {
