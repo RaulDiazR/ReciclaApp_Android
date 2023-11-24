@@ -31,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            Intent intent = new Intent(MainActivity.this, StreetMapActivity.class);
-            intent.putExtra("postalcode", "72080");
-            intent.putExtra("state", "Puebla");
-            intent.putExtra("city", "Municipio de Puebla");
-            intent.putExtra("country", "Mexico");
-            intent.putExtra("street", "Calle 34 Poniente");
+            Intent intent = new Intent(MainActivity.this, HistorialRecoleccionesActivity.class);
+//            intent.putExtra("postalcode", "72080");
+//            intent.putExtra("state", "Puebla");
+//            intent.putExtra("city", "Municipio de Puebla");
+//            intent.putExtra("country", "Mexico");
+//            intent.putExtra("street", "Calle 34 Poniente");
             startActivity(intent);
 
         } catch (Exception e) {

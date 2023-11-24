@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -65,11 +64,9 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.11")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.material:material:1.9.0")
+    testImplementation("junit:junit:4.13.2")
 
-}
-
-configurations.implementation {
-    exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
 }
 
 configurations.implementation {

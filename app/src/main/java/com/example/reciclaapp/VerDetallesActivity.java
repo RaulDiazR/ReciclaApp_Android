@@ -93,12 +93,11 @@ public class VerDetallesActivity extends AppCompatActivity {
     private int getMaterialIcon(String materialName) {
         // Define arrays for image resource IDs and corresponding text
         int[] imageResources = {
-                R.drawable.material_aceite_auto, R.drawable.material_aceite_usado, R.drawable.material_arbol,R.drawable.material_baterias, R.drawable.material_bici, R.drawable.material_botellas, R.drawable.material_carton, R.drawable.material_electronicos, R.drawable.material_escombro, R.drawable.material_industriales, R.drawable.material_juguetes, R.drawable.material_libros, R.drawable.material_llantas, R.drawable.material_madera, R.drawable.material_medicina, R.drawable.material_metal, R.drawable.material_organico, R.drawable.material_pallets, R.drawable.material_papel, R.drawable.material_pilas, R.drawable.material_plasticos, R.drawable.material_ropa, R.drawable.material_tapitas, R.drawable.material_tetrapack, R.drawable.material_toner, R.drawable.material_voluminoso
+                R.drawable.material_aceite_auto, R.drawable.material_aceite_usado, R.drawable.material_arbol,R.drawable.material_baterias, R.drawable.material_bici, R.drawable.material_botellas, R.drawable.material_carton, R.drawable.material_electronicos, R.drawable.material_escombro, R.drawable.material_industriales, R.drawable.material_juguetes, R.drawable.material_metal, R.drawable.material_metal, R.drawable.material_libros, R.drawable.material_llantas, R.drawable.material_madera, R.drawable.material_medicina, R.drawable.material_metal, R.drawable.material_organico, R.drawable.material_pallets, R.drawable.material_papel, R.drawable.material_pilas, R.drawable.material_plasticos, R.drawable.material_ropa, R.drawable.material_tapitas, R.drawable.material_tetrapack, R.drawable.material_toner, R.drawable.material_voluminoso
         };
 
         String[] textArray = {
-                "Aceite de Auto","Aceite Usado","Árbol","Baterías","Bicicletas","Botellas","Cartón","Electrónicos","Escombros","Industriales","Juguetes","Libros","Llantas","Madera","Medicinas","Metal","Orgánico","Pallets","Papel","Pilas","Plásticos","Ropa","Tapitas","Tetra Pack","Toner","Voluminoso"
-        };
+                "Aceite Auto","Aceite Usado", "Árbol","Baterias","Bicicletas","Botellas", "Cartón","Electrónicos","Escombros","Industriales","Juguetes","Lata Chilera","Lata","Libros","Llantas","Madera","Medicina", "Metal","Orgánico", "Pallets","Papel","Pilas","Plásticos","Ropa","Tapitas","Tetrapack","Toner","Voluminoso"};
 
         for (int i = 0; i < textArray.length; i++) {
             if (textArray[i].equals(materialName)) {

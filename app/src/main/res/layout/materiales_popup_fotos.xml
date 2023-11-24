@@ -91,7 +91,7 @@
             android:layout_marginBottom="24dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/button_variant_red"
-            android:text="@string/cancelar"
+            android:text="@string/regresar"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/white"
