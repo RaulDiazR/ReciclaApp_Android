@@ -57,7 +57,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
 
         int curHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
-        isDayOver = curHour >= 19;
+        isDayOver = curHour >= 18;
         isBeforeDayStart = curHour < 7;
 
         initDatePicker();
@@ -101,8 +101,8 @@ public class OrdenHorarioActivity extends AppCompatActivity {
             if (hourEnd <= 17) {
                 hourEnd = hourEnd + 1;
             } else {
-                hourEnd = 18;
-                minuteEnd = 59;
+                hourEnd = 19;
+                minuteEnd = 0;
             }
         }
 
@@ -198,7 +198,7 @@ public class OrdenHorarioActivity extends AppCompatActivity {
             minH = 7;
             minM = 0;
         }
-        showCustomTimePickerDialog(timeIni, startHour, startMinute, minH, minM);
+        showCustomTimePickerDialog(timeIni, startHour, startMinute, minH, minM, 17);
     }
 
     /**
@@ -207,9 +207,8 @@ public class OrdenHorarioActivity extends AppCompatActivity {
     public void openTimePickerEnd(View view) {
         int minH = hourIni+1;
         int minM = 0;
-        if (minH >= 19) {
-            minH = hourIni;
-            minM = 59;
+        if (minH >= 18) {
+            minH = hourIni+1;
         }
         String endTimeText = timeEnd.getText().toString();
         String[] endTimeParts = endTimeText.split(":");
@@ -217,9 +216,8 @@ public class OrdenHorarioActivity extends AppCompatActivity {
         int endMinute = Integer.parseInt(endTimeParts[1]);
         if(notSameDay() || this.isBeforeDayStart) {
             minH = 8;
-            minM = 0;
         }
-        showCustomTimePickerDialog(timeEnd, endHour, endMinute, minH, minM);
+        showCustomTimePickerDialog(timeEnd, endHour, endMinute, minH, minM, 18);
     }
 
     /**
@@ -234,8 +232,8 @@ public class OrdenHorarioActivity extends AppCompatActivity {
     /**
      * Muestra el diálogo personalizado de selección de tiempo.
      */
-    private void showCustomTimePickerDialog(Button buttonToUpdate, int hour, int minute, int minH, int minM) {
-        OrdenHorarioTimePickerDialog customDialog = new OrdenHorarioTimePickerDialog(buttonToUpdate, hour, minute, minH, minM);
+    private void showCustomTimePickerDialog(Button buttonToUpdate, int hour, int minute, int minH, int minM, int maxH) {
+        OrdenHorarioTimePickerDialog customDialog = new OrdenHorarioTimePickerDialog(buttonToUpdate, hour, minute, minH, minM, maxH, 59);
         customDialog.show(getSupportFragmentManager(), "historial_time_picker");
     }
 
@@ -313,18 +311,6 @@ public class OrdenHorarioActivity extends AppCompatActivity {
             intent.putExtra("comentarios", comentariosText);
             intent.putExtra("enPersona", enPersona);
             startActivity(intent);
-
-            // this.finalTimeIni; // tiempo de inicio de recolección
-            // this.finalTimeEnd; // tiempo de finalización de recolección
-            /*Toast toast = Toast.makeText(this, ""+
-                    comentariosText+" -- "+
-                    enPersona+" -- "+
-                    this.finalDate[0]+", "+this.finalDate[1]+", "+this.finalDate[2]+" -- "+
-                    this.finalTimeIni[0]+":"+
-                    this.finalTimeIni[1]+" -- "+
-                    this.finalTimeEnd[0]+":"+
-                    this.finalTimeEnd[1], Toast.LENGTH_LONG);
-            toast.show();*/
         }
     }
 

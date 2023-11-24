@@ -421,9 +421,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
             btnContinuar.setOnClickListener(v -> {
                 if (!curItem.getIsRated()) {
-                    Toast.makeText(this,
-                            "DB changed!!!",
-                            Toast.LENGTH_LONG).show();
                     DocumentReference recolectorRef = firestore.collection("recolectores").document(curItem.getRecolector().getId());
 
                     // Atomically increment the values.

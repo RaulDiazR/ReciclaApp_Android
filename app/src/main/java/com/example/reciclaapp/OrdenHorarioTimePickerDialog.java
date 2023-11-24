@@ -23,7 +23,7 @@ public class OrdenHorarioTimePickerDialog extends DialogFragment implements Time
     int initialHour, initialMinute;
     int minH, minM;
 
-    public OrdenHorarioTimePickerDialog(Button buttonToUpdate, int iniHour, int iniMinute, int minH, int minM) {
+    public OrdenHorarioTimePickerDialog(Button buttonToUpdate, int iniHour, int iniMinute, int minH, int minM, int maxH, int maxM) {
         this.buttonToUpdate = buttonToUpdate;
         this.initialHour = iniHour;
         this.initialMinute = iniMinute;
@@ -34,7 +34,7 @@ public class OrdenHorarioTimePickerDialog extends DialogFragment implements Time
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.historial_time_picker, null);
 
         NumberPicker hourPicker = view.findViewById(R.id.hourPicker);
