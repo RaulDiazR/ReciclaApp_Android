@@ -101,17 +101,17 @@ public class LoginActivity extends AppCompatActivity {
                 rootView.removeView(backgroundView); // Eliminar la vista semitransparente
                 return true;
             });
+            // Initialize firebase auth
+            gAuth = FirebaseAuth.getInstance();
+            // Initialize firebase user
+            FirebaseUser firebaseUser = gAuth.getCurrentUser();
+            // Check condition
         });
 
         // Initialize firebase auth
         gAuth = FirebaseAuth.getInstance();
         // Initialize firebase user
         FirebaseUser firebaseUser = gAuth.getCurrentUser();
-        // Check condition
-        if (firebaseUser != null) {
-            // When user already sign in redirect to profile activity
-            startActivity(new Intent(LoginActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        }
     }
 
     @Override

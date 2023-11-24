@@ -173,6 +173,7 @@ public class CompletarDatosActivity extends AppCompatActivity {
         if (isFormValid()){
             String firstName, lastName, email, phoneNumber, dateOfBirth, password;
             int rank_points, highest1;
+            FirebaseUser user = auth.getCurrentUser();
             firstName = nombreField.getText().toString();
             lastName = apellidosField.getText().toString();
             email = user.getEmail();
@@ -180,7 +181,6 @@ public class CompletarDatosActivity extends AppCompatActivity {
             dateOfBirth = dateButton.getText().toString();
             rank_points = 0;
             highest1 = 0;
-            FirebaseUser user = auth.getCurrentUser();
             updateUI(user);
             // Create a User object with additional data
             User newUser = new User(
