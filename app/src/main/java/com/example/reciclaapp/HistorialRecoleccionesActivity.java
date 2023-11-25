@@ -120,20 +120,6 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
 
     }
 
-    private int getCurrentItemIdForActivity() {
-        Class<?> currentClass = this.getClass();
-
-        if (currentClass == VerNoticiasActivity.class) {
-            return R.id.inicio;
-        } else if (currentClass == StreetMapActivity.class) {
-            return R.id.mapa;
-        } else if (currentClass == HistorialRecoleccionesActivity.class) {
-            return R.id.reciclaje;
-        } else {
-            return R.id.ajustes;
-        }
-    }
-
     private void navigateToActivity(int itemId) {
         Intent intent = null;
 
@@ -141,13 +127,27 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             intent = new Intent(this, VerNoticiasActivity.class);
         } else if (itemId == R.id.mapa) {
             intent = new Intent(this, StreetMapActivity.class);
-        } else if (itemId == R.id.reciclaje) {
-            intent = new Intent(this, HistorialRecoleccionesActivity.class);
+        } else if (itemId == R.id.ajustes) {
+            intent = new Intent(this, SettingsActivity.class);
         }
 
         if (intent != null) {
             startActivity(intent);
             overridePendingTransition(0,0);
+        }
+    }
+
+    private int getCurrentItemIdForActivity() {
+        Class<?> currentClass = this.getClass();
+
+        if (currentClass == VerNoticiasActivity.class) {
+            return R.id.inicio;
+        } else if (currentClass == StreetMapActivity.class) {
+            return R.id.mapa;
+        } else if (currentClass == SettingsActivity.class) {
+            return R.id.ajustes;
+        } else {
+            return R.id.reciclaje;
         }
     }
 
@@ -626,12 +626,12 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     }
 
     // Detiene la tarea de actualización periódica cuando la actividad se pausa o se destruye
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Remove any pending callbacks to stop the task
-        handler.removeCallbacks(updateStatusTask);
-    }
+    //@Override
+    //protected void onPause() {
+    //    super.onPause();
+    //    // Remove any pending callbacks to stop the task
+    //    handler.removeCallbacks(updateStatusTask);
+    //}
 
     public void confirmarCancelarOrden(int itemPos) {
         // Create a view for the semitransparent background

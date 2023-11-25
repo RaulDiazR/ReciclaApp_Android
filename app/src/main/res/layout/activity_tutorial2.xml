@@ -80,7 +80,7 @@
         android:layout_width="311dp"
         android:layout_height="120dp"
         android:layout_marginTop="8dp"
-        android:text="Crea una cuenta con tu número de teléfono o correo electrónico y una contraseña para comenzar a reciclar, también puedes registrarte con Facebook o Google."
+        android:text="Crea una cuenta con tu número de teléfono o correo electrónico y una contraseña para comenzar a reciclar, también puedes registrarte con Google."
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
