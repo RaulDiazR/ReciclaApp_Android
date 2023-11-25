@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebHistoryItem;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -31,6 +32,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.reciclaapp.models.McqMaterial;
 import com.example.reciclaapp.models.McqRecoleccion;
 import com.example.reciclaapp.models.McqRecolector;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -92,11 +95,60 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         // Eliminar el título predeterminado de la barra de aplicaciones
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        // Initialize and assign variable
+        BottomNavigationView bottomNavigationView=findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+
+        // Set item selected listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId != R.id.reciclaje) {
+                // Navigate to the corresponding activity
+                navigateToActivity(itemId);
+            }
+            return true;
+        });
+
+        // Initialize the selected item based on the current activity
+        int currentItemId = getCurrentItemIdForActivity();
+        bottomNavigationView.setSelectedItemId(currentItemId);
+
         firestore = FirebaseFirestore.getInstance();
 
         initializeRecyclerView();
         retrieveAndCreateHistorialItems();
 
+    }
+
+    private int getCurrentItemIdForActivity() {
+        Class<?> currentClass = this.getClass();
+
+        if (currentClass == VerNoticiasActivity.class) {
+            return R.id.inicio;
+        } else if (currentClass == StreetMapActivity.class) {
+            return R.id.mapa;
+        } else if (currentClass == HistorialRecoleccionesActivity.class) {
+            return R.id.reciclaje;
+        } else {
+            return R.id.ajustes;
+        }
+    }
+
+    private void navigateToActivity(int itemId) {
+        Intent intent = null;
+
+        if (itemId == R.id.inicio) {
+            intent = new Intent(this, VerNoticiasActivity.class);
+        } else if (itemId == R.id.mapa) {
+            intent = new Intent(this, StreetMapActivity.class);
+        } else if (itemId == R.id.reciclaje) {
+            intent = new Intent(this, HistorialRecoleccionesActivity.class);
+        }
+
+        if (intent != null) {
+            startActivity(intent);
+            overridePendingTransition(0,0);
+        }
     }
 
     // Inicializa el RecyclerView y sus componentes asociados
@@ -563,6 +615,12 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        // Initialize and assign variable
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        // Update the selected item in the bottom navigation view
+        int currentItemId = getCurrentItemIdForActivity();
+        bottomNavigationView.setSelectedItemId(currentItemId);
         // Start the initial task and schedule it to run periodically
         handler.post(updateStatusTask);
     }

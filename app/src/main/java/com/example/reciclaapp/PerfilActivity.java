@@ -1,11 +1,7 @@
 package com.example.reciclaapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,21 +10,18 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class PerfilActivity extends AppCompatActivity {
@@ -80,7 +74,7 @@ public class PerfilActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Remove default title for app bar
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         // Enable the back button (up navigation)
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -124,21 +118,18 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void initDatePicker() {
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                Calendar selectedDate = new GregorianCalendar(year, month, day);
-                Calendar currentDate = Calendar.getInstance();
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            Calendar selectedDate = new GregorianCalendar(year, month, day);
+            Calendar currentDate = Calendar.getInstance();
 
-                // Verificar si la fecha seleccionada es posterior a la fecha actual
-                if (selectedDate.after(currentDate)) {
-                    // Mostrar un mensaje de error o realizar alguna acción, ya que la fecha es inválida
-                    Toast.makeText(PerfilActivity.this, "Selecciona una fecha válida", Toast.LENGTH_SHORT).show();
-                } else {
-                    month = month + 1;
-                    String date = makeDateString(day, month, year);
-                    dateButton.setText(date);
-                }
+            // Verificar si la fecha seleccionada es posterior a la fecha actual
+            if (selectedDate.after(currentDate)) {
+                // Mostrar un mensaje de error o realizar alguna acción, ya que la fecha es inválida
+                Toast.makeText(PerfilActivity.this, "Selecciona una fecha válida", Toast.LENGTH_SHORT).show();
+            } else {
+                month = month + 1;
+                String date = makeDateString(day, month, year);
+                dateButton.setText(date);
             }
         };
 
@@ -229,40 +220,34 @@ public class PerfilActivity extends AppCompatActivity {
             Button btnConfirmar = dialogView.findViewById(R.id.ConfirmarButton);
             Button btnCancelar = dialogView.findViewById(R.id.CancelarButton);
 
-            btnConfirmar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Update Firestore with new user information
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    DocumentReference userRef = db.collection("usuarios").document(user.getUid());
+            btnConfirmar.setOnClickListener(v -> {
+                // Update Firestore with new user information
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference userRef = db.collection("usuarios").document(user.getUid());
 
-                    userRef.update(
-                            "nombre", nombreField.getText().toString(),
-                            "apellidos", apellidosField.getText().toString(),
-                            "correo", correoField.getText().toString(),
-                            "telefono", telefonoField.getText().toString(),
-                            "fechaNacimiento", dateButton.getText().toString()
-                    ).addOnSuccessListener(aVoid -> {
-                        // Handle success
-                        Toast.makeText(PerfilActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
-                    }).addOnFailureListener(e -> {
-                        // Handle failure
-                        Toast.makeText(PerfilActivity.this, "Error saving changes", Toast.LENGTH_SHORT).show();
-                    });
-                    // Lógica para Confirmar
-                    Intent intent = new Intent(PerfilActivity.this, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
+                userRef.update(
+                        "nombre", nombreField.getText().toString(),
+                        "apellidos", apellidosField.getText().toString(),
+                        "correo", correoField.getText().toString(),
+                        "telefono", telefonoField.getText().toString(),
+                        "fechaNacimiento", dateButton.getText().toString()
+                ).addOnSuccessListener(aVoid -> {
+                    // Handle success
+                    Toast.makeText(PerfilActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                }).addOnFailureListener(e -> {
+                    // Handle failure
+                    Toast.makeText(PerfilActivity.this, "Error saving changes", Toast.LENGTH_SHORT).show();
+                });
+                // Lógica para Confirmar
+                Intent intent = new Intent(PerfilActivity.this, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             });
 
-            btnCancelar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Lógica para Cancelar
-                    alertDialog.dismiss();
-                    FrameLayout rootView = findViewById(android.R.id.content);
-                    rootView.removeView(backgroundView);
-                }
+            btnCancelar.setOnClickListener(v -> {
+                // Lógica para Cancelar
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
             });
 
             alertDialog.setOnDismissListener(v -> {
@@ -309,43 +294,34 @@ public class PerfilActivity extends AppCompatActivity {
         Button btnConfirmar = dialogView.findViewById(R.id.ConfirmarButton);
         Button btnCancelar = dialogView.findViewById(R.id.CancelarButton);
 
-        btnConfirmar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Sign out from google
-                googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Check condition
-                        if (task.isSuccessful()) {
-                            // When task is successful sign out from firebase
-                            auth.signOut();
-                            // Display Toast
-                            Toast.makeText(getApplicationContext(), "Logout successful", Toast.LENGTH_SHORT).show();
-                            // Finish activity
-                            Intent intent = new Intent(PerfilActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-                });
+        btnConfirmar.setOnClickListener(v12 -> {
+            // Sign out from google
+            googleSignInClient.signOut().addOnCompleteListener(task -> {
+                // Check condition
+                if (task.isSuccessful()) {
+                    // When task is successful sign out from firebase
+                    auth.signOut();
+                    // Display Toast
+                    Toast.makeText(getApplicationContext(), "Logout successful", Toast.LENGTH_SHORT).show();
+                    // Finish activity
+                    Intent intent = new Intent(PerfilActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            });
 
-                // Lógica para Confirmar
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(PerfilActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            }
+            // Lógica para Confirmar
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(PerfilActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
 
-        btnCancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Lógica para Cancelar
-                alertDialog.dismiss();
-                FrameLayout rootView = findViewById(android.R.id.content);
-                rootView.removeView(backgroundView);
-            }
+        btnCancelar.setOnClickListener(v1 -> {
+            // Lógica para Cancelar
+            alertDialog.dismiss();
+            FrameLayout rootView = findViewById(android.R.id.content);
+            rootView.removeView(backgroundView);
         });
 
         alertDialog.setOnDismissListener(view -> {
@@ -366,9 +342,7 @@ public class PerfilActivity extends AppCompatActivity {
 
         if (isEmpty(nombreField)) {
             nombreField.setError("Este campo es obligatorio");
-            if (firstErrorView == null) {
-                firstErrorView = nombreTextView;
-            }
+            firstErrorView = nombreTextView;
             isValid = false;
         }
 
@@ -392,7 +366,7 @@ public class PerfilActivity extends AppCompatActivity {
             telefonoField.setError("Este campo es obligatorio");
             if (firstErrorView == null) {
                 firstErrorView = telefonoTextView;
-            };
+            }
             isValid = false;
         }
 

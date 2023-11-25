@@ -13,6 +13,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -45,6 +46,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -87,11 +90,11 @@ public class StreetMapActivity extends AppCompatActivity {
     List<Category> categoryList = new ArrayList<>();
     List<Center> centerList = new ArrayList<>();
     Map<String, ArrayList<Integer>> FavoriteMap = new HashMap<>();
-    Map<String, ArrayList<Integer>> CategoryCenterMap = new HashMap<>(); //Mapa con la posicion de los materiales segun categoria
+    Map<String, ArrayList<Integer>> CategoryCenterMap = new HashMap<>(); //Mapa con la posición de los materiales según categoría
     Dialog BottomDialog;
     View BottomDialogView;
     FirebaseFirestore db;
-    Map<String, Integer> MaterialMap = new HashMap<>(); //Mapa con la posicion del material en la lista de materiales
+    Map<String, Integer> MaterialMap = new HashMap<>(); //Mapa con la posición del material en la lista de materiales
     ArrayList<MaterialModel> Materials = new ArrayList<>();
     FavoriteModel Favorites;
 
@@ -100,6 +103,24 @@ public class StreetMapActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_street_map);
+
+        // Initialize and assign variable
+        BottomNavigationView bottomNavigationView=findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+
+        // Set item selected listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId != R.id.mapa) {
+                // Navigate to the corresponding activity
+                navigateToActivity(itemId);
+            }
+            return true;
+        });
+
+        // Initialize the selected item based on the current activity
+        int currentItemId = getCurrentItemIdForActivity();
+        bottomNavigationView.setSelectedItemId(currentItemId);
 
         try {
             // Load Resources from Firebase
@@ -143,6 +164,37 @@ public class StreetMapActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void navigateToActivity(int itemId) {
+        Intent intent = null;
+
+        if (itemId == R.id.inicio) {
+            intent = new Intent(this, VerNoticiasActivity.class);
+        } else if (itemId == R.id.reciclaje) {
+            intent = new Intent(this, HistorialRecoleccionesActivity.class);
+        } else if (itemId == R.id.ajustes) {
+            intent = new Intent(this, SettingsActivity.class);
+        }
+
+        if (intent != null) {
+            startActivity(intent);
+            overridePendingTransition(0,0);
+        }
+    }
+
+    private int getCurrentItemIdForActivity() {
+        Class<?> currentClass = this.getClass();
+
+        if (currentClass == VerNoticiasActivity.class) {
+            return R.id.inicio;
+        } else if (currentClass == HistorialRecoleccionesActivity.class) {
+            return R.id.reciclaje;
+        } else if (currentClass == SettingsActivity.class) {
+            return R.id.ajustes;
+        } else {
+            return R.id.mapa;
+        }
     }
 
     public void updateFavorites() {

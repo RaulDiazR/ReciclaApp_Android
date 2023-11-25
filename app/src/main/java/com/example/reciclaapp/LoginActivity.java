@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                                     displayToast("Firebase authentication successful");
                                 } else {
                                     // When task is unsuccessful display Toast
-                                    startActivity(new Intent(LoginActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    startActivity(new Intent(LoginActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                                     displayToast("Firebase authentication successful");
                                 }
                             }
@@ -262,7 +262,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user.isEmailVerified()){
-            Intent intent = new Intent(LoginActivity.this, NewsActivity.class)
+            Intent intent = new Intent(LoginActivity.this, VerNoticiasActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
@@ -325,7 +325,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void ContinuarFacebook (View v){
-        Intent intent = new Intent(this, NewsActivity.class);
+        Intent intent = new Intent(this, VerNoticiasActivity.class);
         startActivity(intent);
     }
 

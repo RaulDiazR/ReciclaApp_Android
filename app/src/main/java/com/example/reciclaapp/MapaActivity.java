@@ -40,9 +40,9 @@ public class MapaActivity extends AppCompatActivity {
         Intent intent = null;
 
         if (itemId == R.id.inicio) {
-            intent = new Intent(this, NewsActivity.class);
+            intent = new Intent(this, VerNoticiasActivity.class);
         } else if (itemId == R.id.reciclaje) {
-            intent = new Intent(this, RecoleccionActivity.class);
+            intent = new Intent(this, HistorialRecoleccionesActivity.class);
         } else if (itemId == R.id.ajustes) {
             intent = new Intent(this, SettingsActivity.class);
         }
@@ -56,9 +56,9 @@ public class MapaActivity extends AppCompatActivity {
     private int getCurrentItemIdForActivity() {
         Class<?> currentClass = this.getClass();
 
-        if (currentClass == NewsActivity.class) {
+        if (currentClass == VerNoticiasActivity.class) {
             return R.id.inicio;
-        } else if (currentClass == RecoleccionActivity.class) {
+        } else if (currentClass == HistorialRecoleccionesActivity.class) {
             return R.id.reciclaje;
         } else if (currentClass == SettingsActivity.class) {
             return R.id.ajustes;

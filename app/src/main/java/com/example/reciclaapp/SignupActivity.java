@@ -143,7 +143,7 @@ public class SignupActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(SignupActivity.this, NewsActivity.class);
+            Intent intent = new Intent(SignupActivity.this, VerNoticiasActivity.class);
             startActivity(intent);
             finish();
         }
@@ -468,7 +468,7 @@ public class SignupActivity extends AppCompatActivity {
             alertDialog.dismiss();
             FrameLayout rootView = findViewById(android.R.id.content);
             rootView.removeView(finalBackgroundView);
-            //Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            //Intent intent = new Intent(SignupActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             //startActivity(intent);
         });
 
@@ -515,14 +515,14 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Intent intent = new Intent(SignupActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         });
 
         alertDialog.setOnDismissListener(view -> {
             alertDialog.dismiss();
-            Intent intent = new Intent(SignupActivity.this, NewsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent intent = new Intent(SignupActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
 

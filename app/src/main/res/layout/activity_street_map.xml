@@ -39,20 +39,18 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@color/white"
-        app:itemIconTint="@drawable/selector_menu_tint"
-        app:itemTextColor="@drawable/selector_menu_tint"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/osmap"
-        app:layout_constraintHorizontal_bias="0.529"
-        app:layout_constraintStart_toStartOf="@+id/osmap"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:menu="@menu/bottom_nav_menu" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        tools:ignore="VisualLintBottomNav" />
 
     <Button
         android:id="@+id/activate_bottom_sheet"
         android:layout_width="231dp"
-        android:layout_height="36dp"
+        android:layout_height="48dp"
         android:background="@drawable/shape_rounded_all"
         android:text="@string/filter"
         android:textColor="@color/white"

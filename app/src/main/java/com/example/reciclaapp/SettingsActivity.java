@@ -64,8 +64,8 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int STORAGE_REQUEST = 200;
     private static final int IMAGEPICK_GALLERY_REQUEST = 300;
     private static final int IMAGE_PICKCAMERA_REQUEST = 400;
-    String cameraPermission[];
-    String storagePermission[];
+    String[] cameraPermission;
+    String[] storagePermission;
     Uri imageuri;
     String profileOrCoverPhoto;
 
@@ -76,11 +76,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser == null){
+        /*if (firebaseUser == null){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
-        }
+        }*/
 
         // Initialize and assign variable
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottomNavigationView);
@@ -358,11 +358,11 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = null;
 
         if (itemId == R.id.inicio) {
-            intent = new Intent(this, NewsActivity.class);
+            intent = new Intent(this, VerNoticiasActivity.class);
         } else if (itemId == R.id.mapa) {
-            intent = new Intent(this, MapaActivity.class);
+            intent = new Intent(this, StreetMapActivity.class);
         } else if (itemId == R.id.reciclaje) {
-            intent = new Intent(this, RecoleccionActivity.class);
+            intent = new Intent(this, HistorialRecoleccionesActivity.class);
         }
 
         if (intent != null) {
@@ -374,11 +374,11 @@ public class SettingsActivity extends AppCompatActivity {
     private int getCurrentItemIdForActivity() {
         Class<?> currentClass = this.getClass();
 
-        if (currentClass == NewsActivity.class) {
+        if (currentClass == VerNoticiasActivity.class) {
             return R.id.inicio;
-        } else if (currentClass == MapaActivity.class) {
+        } else if (currentClass == StreetMapActivity.class) {
             return R.id.mapa;
-        } else if (currentClass == RecoleccionActivity.class) {
+        } else if (currentClass == HistorialRecoleccionesActivity.class) {
             return R.id.reciclaje;
         } else {
             return R.id.ajustes;
