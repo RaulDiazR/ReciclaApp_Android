@@ -36,7 +36,7 @@ public class VerNoticiasAdapter extends RecyclerView.Adapter<VerNoticiasAdapter.
         VerNoticiasItem VerNoticiasItem = newsList.get(position);
 
         // Set the data to views
-        //Picasso.load(VerNoticiasItem.getImageResource()).into(holder.imageView); // Use Glide for image loading
+        Picasso.get().load(VerNoticiasItem.getImageResource()).placeholder(R.drawable.icon_loading).error(R.drawable.icon_user_gray).into(holder.imageView); // Use Glide for image loading
         holder.titleTextView.setText(VerNoticiasItem.getTitle());
         holder.contentTextView.setText(VerNoticiasItem.getContent());
         holder.authorTextView.setText(VerNoticiasItem.getAuthor());

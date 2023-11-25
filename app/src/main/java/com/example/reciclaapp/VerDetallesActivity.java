@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,7 +64,7 @@ public class VerDetallesActivity extends AppCompatActivity {
 
         // Retrieve the JSON string from the intent
         String materialesListJson = getIntent().getStringExtra("data");
-
+        Log.d("VerDetallesActivity", "" + materialesListJson);
         // Check if the JSON string is not null
         if (materialesListJson != null) {
             // Use Gson to parse the JSON string into a list of McqMaterial objects

@@ -105,7 +105,9 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         MaterialesItem item = itemList.get(position);
         holder.imageView.setImageResource(item.getImageResource());
         holder.textView.setText(item.getName());
-        item.setMaterialQuantity(1);
+        holder.quantity.setText(String.valueOf(item.getMaterialQuantity())); // Set the correct quantity
+        holder.isPhotoTaken = item.getFotoMaterial() != null; // Update isPhotoTaken
+        
         if (item.getFotoMaterial() == null) {
             holder.tomarFoto.setText(R.string.tomar_foto);
         } else {
@@ -254,7 +256,6 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
             this.rootView.addView(backgroundView);
 
         });
-
 
         // Create an array of items to populate the Spinner
         String[] items = {"Bolsas", "Bote", "Cajas", "Kilos"};

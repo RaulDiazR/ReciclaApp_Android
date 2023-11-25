@@ -120,9 +120,12 @@ public class MaterialesActivity extends AppCompatActivity{
                             int imageResource = data.getIntExtra("imageResource", 0);
                             String text = data.getStringExtra("text");
 
+                            MaterialesItem newItem = new MaterialesItem(imageResource, text);
+
+                            newItem.setMaterialQuantity(1);
 
                             // Add the chosen material to your data source
-                            itemList.add(new MaterialesItem(imageResource, text));
+                            itemList.add(newItem);
 
                             // Notify the adapter that an item has been inserted at the last position
                             int insertedPosition = itemList.size() - 1;

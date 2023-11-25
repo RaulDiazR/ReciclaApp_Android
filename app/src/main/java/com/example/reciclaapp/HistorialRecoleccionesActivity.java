@@ -43,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
+
 /*
    Actividad HistorialRecoleccionesActivity: Muestra el historial de recolecciones del usuario.
    - Utiliza un RecyclerView para mostrar la lista de recolecciones pasadas.
@@ -187,17 +189,22 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     McqRecolector recolector = new McqRecolector(recolectorNombre, recolectorApellidos, recolectorTelefono, recolectorFoto, cantidadResenas, sumaResenas, recolectorId);
 
                     Map<String, Map<String, Object>> materialesMap = recoleccion.getMateriales();
-
                     List<McqMaterial> materialesList = new ArrayList<>();
 
-                    for (String materialId : materialesMap.keySet()) {
+                    // Create a list to store material IDs for sorting
+                    List<String> materialIds = new ArrayList<>(materialesMap.keySet());
+
+                    // Sort the material IDs based on their numeric part
+                    materialIds.sort(Comparator.comparingInt(s -> Integer.parseInt(s.replaceAll("\\D", ""))));
+
+                    for (String materialId : materialIds) {
                         Map<String, Object> materialData = materialesMap.get(materialId);
                         if (materialData != null) {
                             McqMaterial material = new McqMaterial();
                             material.setNombre((String) materialData.get("nombre"));
                             material.setUnidad((String) materialData.get("unidad"));
 
-                            // Se revisa que cantidadMaterial no sea nulo
+                            // Check that cantidadMaterial is not null
                             Long cantidadMaterialLong = (Long) materialData.get("cantidad");
                             int cantidadMaterialInt = cantidadMaterialLong != null ? cantidadMaterialLong.intValue() : 0;
                             material.setCantidad(cantidadMaterialInt);
@@ -248,13 +255,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
 
             btnVerDetalles.setOnClickListener(v -> {
-                Intent intent = new Intent(this, VerDetallesActivity.class);
-                String materialesList = new Gson().toJson(curItem.getMaterialesList());
-                intent.putExtra("data",materialesList);
-                intent.putExtra("fecha", curItem.getFecha());
-                intent.putExtra("horario", curItem.getHorario());
-                intent.putExtra("enPersona", curItem.getEnPersona());
-                startActivity(intent);
+                goToVerDetallesAct(curItem);
                 alertDialog.dismiss();
                 FrameLayout rootView = findViewById(android.R.id.content);
                 rootView.removeView(backgroundView); // Remove the background
@@ -337,13 +338,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             });
 
             btnVerDetalles.setOnClickListener(v -> {
-                Intent intent = new Intent(this, VerDetallesActivity.class);
-                String materialesList = new Gson().toJson(curItem.getMaterialesList());
-                intent.putExtra("data",materialesList);
-                intent.putExtra("fecha", curItem.getFecha());
-                intent.putExtra("horario", curItem.getHorario());
-                intent.putExtra("enPersona", curItem.getEnPersona());
-                startActivity(intent);
+                goToVerDetallesAct(curItem);
                 alertDialog.dismiss();
                 FrameLayout rootView = findViewById(android.R.id.content);
                 rootView.removeView(backgroundView); // Remove the background
@@ -399,13 +394,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
 
             btnVerDetalles.setOnClickListener(v -> {
-                Intent intent = new Intent(this, VerDetallesActivity.class);
-                String materialesList = new Gson().toJson(curItem.getMaterialesList());
-                intent.putExtra("data",materialesList);
-                intent.putExtra("fecha", curItem.getFecha());
-                intent.putExtra("horario", curItem.getHorario());
-                intent.putExtra("enPersona", curItem.getEnPersona());
-                startActivity(intent);
+                goToVerDetallesAct(curItem);
                 alertDialog.dismiss();
                 FrameLayout rootView = findViewById(android.R.id.content);
                 rootView.removeView(backgroundView); // Remove the background
@@ -492,13 +481,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             Button btnVerDetalles = dialogView.findViewById(R.id.verDetallesButton);
 
             btnVerDetalles.setOnClickListener(v -> {
-                Intent intent = new Intent(this, VerDetallesActivity.class);
-                String materialesList = new Gson().toJson(curItem.getMaterialesList());
-                intent.putExtra("data",materialesList);
-                intent.putExtra("fecha", curItem.getFecha());
-                intent.putExtra("horario", curItem.getHorario());
-                intent.putExtra("enPersona", curItem.getEnPersona());
-                startActivity(intent);
+                goToVerDetallesAct(curItem);
                 alertDialog.dismiss();
                 FrameLayout rootView = findViewById(android.R.id.content);
                 rootView.removeView(backgroundView); // Remove the background
@@ -526,6 +509,16 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             rootView.addView(backgroundView);
         }
 
+    }
+
+    private void goToVerDetallesAct(HistorialItem curItem) {
+        Intent intent = new Intent(this, VerDetallesActivity.class);
+        String materialesList = new Gson().toJson(curItem.getMaterialesList());
+        intent.putExtra("data",materialesList);
+        intent.putExtra("fecha", curItem.getFecha());
+        intent.putExtra("horario", curItem.getHorario());
+        intent.putExtra("enPersona", curItem.getEnPersona());
+        startActivity(intent);
     }
 
     // Se define un TASK que se repite cada cierto tiempo
