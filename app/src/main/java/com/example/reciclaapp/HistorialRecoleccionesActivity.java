@@ -13,7 +13,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebHistoryItem;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -34,6 +33,8 @@ import com.example.reciclaapp.models.McqRecoleccion;
 import com.example.reciclaapp.models.McqRecolector;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -71,13 +72,16 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     // 3- Adapter
     HistorialAdapter historialAdapter;
 
+    FirebaseAuth auth;
+    FirebaseUser user;
+
     // estados de recolecciones
     String iniciada = "Iniciada";
     String enProceso = "En Proceso";
     String completada = "Completada";
     String cancelada = "Cancelada";
 
-    String userId;
+    static String userId;
 
     FirebaseFirestore firestore;
 
@@ -88,6 +92,17 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historial_recolecciones);
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            HistorialRecoleccionesActivity.userId = user.getUid();
+        }
 
         // Encuentra la barra de herramientas por su ID y configura la barra de herramientas como la barra de aplicaciones
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -132,6 +147,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         }
 
         if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             overridePendingTransition(0,0);
         }
@@ -171,10 +187,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
-        userId = "user_id_2";
+        String docID = HistorialRecoleccionesActivity.userId;
         CollectionReference recoleccionesCollection = firestore.collection("recolecciones");
 
-        recoleccionesCollection.whereEqualTo("idUsuarioCliente", userId).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(50).addSnapshotListener((queryDocumentSnapshots, e) -> {
+        recoleccionesCollection.whereEqualTo("idUsuarioCliente", docID).orderBy("timeStamp", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(50).addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
                 Log.d("firestorageErrorGet", "Error: " + e);
                 return;
@@ -623,6 +639,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         bottomNavigationView.setSelectedItemId(currentItemId);
         // Start the initial task and schedule it to run periodically
         handler.post(updateStatusTask);
+        overridePendingTransition(0,0);
     }
 
     // Detiene la tarea de actualización periódica cuando la actividad se pausa o se destruye

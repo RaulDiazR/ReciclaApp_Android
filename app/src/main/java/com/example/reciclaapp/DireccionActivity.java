@@ -17,6 +17,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,11 +51,24 @@ public class DireccionActivity extends AppCompatActivity {
 
     String nombreCompleto;
 
-    String userId;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            HistorialRecoleccionesActivity.userId = user.getUid();
+        }
+
         setContentView(R.layout.activity_direccion);
         // Busque la barra de herramientas por su ID y configúrela como barra de aplicaciones
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -111,10 +126,10 @@ public class DireccionActivity extends AppCompatActivity {
         telefonoTextView = findViewById(R.id.textView6);
 
         // Obtenga una referencia al documento de Firestore
-        userId = "user_id_2";
+        String docID = HistorialRecoleccionesActivity.userId;
         // Se accede a la base de datos de FireStore
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        DocumentReference userRef = firestore.collection("usuarios").document(userId);
+        DocumentReference userRef = firestore.collection("usuarios").document(docID);
 
         // Obtener los datos de Firestore
         userRef.get().addOnCompleteListener(task -> {

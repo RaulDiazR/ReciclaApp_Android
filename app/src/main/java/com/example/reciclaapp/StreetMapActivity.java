@@ -178,9 +178,22 @@ public class StreetMapActivity extends AppCompatActivity {
         }
 
         if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             overridePendingTransition(0,0);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Initialize and assign variable
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        // Update the selected item in the bottom navigation view
+        int currentItemId = getCurrentItemIdForActivity();
+        bottomNavigationView.setSelectedItemId(currentItemId);
+        overridePendingTransition(0,0);
     }
 
     private int getCurrentItemIdForActivity() {

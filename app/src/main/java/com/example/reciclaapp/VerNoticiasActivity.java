@@ -1,6 +1,8 @@
 package com.example.reciclaapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +15,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VerNoticiasActivity extends AppCompatActivity {
 
@@ -70,6 +75,15 @@ public class VerNoticiasActivity extends AppCompatActivity {
         // Initialize the selected item based on the current activity
         int currentItemId = getCurrentItemIdForActivity();
         bottomNavigationView.setSelectedItemId(currentItemId);
+
+        // Initialize RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Initialize newsList and newsAdapter
+        List<VerNoticiasItem> newsList = new ArrayList<>(); // You might fetch this from Firebase or any other source
+        VerNoticiasAdapter newsAdapter = new VerNoticiasAdapter(this, newsList);
+        recyclerView.setAdapter(newsAdapter);
     }
 
     private void navigateToActivity(int itemId) {
@@ -84,6 +98,7 @@ public class VerNoticiasActivity extends AppCompatActivity {
         }
 
         if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             overridePendingTransition(0,0);
         }
@@ -112,5 +127,6 @@ public class VerNoticiasActivity extends AppCompatActivity {
         // Update the selected item in the bottom navigation view
         int currentItemId = getCurrentItemIdForActivity();
         bottomNavigationView.setSelectedItemId(currentItemId);
+        overridePendingTransition(0,0);
     }
 }

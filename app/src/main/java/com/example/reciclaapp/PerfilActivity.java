@@ -98,7 +98,7 @@ public class PerfilActivity extends AppCompatActivity {
         userRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 // Populate EditText fields with user information
-                nombreField.setText(documentSnapshot.getString("nombre"));
+                nombreField.setText(documentSnapshot.getString("nombres"));
                 apellidosField.setText(documentSnapshot.getString("apellidos"));
                 correoField.setText(documentSnapshot.getString("correo"));
                 correoField.setEnabled(false);

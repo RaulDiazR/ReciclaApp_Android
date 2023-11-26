@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -85,9 +87,23 @@ public class MaterialesActivity extends AppCompatActivity{
 
     String userId;
 
+    FirebaseAuth auth;
+    FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            HistorialRecoleccionesActivity.userId = user.getUid();
+        }
+
         setContentView(R.layout.activity_materiales);
         // Find the Toolbar by its ID and set the Toolbar as the app bar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -95,7 +111,7 @@ public class MaterialesActivity extends AppCompatActivity{
         // Remove default title for the app bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        userId = "user_id_2";
+        this.userId = HistorialRecoleccionesActivity.userId;
 
         // creates intent to receive data from past activities
         this.receivedIntent = getIntent();
@@ -149,15 +165,30 @@ public class MaterialesActivity extends AppCompatActivity{
         takePhotoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 int itemPos = lastItemPosPhotoTaken;
-                File f = new File(currentPhotoPath);
-                Uri imgUri = Uri.fromFile(f);
-                if (itemPos != -1) {
-                    itemList.get(itemPos).setFotoMaterial(imgUri);
-                    materialesAdapter.notifyItemChanged(itemPos);
 
+                // Check if currentPhotoPath is not null or empty
+                if (currentPhotoPath != null && !currentPhotoPath.isEmpty()) {
+                    File f = new File(currentPhotoPath);
+
+                    // Check if the file exists before creating Uri
+                    if (f.exists()) {
+                        Uri imgUri = Uri.fromFile(f);
+
+                        if (itemPos != -1) {
+                            itemList.get(itemPos).setFotoMaterial(imgUri);
+                            materialesAdapter.notifyItemChanged(itemPos);
+                        }
+                    } else {
+                        // Handle the case where the file does not exist
+                        Log.e("PhotoError", "File does not exist at path: " + currentPhotoPath);
+                    }
+                } else {
+                    // Handle the case where currentPhotoPath is null or empty
+                    Log.e("PhotoError", "currentPhotoPath is null or empty");
                 }
             }
         });
+
 
         // Se inicializa el ActivityResultLaunches para la actividad de escoger una foto de la galería
         openGallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -393,7 +424,7 @@ public class MaterialesActivity extends AppCompatActivity{
         // Add all the remaining values which are constants
         Long timeStamp = System.currentTimeMillis(); // Get the current timestamp
         recoleccionData.put("timeStamp",timeStamp); // Add the timestamp to your data
-        recoleccionData.put("idUsuarioCliente", userId); // id del usuario
+        recoleccionData.put("idUsuarioCliente", this.userId); // id del usuario
         // Se ponen valores fijos debido a que posteriormente cambiaran
         recoleccionData.put("recolectada", false);
         recoleccionData.put("calificado", false);
@@ -492,7 +523,7 @@ public class MaterialesActivity extends AppCompatActivity{
         direccionData.put("codigoPostal", codigoPostalText);
 
         // Get a reference to the Firestore document
-        DocumentReference userRef = firestore.collection("usuarios").document(userId);
+        DocumentReference userRef = firestore.collection("usuarios").document(this.userId);
 
         // Update the "direccion" field with the new data
         Map<String, Object> updateData = new HashMap<>();
@@ -501,7 +532,7 @@ public class MaterialesActivity extends AppCompatActivity{
 
         userRef.update(updateData).addOnCompleteListener(task -> {
                     if(!task.isSuccessful()){
-                        Log.d("fireStoreDataSendToUsuarios", "Ocurrió un error en el envío de datos a la recolección 'usuarios' con este id del documento: "+userId);
+                        Log.d("fireStoreDataSendToUsuarios", "Ocurrió un error en el envío de datos a la recolección 'usuarios' con este id del documento: "+ this.userId);
                     }
                 });
     }
@@ -634,6 +665,16 @@ public class MaterialesActivity extends AppCompatActivity{
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            HistorialRecoleccionesActivity.userId = user.getUid();
+        }
 
         ArrayList<MaterialesItem> restoredItemList = savedInstanceState.getParcelableArrayList("itemList");
         if (restoredItemList != null) {
