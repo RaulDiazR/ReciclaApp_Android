@@ -18,10 +18,15 @@ import java.util.List;
 public class VerNoticiasAdapter extends RecyclerView.Adapter<VerNoticiasAdapter.NewsViewHolder> {
 
     private final List<VerNoticiasItem> newsList;
+    public VerNoticiasItemClickListener clickListener;
 
-    public VerNoticiasAdapter(Context context, List<VerNoticiasItem> newsList) {
+    public VerNoticiasAdapter(List<VerNoticiasItem> newsList) {
         // Add this field for image loading
         this.newsList = newsList;
+    }
+
+    public void setClickListener(VerNoticiasItemClickListener myListener){
+        this.clickListener = myListener;
     }
 
     @NonNull
@@ -36,10 +41,12 @@ public class VerNoticiasAdapter extends RecyclerView.Adapter<VerNoticiasAdapter.
         VerNoticiasItem VerNoticiasItem = newsList.get(position);
 
         // Set the data to views
-        Picasso.get().load(VerNoticiasItem.getImageResource()).placeholder(R.drawable.icon_loading).error(R.drawable.icon_user_gray).into(holder.imageView); // Use Glide for image loading
+        Picasso.get().load(VerNoticiasItem.getFotoUrl()).placeholder(R.drawable.icon_loading).error(R.drawable.socio1).into(holder.imageView);
         holder.titleTextView.setText(VerNoticiasItem.getTitle());
         holder.contentTextView.setText(VerNoticiasItem.getContent());
         holder.authorTextView.setText(VerNoticiasItem.getAuthor());
+
+
     }
 
     @Override
@@ -47,7 +54,7 @@ public class VerNoticiasAdapter extends RecyclerView.Adapter<VerNoticiasAdapter.
         return newsList.size();
     }
 
-    public static class NewsViewHolder extends RecyclerView.ViewHolder {
+    public class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;
         TextView titleTextView, contentTextView, authorTextView;
 
@@ -57,7 +64,15 @@ public class VerNoticiasAdapter extends RecyclerView.Adapter<VerNoticiasAdapter.
             titleTextView = itemView.findViewById(R.id.tituloNoticia);
             contentTextView = itemView.findViewById(R.id.cuerpoNoticia);
             authorTextView = itemView.findViewById(R.id.autorNoticia);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (clickListener != null) {
+                clickListener.onClick(view, getBindingAdapterPosition());
+            }
         }
     }
 }
-

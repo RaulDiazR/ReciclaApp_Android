@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,17 +16,27 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VerNoticiasActivity extends AppCompatActivity {
+public class VerNoticiasActivity extends AppCompatActivity implements VerNoticiasItemClickListener {
 
     FirebaseAuth auth;
     TextView textView;
     FirebaseUser user;
+
+    // 1- AdapterView
+    RecyclerView recyclerView;
+    // 2- DataSource
+    List<VerNoticiasItem> newsList;
+    // 3- Adapter
+    VerNoticiasAdapter newsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,13 +90,54 @@ public class VerNoticiasActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(currentItemId);
 
         // Initialize RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize newsList and newsAdapter
-        List<VerNoticiasItem> newsList = new ArrayList<>(); // You might fetch this from Firebase or any other source
-        VerNoticiasAdapter newsAdapter = new VerNoticiasAdapter(this, newsList);
+        newsList = new ArrayList<>(); // You might fetch this from Firebase or any other source
+        //newsList.add(new VerNoticiasItem("titulo", "Askldkaodkopajsdkscjlkdopaskdoaksodkoapskdpaksdpkaspdkopasd", "Lopez Doriga", "MeroLelo"));
+        newsAdapter = new VerNoticiasAdapter(newsList);
         recyclerView.setAdapter(newsAdapter);
+
+        newsAdapter.setClickListener(this);
+
+        fetchNewsData();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void fetchNewsData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference newsRef = db.collection("noticias");
+
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Order by 'fecha' attribute in descending order (newest first)
+        newsRef.orderBy("fecha", Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<VerNoticiasItem> dataList = new ArrayList<>();
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        // Parse the data and create VerNoticiasItem objects
+                        String title = documentSnapshot.getString("titulo");
+                        String content = documentSnapshot.getString("cuerpo");
+                        String author = documentSnapshot.getString("autor");
+                        String fotoUrl = documentSnapshot.getString("imagen");
+
+                        VerNoticiasItem newsItem = new VerNoticiasItem(title, content, author, fotoUrl);
+                        dataList.add(newsItem);
+                    }
+
+                    // Pass the ordered data to the adapter
+                    newsList.clear();
+                    newsList.addAll(dataList);
+                    progressBar.setVisibility(View.GONE);
+                    newsAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure, if any
+                    Toast.makeText(VerNoticiasActivity.this, "Error loading news data", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void navigateToActivity(int itemId) {
@@ -128,5 +182,11 @@ public class VerNoticiasActivity extends AppCompatActivity {
         int currentItemId = getCurrentItemIdForActivity();
         bottomNavigationView.setSelectedItemId(currentItemId);
         overridePendingTransition(0,0);
+    }
+
+    @Override
+    public void onClick(View v, int position) {
+        Toast.makeText(this, "Elemento: " + position + " Con titulo: " + newsList.get(position).getTitle(), Toast.LENGTH_LONG).show();
+
     }
 }
