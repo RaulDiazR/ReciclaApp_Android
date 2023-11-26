@@ -30,7 +30,7 @@
                 android:layout_gravity="center"
                 android:text="@string/nueva_recolecci_n"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="22sp" />
         </androidx.appcompat.widget.Toolbar>
 
         <ImageView
