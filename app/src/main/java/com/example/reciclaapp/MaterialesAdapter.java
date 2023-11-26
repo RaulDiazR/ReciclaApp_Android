@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +70,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
 
     public static class MaterialesViewHolder extends RecyclerView.ViewHolder {
         public Spinner spinner;
+
         public ImageButton minusButton;
         public TextView quantity;
         public ImageButton plusButton;
@@ -105,6 +107,7 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
         MaterialesItem item = itemList.get(position);
         holder.imageView.setImageResource(item.getImageResource());
         holder.textView.setText(item.getName());
+
         holder.quantity.setText(String.valueOf(item.getMaterialQuantity())); // Set the correct quantity
         holder.isPhotoTaken = item.getFotoMaterial() != null; // Update isPhotoTaken
         
@@ -265,17 +268,21 @@ public class MaterialesAdapter extends RecyclerView.Adapter<MaterialesAdapter.Ma
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                if (position == holder.spinner.getSelectedItemPosition()) {
-                    view.setBackgroundResource(R.drawable.spinner_background_materiales_selected);
-                } else {
-                    view.setBackgroundResource(R.drawable.spinner_background_materiales);
-                }
+                // Se cambia el fondo para que la forma del spinner sea redonde, mientras que la forma del drop down list sea cuadrada
+                view.setBackgroundResource(R.drawable.spinner_background_materiales_selected);
+
                 item.setMaterialUnit(String.valueOf(holder.spinner.getSelectedItem()));
                 return view;
             }
         };
         // Set the adapter for the Spinner
         holder.spinner.setAdapter(adapter);
+
+        // Set the selected item based on the data in MaterialesItem
+        int selectedPosition = Arrays.asList(items).indexOf(item.getMaterialUnit());
+        holder.spinner.setSelection(selectedPosition);
+
+
     }
 
     private File createImageFile() throws IOException {
