@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@color/white">
-        <!-- app:navigationIcon="@drawable/icon_regresar" -->
+    <!-- app:navigationIcon="@drawable/icon_regresar" -->
 
         <!-- Centered Title TextView -->
         <TextView

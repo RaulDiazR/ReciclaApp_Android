@@ -350,13 +350,14 @@ public class SignupActivity extends AppCompatActivity {
 
     private void showActivarCuentaDialog(FirebaseUser user, View backgroundView) {
         mAuth = FirebaseAuth.getInstance();
-        String firstName, lastName, email, phoneNumber, dateOfBirth, password;
+        String firstName, lastName, email, phoneNumber, dateOfBirth, fotoPerfil, password;
         int rank_points, highest1;
         firstName = nombresField.getText().toString();
         lastName = apellidosField.getText().toString();
         email = correoField.getText().toString();
         phoneNumber = telefonoField.getText().toString();
         dateOfBirth = dateButton.getText().toString();
+        fotoPerfil = "";
         password = contrasenaField.getText().toString();
         rank_points = 0;
         highest1 = 0;
@@ -406,6 +407,7 @@ public class SignupActivity extends AppCompatActivity {
                                     email,
                                     phoneNumber, // Get the phone number from your input field
                                     dateOfBirth,  // Get the date of birth from your input field
+                                    fotoPerfil,
                                     rank_points,
                                     highest1
                             );
