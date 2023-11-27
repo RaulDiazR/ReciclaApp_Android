@@ -188,7 +188,7 @@ public class CompletarDatosActivity extends AppCompatActivity {
             DocumentReference userRef = db.collection("usuarios").document(user.getUid());
 
             userRef.update(
-                    "nombre", nombreField.getText().toString(),
+                    "nombres", nombreField.getText().toString(),
                     "apellidos", apellidosField.getText().toString(),
                     "telefono", telefonoField.getText().toString(),
                     "fechaNacimiento", dateButton.getText().toString()

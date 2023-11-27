@@ -215,18 +215,6 @@ public class StreetMapActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Initialize and assign variable
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
-        // Update the selected item in the bottom navigation view
-        int currentItemId = getCurrentItemIdForActivity();
-        bottomNavigationView.setSelectedItemId(currentItemId);
-        overridePendingTransition(0,0);
-    }
-
     public void updateFavorites() {
 
         for (String name : Favorites.getCenterNames()) {

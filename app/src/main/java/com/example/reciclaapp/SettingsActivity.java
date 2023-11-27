@@ -217,13 +217,20 @@ public class SettingsActivity extends AppCompatActivity {
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
                 askCameraPermissions();
             }
         });
 
         galleryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { dispatchPickFromGalleryIntent(); }
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
+                dispatchPickFromGalleryIntent(); }
         });
 
         alertDialog.setOnDismissListener(view -> {

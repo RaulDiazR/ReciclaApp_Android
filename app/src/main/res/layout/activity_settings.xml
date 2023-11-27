@@ -41,34 +41,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:paddingLeft="125dp"
-                android:paddingRight="125dp">
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/fotoperfil"
                     android:layout_width="140dp"
                     android:layout_height="140dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_margin="10dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_launcher_background" />
+                    android:src="@drawable/pf1" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:paddingLeft="120dp"
+                android:paddingLeft="100dp"
                 android:paddingTop="10dp"
-                android:paddingRight="120dp">
+                android:paddingRight="100dp"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/button2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/variant3"
                     android:onClick="profilePhoto"
-                    android:text="Foto de Perfil"
+                    android:text="@string/foto_de_perfil"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
             </LinearLayout>

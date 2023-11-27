@@ -3,7 +3,7 @@ package com.example.reciclaapp;
 import java.net.URL;
 
 public class User {
-    private String nombre;
+    private String nombres;
     private String apellidos;
     private String correo;
     private String telefono;
@@ -16,8 +16,8 @@ public class User {
         // Default constructor required for Firestore
     }
 
-    public User(String nombre, String apellidos, String correo, String telefono, String fechaNacimiento, String fotoPerfil, int rank_points, int highest1) {
-        this.nombre = nombre;
+    public User(String nombres, String apellidos, String correo, String telefono, String fechaNacimiento, String fotoPerfil, int rank_points, int highest1) {
+        this.nombres = nombres;
         this.apellidos = apellidos;
         this.correo = correo;
         this.telefono = telefono;
@@ -27,12 +27,12 @@ public class User {
         this.highest1 = highest1;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombres() {
+        return nombres;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
     }
 
     public String getApellidos() {
