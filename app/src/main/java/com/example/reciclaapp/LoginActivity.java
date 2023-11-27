@@ -42,6 +42,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.net.URL;
+
 public class LoginActivity extends AppCompatActivity {
 
     EditText correoField;
@@ -153,7 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(AuthResult authResult) {
                                 if (authResult.getAdditionalUserInfo().isNewUser()) {
-                                    String firstName, lastName, email, phoneNumber, dateOfBirth, password;
+                                    String firstName, lastName, email, phoneNumber, dateOfBirth, fotoPerfil, password;
                                     int rank_points, highest1;
                                     FirebaseUser user = gAuth.getCurrentUser();
                                     firstName = "";
@@ -161,6 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                                     email = user.getEmail();
                                     phoneNumber = "";
                                     dateOfBirth = "";
+                                    fotoPerfil = "";
                                     rank_points = 0;
                                     highest1 = 0;
                                     updateUI(user);
@@ -171,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                                             email,
                                             phoneNumber, // Get the phone number from your input field
                                             dateOfBirth,  // Get the date of birth from your input field
+                                            fotoPerfil,
                                             rank_points,
                                             highest1
                                     );

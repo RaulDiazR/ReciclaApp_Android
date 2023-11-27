@@ -1,11 +1,14 @@
 package com.example.reciclaapp;
 
+import java.net.URL;
+
 public class User {
     private String nombre;
     private String apellidos;
     private String correo;
     private String telefono;
     private String fechaNacimiento;
+    private String fotoPerfil;
     private int rank_points;
     private int highest1;
 
@@ -13,12 +16,13 @@ public class User {
         // Default constructor required for Firestore
     }
 
-    public User(String nombre, String apellidos, String correo, String telefono, String fechaNacimiento, int rank_points, int highest1) {
+    public User(String nombre, String apellidos, String correo, String telefono, String fechaNacimiento, String fotoPerfil, int rank_points, int highest1) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.correo = correo;
         this.telefono = telefono;
         this.fechaNacimiento = fechaNacimiento;
+        this.fotoPerfil = fotoPerfil;
         this.rank_points = rank_points;
         this.highest1 = highest1;
     }
@@ -58,6 +62,10 @@ public class User {
     }
 
     public void setFechaNacimiento(String fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;}
+
+    public String getFotoPerfil() { return fotoPerfil; }
+
+    public void setFotoPerfil(String fotoPerfil) {this.fotoPerfil = fotoPerfil;}
 
     public int getRank_points() { return rank_points; }
 

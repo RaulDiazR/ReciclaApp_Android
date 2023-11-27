@@ -132,8 +132,10 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         }
 
         if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             overridePendingTransition(0,0);
+
         }
     }
 
@@ -621,8 +623,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         // Update the selected item in the bottom navigation view
         int currentItemId = getCurrentItemIdForActivity();
         bottomNavigationView.setSelectedItemId(currentItemId);
-        // Start the initial task and schedule it to run periodically
-        handler.post(updateStatusTask);
+        overridePendingTransition(0,0);
     }
 
     // Detiene la tarea de actualización periódica cuando la actividad se pausa o se destruye

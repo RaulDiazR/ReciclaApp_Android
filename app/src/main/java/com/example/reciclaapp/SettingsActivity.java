@@ -1,86 +1,121 @@
 package com.example.reciclaapp;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class SettingsActivity extends AppCompatActivity {
-
-    FirebaseAuth firebaseAuth;
-    FirebaseUser firebaseUser;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    public static final int CAMERA_PERMISSION_REQUEST = 1001;
+    public static final int GALLERY_PERMISSION_REQUEST = 1;
+    String currentPhotoPath;
+    FirebaseAuth auth;
+    ImageView image;
+    FirebaseUser user;
     StorageReference storageReference;
-    String storagepath = "Users_Profile_Cover_image/";
-    String uid;
-    ImageView set;
-    Button profilepic;
-    ProgressDialog pd;
-    private static final int CAMERA_REQUEST = 100;
-    private static final int STORAGE_REQUEST = 200;
-    private static final int IMAGEPICK_GALLERY_REQUEST = 300;
-    private static final int IMAGE_PICKCAMERA_REQUEST = 400;
-    String[] cameraPermission;
-    String[] storagePermission;
-    Uri imageuri;
-    String profileOrCoverPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        /*if (firebaseUser == null){
+        image = findViewById(R.id.fotoperfil);
+
+        storageReference = FirebaseStorage.getInstance().getReference();
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
-        }*/
+        }
+        else{
+            // Initialize Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Reference to the Users collection
+            DocumentReference userRef = db.collection("usuarios").document(user.getUid());
+
+            // Get user information
+            userRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    // Check if the user has a profile photo
+                    if (documentSnapshot.contains("fotoPerfil")) {
+                        String photoUrl = documentSnapshot.getString("fotoPerfil");
+
+                        // Load image from Firebase Storage
+                        if (photoUrl != null && !photoUrl.isEmpty()) {
+                            StorageReference photoRef = storageReference.child("fotosUsuarios/" + photoUrl);
+                            photoRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                // Use a library like Glide or Picasso to load the image into the ImageView
+                                // Here, I'm using Glide for simplicity (add the dependency to your app's build.gradle)
+                                // implementation 'com.github.bumptech.glide:glide:4.12.0'
+                                Glide.with(SettingsActivity.this).load(uri).into(image);
+                            }).addOnFailureListener(e -> {
+                                // Handle error loading image from Firebase Storage
+                                Log.e("SettingsActivity", "Error loading image from Firebase Storage", e);
+                            });
+                        }
+                    }
+                }
+            }).addOnFailureListener(e -> {
+                // Handle error fetching user information from Firestore
+                Log.e("SettingsActivity", "Error fetching user information from Firestore", e);
+            });
+        }
 
         // Initialize and assign variable
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottomNavigationView);
@@ -101,257 +136,6 @@ public class SettingsActivity extends AppCompatActivity {
         // Initialize the selected item based on the current activity
         int currentItemId = getCurrentItemIdForActivity();
         bottomNavigationView.setSelectedItemId(currentItemId);
-
-        profilepic = findViewById(R.id.profilepic);
-        set = findViewById(R.id.setting_profile_image);
-        pd = new ProgressDialog(this);
-        pd.setCanceledOnTouchOutside(false);
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        databaseReference = firebaseDatabase.getReference("Users");
-        cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        Query query = databaseReference.orderByChild("email").equalTo(firebaseUser.getEmail());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-                    String image = "" + dataSnapshot1.child("image").getValue();
-
-                    try {
-                        Glide.with(SettingsActivity.this).load(image).into(set);
-                    } catch (Exception e) {
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        profilepic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pd.setMessage("Updating Profile Picture");
-                profileOrCoverPhoto = "image";
-                showImagePicDialog();
-            }
-        });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Query query = databaseReference.orderByChild("email").equalTo(firebaseUser.getEmail());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-                    String image = "" + dataSnapshot1.child("image").getValue();
-
-                    try {
-                        Glide.with(SettingsActivity.this).load(image).into(set);
-                    } catch (Exception e) {
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Query query = databaseReference.orderByChild("email").equalTo(firebaseUser.getEmail());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-                    String image = "" + dataSnapshot1.child("image").getValue();
-
-                    try {
-                        Glide.with(SettingsActivity.this).load(image).into(set);
-                    } catch (Exception e) {
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    // checking storage permission ,if given then we can add something in our storage
-    private Boolean checkStoragePermission() {
-        boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        return result;
-    }
-
-    // requesting for storage permission
-    private void requestStoragePermission() {
-        requestPermissions(storagePermission, STORAGE_REQUEST);
-    }
-
-    // checking camera permission ,if given then we can click image using our camera
-    private Boolean checkCameraPermission() {
-        boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
-        boolean result1 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        return result && result1;
-    }
-
-    // requesting for camera permission if not given
-    private void requestCameraPermission() {
-        requestPermissions(cameraPermission, CAMERA_REQUEST);
-    }
-
-    // Here we are showing image pic dialog where we will select
-    // and image either from camera or gallery
-    private void showImagePicDialog() {
-        String options[] = {"Camera", "Gallery"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick Image From");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // if access is not given then we will request for permission
-                if (which == 0) {
-                    if (!checkCameraPermission()) {
-                        requestCameraPermission();
-                    } else {
-                        pickFromCamera();
-                    }
-                } else if (which == 1) {
-                    if (!checkStoragePermission()) {
-                        requestStoragePermission();
-                    } else {
-                        pickFromGallery();
-                    }
-                }
-            }
-        });
-        builder.create().show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == IMAGEPICK_GALLERY_REQUEST) {
-                imageuri = data.getData();
-                uploadProfileCoverPhoto(imageuri);
-            }
-            if (requestCode == IMAGE_PICKCAMERA_REQUEST) {
-                uploadProfileCoverPhoto(imageuri);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case CAMERA_REQUEST: {
-                if (grantResults.length > 0) {
-                    boolean camera_accepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean writeStorageaccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    if (camera_accepted && writeStorageaccepted) {
-                        pickFromCamera();
-                    } else {
-                        Toast.makeText(this, "Please Enable Camera and Storage Permissions", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-            break;
-            case STORAGE_REQUEST: {
-                if (grantResults.length > 0) {
-                    boolean writeStorageaccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (writeStorageaccepted) {
-                        pickFromGallery();
-                    } else {
-                        Toast.makeText(this, "Please Enable Storage Permissions", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-            break;
-        }
-    }
-
-    // Here we will click a photo and then go to startactivityforresult for updating data
-    private void pickFromCamera() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.Images.Media.TITLE, "Temp_pic");
-        contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
-        imageuri = this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-        Intent camerIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        camerIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageuri);
-        startActivityForResult(camerIntent, IMAGE_PICKCAMERA_REQUEST);
-    }
-
-    // We will select an image from gallery
-    private void pickFromGallery() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, IMAGEPICK_GALLERY_REQUEST);
-    }
-
-    private void uploadProfileCoverPhoto(final Uri uri) {
-        pd.show();
-
-        // We are taking the filepath as storagepath + firebaseauth.getUid()+".png"
-        String filepathname = storagepath + "" + profileOrCoverPhoto + "_" + firebaseUser.getUid();
-        StorageReference storageReference1 = storageReference.child(filepathname);
-        storageReference1.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                while (!uriTask.isSuccessful()) ;
-
-                // We will get the url of our image using uritask
-                final Uri downloadUri = uriTask.getResult();
-                if (uriTask.isSuccessful()) {
-
-                    // updating our image url into the realtime database
-                    HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put(profileOrCoverPhoto, downloadUri.toString());
-                    databaseReference.child(firebaseUser.getUid()).updateChildren(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            pd.dismiss();
-                            Toast.makeText(SettingsActivity.this, "Updated", Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            pd.dismiss();
-                            Toast.makeText(SettingsActivity.this, "Error Updating ", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    pd.dismiss();
-                    Toast.makeText(SettingsActivity.this, "Error", Toast.LENGTH_LONG).show();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                pd.dismiss();
-                Toast.makeText(SettingsActivity.this, "Error", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     private void navigateToActivity(int itemId) {
@@ -366,6 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             overridePendingTransition(0,0);
         }
@@ -394,6 +179,200 @@ public class SettingsActivity extends AppCompatActivity {
         // Update the selected item in the bottom navigation view
         int currentItemId = getCurrentItemIdForActivity();
         bottomNavigationView.setSelectedItemId(currentItemId);
+        overridePendingTransition(0,0);
+    }
+
+    public void profilePhoto(View v) {
+        FirebaseUser user = auth.getCurrentUser();
+        updateUI(user);
+        final View backgroundView = new View(this);
+        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Inflar el diseño personalizado
+        View dialogView = getLayoutInflater().inflate(R.layout.fotoperfil, null);
+
+        // Configurar el diálogo
+        builder.setView(dialogView);
+
+        // Personalizar el diálogo
+        final AlertDialog alertDialog = builder.create();
+
+        // Configurar un fondo semitransparente
+        Window window = alertDialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+
+        alertDialog.show();
+
+        // Configurar acciones de los botones
+        Button cameraBtn = dialogView.findViewById(R.id.cameraBtn);
+        Button galleryBtn = dialogView.findViewById(R.id.galleryBtn);
+
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                askCameraPermissions();
+            }
+        });
+
+        galleryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { dispatchPickFromGalleryIntent(); }
+        });
+
+        alertDialog.setOnDismissListener(view -> {
+            alertDialog.dismiss();
+            FrameLayout rootView = findViewById(android.R.id.content);
+            rootView.removeView(backgroundView);
+        });
+
+        // Agregar la vista de fondo y mostrar el cuadro de diálogo
+        FrameLayout rootView = findViewById(android.R.id.content);
+        rootView.addView(backgroundView);
+        alertDialog.show();
+    }
+
+    private void askCameraPermissions() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
+        }
+        else{
+            dispatchTakePictureIntent();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntent();
+            } else {
+                Toast.makeText(this, "Se necesitan permisos para usar la cámara", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == GALLERY_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntent();
+            } else {
+                Toast.makeText(this, "Se necesitan permisos para acceder a su galería", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    ActivityResultLauncher<Intent> camaraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if(result.getResultCode() == RESULT_OK){
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference userRef = db.collection("usuarios").document(user.getUid());
+                File f = new File(currentPhotoPath);
+                image.setImageURI(Uri.fromFile(f));
+                Log.d("tag", "Url of Image: "+Uri.fromFile(f));
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                Uri contentUri = Uri.fromFile(f);
+                mediaScanIntent.setData(contentUri);
+                getApplicationContext().sendBroadcast(mediaScanIntent);
+                uploadImageToFirebase(f.getName(),contentUri);
+                userRef.update(
+                        "fotoPerfil", f.getName().toString()
+                );
+            }
+        }
+    });
+
+    ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if(result.getResultCode() == RESULT_OK){
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference userRef = db.collection("usuarios").document(user.getUid());
+                Uri contentUri = result.getData().getData();
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String imageFileName = "JPEG_" + timeStamp + "."+getFileExt(contentUri);
+                Log.d("tag", "Url of Image: "+imageFileName);
+                image.setImageURI(contentUri);
+                uploadImageToFirebase(imageFileName,contentUri);
+                userRef.update(
+                        "fotoPerfil", imageFileName.toString()
+                );
+            }
+        }
+    });
+
+    private void uploadImageToFirebase(String name, Uri contentUri) {
+        final StorageReference image = storageReference.child("fotosUsuarios/" + name);
+        image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("tag", "Uploaded Image URl is " + uri.toString());
+                    }
+                });
+                Toast.makeText(SettingsActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SettingsActivity.this, "Upload Failled", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String getFileExt(Uri contentUri) {
+        ContentResolver c = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(c.getType(contentUri));
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.reciclaapp.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                camaraLauncher.launch(takePictureIntent);
+            }
+        }
+    }
+
+    private void dispatchPickFromGalleryIntent() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(galleryIntent);
     }
 
     public void goToPerfil(View v) {
@@ -429,5 +408,19 @@ public class SettingsActivity extends AppCompatActivity {
     public void goToCreditos(View v) {
         Intent intent = new Intent(this, CreditosActivity.class);
         startActivity(intent);
+    }
+
+    private void updateUI(FirebaseUser user) {}
+
+    // onSaveInstanceState: Método llamado para guardar el estado de la actividad antes de ser destruida.
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    // onRestoreInstanceState: Método llamado al restaurar el estado de la actividad después de ser recreada.
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }

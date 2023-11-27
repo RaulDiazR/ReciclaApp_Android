@@ -84,6 +84,7 @@ public class VerNoticiasActivity extends AppCompatActivity {
         }
 
         if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             overridePendingTransition(0,0);
         }
@@ -112,5 +113,6 @@ public class VerNoticiasActivity extends AppCompatActivity {
         // Update the selected item in the bottom navigation view
         int currentItemId = getCurrentItemIdForActivity();
         bottomNavigationView.setSelectedItemId(currentItemId);
+        overridePendingTransition(0,0);
     }
 }
