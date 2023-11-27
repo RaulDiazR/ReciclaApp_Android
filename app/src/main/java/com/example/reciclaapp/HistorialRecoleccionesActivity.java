@@ -570,8 +570,12 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             });
 
             btnVerCentros.setOnClickListener(v -> {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, StreetMapActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView); // Remove the background
             });
 
             btnContinuar.setOnClickListener(v -> {
