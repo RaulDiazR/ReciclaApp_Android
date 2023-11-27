@@ -48,6 +48,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -97,6 +99,8 @@ public class StreetMapActivity extends AppCompatActivity {
     Map<String, Integer> MaterialMap = new HashMap<>(); //Mapa con la posición del material en la lista de materiales
     ArrayList<MaterialModel> Materials = new ArrayList<>();
     FavoriteModel Favorites;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,11 +228,30 @@ public class StreetMapActivity extends AppCompatActivity {
 
     public void udpateCollectionFavorites() {
 
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            // Initialize Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Reference to the Users collection
+            DocumentReference userRef = db.collection("usuarios").document(user.getUid());
+            // Get user information
+
+        }
+
         // Get uid of the user
-        String user = "toncUoDSNGceFkUvLmEcE0vB6Mf2";
+        String uid = String.valueOf(user);
         //String user = "prueba";
 
-        DocumentReference favoritesReferenceUser = db.collection("usuario_favoritos").document(user);
+
+        DocumentReference favoritesReferenceUser = db.collection("usuario_favoritos").document(uid);
 
         ArrayList<String> oldFavorites = Favorites.getCenterNames();
         ArrayList<DocumentReference> newFavorites = new ArrayList<>();

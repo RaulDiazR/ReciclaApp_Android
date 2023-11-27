@@ -139,6 +139,7 @@ public class MaterialesActivity extends AppCompatActivity{
                             MaterialesItem newItem = new MaterialesItem(imageResource, text);
 
                             newItem.setMaterialQuantity(1);
+                            newItem.setMaterialUnit("Bolsas");
 
                             // Add the chosen material to your data source
                             itemList.add(newItem);

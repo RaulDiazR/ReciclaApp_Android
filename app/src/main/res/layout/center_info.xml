@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -19,26 +19,25 @@
         android:id="@+id/closeButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/icon_close"
-        android:contentDescription="Cerrar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:contentDescription="Cerrar"
         android:focusable="true"
-        android:background="?attr/selectableItemBackgroundBorderless" />
+        android:padding="16dp"
+        android:src="@drawable/icon_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/TittleCenterDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:text="Detalles del centro"
         android:textSize="25sp"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/closeButton" />
 
     <!-- Imagen -->
     <androidx.cardview.widget.CardView
@@ -54,57 +53,61 @@
 
         <ImageView
             android:id="@+id/imageViewCenter"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:src="@drawable/centro_ejemplo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/placeholder_icon"
             android:contentDescription="Imagen" />
     </androidx.cardview.widget.CardView>
 
     <!-- Título -->
     <TextView
         android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/CardImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="160dp"
+        android:layout_height="27dp"
         android:text="Título"
+        android:textAlignment="center"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/CardImage" />
 
     <!-- Texto descriptivo -->
     <TextView
         android:id="@+id/descriptionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/titleTextView"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="122dp"
+        android:layout_height="39dp"
+        android:lines="3"
+        android:text="Texto descriptivo"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Texto descriptivo" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
 
     <!-- Horario -->
 
     <TextView
         android:id="@+id/diasTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_width="120dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="4dp"
         android:text="Texto descriptivo"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextView" />
 
     <TextView
         android:id="@+id/horarioTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="Horario"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/diasTextView" />
 
     <TextView
         android:id="@+id/title_component"

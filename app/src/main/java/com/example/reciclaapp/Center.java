@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -97,29 +98,42 @@ public class Center extends AppCompatActivity {
                     TextView contactInfo = mView.findViewById(R.id.contactCenter);
                     TextView addToFavorites = mView.findViewById(R.id.addToFavorites);
                     ImageView centerImage = mView.findViewById(R.id.iconImageView);
+
                     LinearLayout moreCenterLayout = mView.findViewById(R.id.moreCenterLayout);
+                    LinearLayout favoriteCenterLayout = mView.findViewById(R.id.favoriteCenterLayout);
+                    LinearLayout contactCenterLayout = mView.findViewById(R.id.contactCenterLayout);
 
                     ImageButton phoneContact = mView.findViewById(R.id.phone_contact);
                     ToggleButton favoriteCenter = mView.findViewById(R.id.add_button);
 
                     centerName.setText(nombre);
-                    contactInfo.setText(num_telefonico);
+
+                    if (num_telefonico != null && !TextUtils.isEmpty(num_telefonico) && TextUtils.isDigitsOnly(num_telefonico)) {
+                        contactInfo.setText(num_telefonico);
+                    } else {
+                        contactInfo.setText("Sin Numero");
+                    }
+
                     if (isFavorite) {
                         addToFavorites.setText("Favorito");
                     } else {
                         addToFavorites.setText("Agregar a favoritos");
                     }
                     centerImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Picasso.get().load(imagen).into(centerImage);
 
-                    phoneContact.setOnClickListener(new View.OnClickListener() {
+                    if (!imagen.isEmpty()) {
+                        Picasso.get().load(imagen).into(centerImage);
+                    }
+
+
+                    contactCenterLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             phoneCall();
                         }
                     });
-                    favoriteCenter.setChecked(isFavorite);
-                    favoriteCenter.setOnClickListener(new View.OnClickListener() {
+
+                    favoriteCenterLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             setFavorite(!isFavorite);
@@ -127,9 +141,11 @@ public class Center extends AppCompatActivity {
                             if (isFavorite) {
                                 addToFavorites.setText("Favorito");
                                 parent.FavoriteMap.get(nombre).set(1, 1);
+                                favoriteCenter.setChecked(isFavorite);
                             } else {
                                 addToFavorites.setText("Agregar a favoritos");
                                 parent.FavoriteMap.get(nombre).set(1, 0);
+                                favoriteCenter.setChecked(isFavorite);
                             }
 
                             System.out.println(parent.FavoriteMap);
@@ -217,7 +233,11 @@ public class Center extends AppCompatActivity {
         centerHours.setText(getHora_apertura() + " - " + getHora_cierre());
         centerDays.setText(String.join("-", this.dias));
         centerImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Picasso.get().load(getImagen()).into(centerImage);
+
+        if (!imagen.isEmpty()) {
+            Picasso.get().load(getImagen()).into(centerImage);
+        }
+
 
         materialesRV.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);

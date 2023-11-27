@@ -75,17 +75,8 @@ public class CenterModel {
     }
 
     public boolean isValid() {
-        return !categoria.equals("") &&
-                !dias.isEmpty() &&
-                !direccion.equals("") &&
-                !hora_apertura.equals("") &&
-                !hora_cierre.equals("") &&
-                !imagen.equals("") &&
-                !latitud.equals(0.0) &&
-                !longitud.equals(0.0) &&
-                !nombre.equals("") &&
-                !num_telefonico.equals("") &&
-                !materiales.isEmpty();
+        return  !latitud.equals(0.0) &&
+                !longitud.equals(0.0);
     }
 
     public String getNum_telefonico() {
