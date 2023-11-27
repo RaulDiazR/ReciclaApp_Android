@@ -62,7 +62,7 @@ public class VerNoticiasActivity extends AppCompatActivity implements VerNoticia
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     // Populate EditText fields with user information
-                    String msg = "Hola " + documentSnapshot.getString("nombre");
+                    String msg = "Hola " + documentSnapshot.getString("nombres");
                     textView.setText(msg);
                 }
             }).addOnFailureListener(e -> {
@@ -186,7 +186,20 @@ public class VerNoticiasActivity extends AppCompatActivity implements VerNoticia
 
     @Override
     public void onClick(View v, int position) {
-        Toast.makeText(this, "Elemento: " + position + " Con titulo: " + newsList.get(position).getTitle(), Toast.LENGTH_LONG).show();
+        // Get the clicked item from the newsList
+        VerNoticiasItem clickedItem = newsList.get(position);
 
+        // Create an intent to start the new activity
+        Intent intent = new Intent(this, VerDetallesNoticiasActivity.class);
+
+        // Pass the data to the new activity using intent extras
+        intent.putExtra("titulo", clickedItem.getTitle());
+        intent.putExtra("cuerpo", clickedItem.getContent());
+        intent.putExtra("autor", clickedItem.getAuthor());
+        intent.putExtra("fotoUrl", clickedItem.getFotoUrl());
+
+        // Start the new activity
+        startActivity(intent);
     }
+
 }

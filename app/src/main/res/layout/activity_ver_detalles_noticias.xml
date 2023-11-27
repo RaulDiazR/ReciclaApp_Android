@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_title_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/icon_regresar"
+        app:titleTextColor="@color/white">
+
+        <!-- Centered Title TextView -->
+        <TextView
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/noticia"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".VerDetallesNoticiasActivity">
+
+            <ImageView
+                android:id="@+id/imagen"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:contentDescription="@string/imagen_noticia"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_noticia_ej"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp" android:text="@string/paneles_solares_cu_les_son_los_beneficios_que_tienen_para_el_medio_ambiente"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imagen" />
+
+            <TextView
+                android:id="@+id/autor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/msn_noticias"
+                android:textColor="@color/gray"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titulo" />
+
+            <TextView
+                android:id="@+id/cuerpo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:breakStrategy="balanced"
+                android:gravity="start"
+                android:justificationMode="inter_word" android:text="@string/seg_n_un_art_culo_de_msn_noticias1_los_paneles_solares_se_han_destacado_como_una_soluci_n_clave_para_mitigar_los_impactos_del_cambio_clim_tico_y_la_transici_n_hacia_fuentes_de_energ_a_m_s_sostenibles_el_art_culo_destaca_que_los_paneles_solares_no_emiten_gases_de_efecto_invernadero_lo_que_los_hace_una_fuente_de_energ_a_limpia_y_renovable_adem_s_los_paneles_solares_pueden_reducir_la_dependencia_de_los_combustibles_f_siles_y_disminuir_la_huella_de_carbono"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/autor"
+                tools:ignore="VisualLintLongText"
+                tools:targetApi="o" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</RelativeLayout>
