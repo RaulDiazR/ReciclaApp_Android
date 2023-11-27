@@ -25,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
+
 /**
  * DireccionActivity es una actividad de Android que permite a los usuarios ingresar y editar información de dirección.
  * Esta actividad recupera información del usuario, incluyendo nombre, apellidos, teléfono y dirección, desde Firestore
@@ -220,6 +222,10 @@ public class DireccionActivity extends AppCompatActivity {
             telefonoField.setError("Este campo es obligatorio");
             errorTextView = telefonoTextView;
             isValid = false;
+        } else if (!isValidPhoneNumber(telefonoField.getText().toString())) {
+            telefonoField.setError("El número debe tener 10 dígitos");
+            errorTextView = telefonoTextView;
+            isValid = false;
         }
 
         if (isEmpty(codigoPostalField)) {
@@ -264,6 +270,12 @@ public class DireccionActivity extends AppCompatActivity {
     // Verificar si un EditText está vacío
     private boolean isEmpty(EditText editText) {
         return editText.getText().toString().trim().isEmpty();
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // Patrón que verifica que el número de teléfono tenga exactamente 10 dígitos
+        String regex = "^[0-9]{10}$";
+        return Pattern.matches(regex, phoneNumber);
     }
     
 }
