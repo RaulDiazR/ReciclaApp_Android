@@ -88,6 +88,11 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
     // Se define un handler para agendar actividades cada cierto tiempo
     private final Handler handler = new Handler();
 
+    private TimeZone cstTimeZone;
+    private SimpleDateFormat dateFormat;
+    private Calendar currentCalendarWithoutTime;
+
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +108,14 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         else{
             HistorialRecoleccionesActivity.userId = user.getUid();
         }
+
+        cstTimeZone = TimeZone.getTimeZone("America/Chicago");
+        dateFormat = new SimpleDateFormat("d/M/yyyy HH:mm");
+        currentCalendarWithoutTime = Calendar.getInstance(cstTimeZone);
+        currentCalendarWithoutTime.set(Calendar.HOUR_OF_DAY, 0);
+        currentCalendarWithoutTime.set(Calendar.MINUTE, 0);
+        currentCalendarWithoutTime.set(Calendar.SECOND, 0);
+        currentCalendarWithoutTime.set(Calendar.MILLISECOND, 0);
 
         // Encuentra la barra de herramientas por su ID y configura la barra de herramientas como la barra de aplicaciones
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -594,11 +607,9 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         @SuppressLint("NotifyDataSetChanged")
         @Override
         public void run() {
-
-            TimeZone cstTimeZone = TimeZone.getTimeZone("America/Chicago"); // CST time zone
+            Log.d("RunnableTaskRecoleccion", "Recolecciones updated");
             Calendar currentCalendar = Calendar.getInstance(cstTimeZone);
             Date currentDate = currentCalendar.getTime();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy HH:mm");
 
             for (HistorialItem item : itemList) {
                 String fechaRecoleccionString = item.getFecha();
@@ -610,20 +621,31 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
                     throw new RuntimeException(e);
                 }
 
-                if (currentDate.after(horaRecoleccionFinal) && item.getEstado().equals("Iniciada") && !item.getEstado().equals("Cancelada")) {
+                // Create a Calendar instance for the recolección date without considering the time
+                Calendar recoleccionCalendar = Calendar.getInstance(cstTimeZone);
+                if (horaRecoleccionFinal != null) {
+                    recoleccionCalendar.setTime(horaRecoleccionFinal);
+                    recoleccionCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                    recoleccionCalendar.set(Calendar.MINUTE, 0);
+                    recoleccionCalendar.set(Calendar.SECOND, 0);
+                    recoleccionCalendar.set(Calendar.MILLISECOND, 0);
+
+                if ((currentDate.after(horaRecoleccionFinal) && item.getEstado().equals("Iniciada") && !item.getEstado().equals("Cancelada")) ||
+                        (currentCalendarWithoutTime.after(recoleccionCalendar) && item.getEstado().equals("En Proceso") && !item.getEstado().equals("Cancelada"))) {
 
                     String estado = "Cancelada";
                     item.setEstado(estado);
                     item.setEstadoColor(ResourcesCompat.getColor(getResources(), R.color.red, null));
                     item.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_square_red, null));
-                    updateRecoleccionEstado(item.getId(),estado);
+                    updateRecoleccionEstado(item.getId(), estado);
                 }
             }
+        }
 
-            historialAdapter.notifyDataSetChanged();
+        historialAdapter.notifyDataSetChanged();
 
-            int minutes = 1;
-            handler.postDelayed(this, minutes * 60 * 1000); // 1 minuto en milisegundos
+        int minutes = 1;
+        handler.postDelayed(this, minutes * 5 * 1000); // 1 minuto en milisegundos
         }
     };
 
