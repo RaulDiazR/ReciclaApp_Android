@@ -549,7 +549,7 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         if (!isValidPassword(contrasenaField.getText().toString())) {
-            contrasenaField.setError("La contraseña no es válida");
+            contrasenaField.setError("Contraseña inválida. Debe tener al menos 8 caracteres, una mayúscula y un número");
             if (firstErrorView == null) {
                 firstErrorView = contrasenaTextView;
             }
