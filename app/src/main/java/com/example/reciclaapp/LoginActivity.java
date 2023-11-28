@@ -143,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
                 // When google sign in successful initialize string
                 String s = "Google sign in successful";
                 // Display Toast
-                displayToast(s);
                 // Initialize sign in account
                 try {
                     // Initialize sign in account
@@ -201,11 +200,9 @@ public class LoginActivity extends AppCompatActivity {
                                     updateUI(user);
                                     // When task is successful redirect to profile activity display Toast
                                     startActivity(new Intent(LoginActivity.this, CompletarDatosActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                                    displayToast("Firebase authentication successful");
                                 } else {
                                     // When task is unsuccessful display Toast
                                     startActivity(new Intent(LoginActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                                    displayToast("Firebase authentication successful");
                                 }
                             }
                         });
@@ -215,10 +212,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private void displayToast(String s) {
-        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
 
     public void goToRegistro(View v){

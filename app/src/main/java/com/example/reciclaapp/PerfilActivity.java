@@ -107,7 +107,6 @@ public class PerfilActivity extends AppCompatActivity {
             }
         }).addOnFailureListener(e -> {
             // Handle failure, if any
-            Toast.makeText(PerfilActivity.this, "Error loading user information", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -233,10 +232,10 @@ public class PerfilActivity extends AppCompatActivity {
                         "fechaNacimiento", dateButton.getText().toString()
                 ).addOnSuccessListener(aVoid -> {
                     // Handle success
-                    Toast.makeText(PerfilActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PerfilActivity.this, "Cambios guardados", Toast.LENGTH_SHORT).show();
                 }).addOnFailureListener(e -> {
                     // Handle failure
-                    Toast.makeText(PerfilActivity.this, "Error saving changes", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PerfilActivity.this, "Error al guardar cambios", Toast.LENGTH_SHORT).show();
                 });
                 // Lógica para Confirmar
                 Intent intent = new Intent(PerfilActivity.this, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -301,8 +300,6 @@ public class PerfilActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     // When task is successful sign out from firebase
                     auth.signOut();
-                    // Display Toast
-                    Toast.makeText(getApplicationContext(), "Logout successful", Toast.LENGTH_SHORT).show();
                     // Finish activity
                     Intent intent = new Intent(PerfilActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

@@ -323,12 +323,10 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d("tag", "Uploaded Image URl is " + uri.toString());
                     }
                 });
-                Toast.makeText(SettingsActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SettingsActivity.this, "Upload Failled", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -442,9 +442,6 @@ public class SignupActivity extends AppCompatActivity {
                                     mAuth = FirebaseAuth.getInstance();
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     mAuth.signOut();
-                                    //mAuth.signInWithEmailAndPassword(email, password);
-                                    //user = mAuth.getCurrentUser();
-                                    //updateUI(user);
                                     Intent intent = new Intent(SignupActivity.this,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                 }
