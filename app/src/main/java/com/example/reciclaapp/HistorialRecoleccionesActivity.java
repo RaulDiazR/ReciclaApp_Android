@@ -650,7 +650,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
         historialAdapter.notifyDataSetChanged();
 
         int minutes = 1;
-        handler.postDelayed(this, minutes * 5 * 1000); // 1 minuto en milisegundos
+        handler.postDelayed(this, minutes * 60 * 1000); // 1 minuto en milisegundos
         }
     };
 

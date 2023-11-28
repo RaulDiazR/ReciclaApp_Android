@@ -87,26 +87,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Button
-        android:id="@+id/buttonFacebook"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/variant2"
-        android:drawableRight="@drawable/facebook"
-        android:onClick="ContinuarFacebook"
-        android:paddingEnd="10dp"
-        android:text="      Ingresar con Facebook"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonContinuar" />
-
-    <Button
         android:id="@+id/buttonGoogle"
         android:layout_width="250dp"
         android:layout_height="50dp"
@@ -123,7 +103,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonFacebook" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonContinuar" />
 
     <TextView
         android:id="@+id/textView"
