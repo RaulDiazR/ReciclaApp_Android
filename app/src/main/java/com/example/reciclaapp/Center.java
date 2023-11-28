@@ -78,7 +78,33 @@ public class Center extends AppCompatActivity {
         this.Mark = new Marker(this.Map);
         this.Mark.setPosition(StartPoint);
         this.Mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.icon_pin_self));
+
+        switch (this.categoria) {
+            case "Acopio":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.acopio));
+                break;
+            case "Acciones municipales":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.accionesmunicipales));
+                break;
+            case "Compra-venta":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.compraventa));
+                break;
+            case "Donaciones":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.donaciones));
+                break;
+            case "Estación de carga":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.estaciondecarga));
+                break;
+            case "Membresía":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.membresia));
+                break;
+            case "Punto verde":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.puntoverde));
+                break;
+            case "Reparación":
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.reparacion));
+                break;
+        }
 
         createInfoWindow();
     }

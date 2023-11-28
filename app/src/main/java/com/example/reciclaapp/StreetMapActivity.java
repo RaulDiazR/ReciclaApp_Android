@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -101,6 +102,7 @@ public class StreetMapActivity extends AppCompatActivity {
     FavoriteModel Favorites;
     FirebaseAuth auth;
     FirebaseUser user;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,9 @@ public class StreetMapActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(currentItemId);
 
         try {
+            //ProgressBar
+            progressBar = findViewById(R.id.ProgressBar);
+
             // Load Resources from Firebase
             db = FirebaseFirestore.getInstance();
             getFavorites();
@@ -371,6 +376,8 @@ public class StreetMapActivity extends AppCompatActivity {
                     }
                 });
 
+
+        progressBar.setVisibility(View.GONE);
     }
 
     private void createCategoryList() {

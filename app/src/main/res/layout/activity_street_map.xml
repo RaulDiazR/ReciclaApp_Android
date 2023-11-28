@@ -7,11 +7,25 @@
     tools:context=".StreetMapActivity"
     android:id="@+id/ScreenHolder">
 
+    <ProgressBar
+        android:id="@+id/ProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/osmap" />
+
     <org.osmdroid.views.MapView
         android:id="@+id/osmap"
         tilesource="Mapnik"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent">
+
+
+    </org.osmdroid.views.MapView>
 
 
     <androidx.appcompat.widget.Toolbar
