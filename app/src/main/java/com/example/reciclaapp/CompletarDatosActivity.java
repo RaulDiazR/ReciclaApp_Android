@@ -194,7 +194,7 @@ public class CompletarDatosActivity extends AppCompatActivity {
                     "fechaNacimiento", dateButton.getText().toString()
             );
             updateUI(user);
-            startActivity(new Intent(CompletarDatosActivity.this, TutorialActivity1.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            startActivity(new Intent(CompletarDatosActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
 

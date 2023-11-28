@@ -390,6 +390,8 @@ public class SignupActivity extends AppCompatActivity {
 
         View finalBackgroundView = backgroundView;
 
+        FirebaseUser finalUser = user;
+        View finalBackgroundView1 = backgroundView;
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -443,23 +445,15 @@ public class SignupActivity extends AppCompatActivity {
                                     //mAuth.signInWithEmailAndPassword(email, password);
                                     //user = mAuth.getCurrentUser();
                                     //updateUI(user);
-                                    mAuth.signInWithEmailAndPassword(email, password);
-                                    if (user.isEmailVerified()){
-                                        alertDialog.dismiss();
-                                        showCuentaActivadaDialog(user, finalBackgroundView);
-                                    }
-                                    else{
-                                        Toast.makeText(SignupActivity.this, "Verifica tu correo para poder continuar", Toast.LENGTH_SHORT).show();
-                                    }
+                                    Intent intent = new Intent(SignupActivity.this,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
                                 }
                             });
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignupActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
                             updateUI(null);
-                            alertDialog.dismiss();
+                            showActivarCuentaDialog(finalUser, finalBackgroundView1);
                         }
                     }
                 });
@@ -470,61 +464,7 @@ public class SignupActivity extends AppCompatActivity {
             alertDialog.dismiss();
             FrameLayout rootView = findViewById(android.R.id.content);
             rootView.removeView(finalBackgroundView);
-            //Intent intent = new Intent(SignupActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            //startActivity(intent);
-        });
-
-        // Agregar la vista de fondo y mostrar el cuadro de diálogo
-        FrameLayout rootView = findViewById(android.R.id.content);
-        rootView.addView(finalBackgroundView);
-        alertDialog.show();
-    }
-
-    private void showCuentaActivadaDialog(FirebaseUser user, View backgroundView) {
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        updateUI(user);
-
-        // Crear una vista para el fondo semitransparente
-        backgroundView = new View(SignupActivity.this);
-        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
-
-        // Inflar el diseño personalizado
-        View dialogView = getLayoutInflater().inflate(R.layout.cuentaactivada, null);
-
-        // Configurar el diálogo
-        builder.setView(dialogView);
-
-        // Personalizar el diálogo
-        final AlertDialog alertDialog = builder.create();
-
-        // Configurar un fondo semitransparente
-        Window window = alertDialog.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams params = window.getAttributes();
-            params.gravity = Gravity.CENTER;
-            window.setAttributes(params);
-        }
-
-        // Configurar acciones de los botones
-        Button btnContinuar = dialogView.findViewById(R.id.ContinuarCA);
-
-        View finalBackgroundView = backgroundView;
-        btnContinuar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                Intent intent = new Intent(SignupActivity.this, TutorialActivity1.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-        });
-
-        alertDialog.setOnDismissListener(view -> {
-            alertDialog.dismiss();
-            Intent intent = new Intent(SignupActivity.this, TutorialActivity1.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent intent = new Intent(SignupActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
 

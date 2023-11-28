@@ -50,6 +50,9 @@
         android:theme="@style/Theme.ReciclaApp"
         tools:targetApi="31">
         <activity
+            android:name=".VerificaCorreo"
+            android:exported="false" />
+        <activity
             android:name=".VerDetallesNoticiasActivity"
             android:exported="false" />
         <activity
@@ -208,6 +211,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.reciclaapp"
