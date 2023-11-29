@@ -106,7 +106,7 @@ public class HistorialRecoleccionesActivity extends AppCompatActivity implements
             finish();
         }
         else{
-            HistorialRecoleccionesActivity.userId = user.getUid();
+                HistorialRecoleccionesActivity.userId = user.getUid();
         }
 
         cstTimeZone = TimeZone.getTimeZone("America/Chicago");
