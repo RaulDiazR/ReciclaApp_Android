@@ -159,11 +159,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "901697229886-2bqtbvlhdguqu92rqn9kk2p14ft84b74.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reciclaapp",
+            "certificate_hash": "fce1cda700fab76104bb22423fb6af73ac523543"
+          }
+        },
+        {
           "client_id": "901697229886-i47uvilfh598vueops47ooisdbhkeqc1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.reciclaapp",
             "certificate_hash": "ef4fb3c4abba66963efe1b10c4c2f7dff07e50d9"
+          }
+        },
+        {
+          "client_id": "901697229886-pjq3fvdm0r56vnnvnf7aeujsvg0n6sfv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reciclaapp",
+            "certificate_hash": "4427d2344f1eb4ce1d898d057f2e3a82f9829a69"
           }
         },
         {
@@ -238,6 +254,30 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "901697229886-82eb6d0urqkchgsehmhif75uj6njmnhp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.greencarson.reciclaapp",
+            "certificate_hash": "ef4fb3c4abba66963efe1b10c4c2f7dff07e50d9"
+          }
+        },
+        {
+          "client_id": "901697229886-jh1rj4ra33he1d6e5u1lg4scnchsuhfd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.greencarson.reciclaapp",
+            "certificate_hash": "4427d2344f1eb4ce1d898d057f2e3a82f9829a69"
+          }
+        },
+        {
+          "client_id": "901697229886-vol44frsv5bgdlnehvs006e9nl1jb2vf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.greencarson.reciclaapp",
+            "certificate_hash": "fce1cda700fab76104bb22423fb6af73ac523543"
+          }
+        },
         {
           "client_id": "901697229886-hhlg1ttba01pkmicerijb5hn5chgkp91.apps.googleusercontent.com",
           "client_type": 3

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.reciclaapp"
+    namespace = "com.greencarson.reciclaapp"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.example.reciclaapp"
+        applicationId = "com.greencarson.reciclaapp"
         minSdk = 24
         //noinspection OldTargetApi
         targetSdk = 33

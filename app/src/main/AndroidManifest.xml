@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.reciclaapp">
+    package="com.greencarson.reciclaapp">
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -14,10 +14,6 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -50,27 +46,27 @@
         android:theme="@style/Theme.ReciclaApp"
         tools:targetApi="31">
         <activity
-            android:name=".VerificaCorreo"
+            android:name="com.greencarson.reciclaapp.VerificaCorreo"
             android:exported="false" />
         <activity
-            android:name=".VerDetallesNoticiasActivity"
+            android:name="com.greencarson.reciclaapp.VerDetallesNoticiasActivity"
             android:exported="false" />
         <activity
-            android:name=".FotoPerfil"
+            android:name="com.greencarson.reciclaapp.FotoPerfil"
             android:exported="false" />
         <activity
-            android:name=".SelfLocationStreetMap"
+            android:name="com.greencarson.reciclaapp.SelfLocationStreetMap"
             android:exported="false" />
         <activity
-            android:name=".StreetMapActivity"
+            android:name="com.greencarson.reciclaapp.StreetMapActivity"
             android:exported="false" />
         <activity
-            android:name=".VerNoticiasActivity"
+            android:name="com.greencarson.reciclaapp.VerNoticiasActivity"
             android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.reciclaapp.fileprovider"
+            android:authorities="com.greencarson.reciclaapp.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -79,131 +75,131 @@
         </provider>
 
         <activity
-            android:name=".VerDetallesActivity"
+            android:name="com.greencarson.reciclaapp.VerDetallesActivity"
             android:exported="false" />
         <activity
-            android:name=".MaterialesSelectionActivity"
+            android:name="com.greencarson.reciclaapp.MaterialesSelectionActivity"
             android:exported="false"
             android:theme="@style/Base.Theme.ReciclaApp.PopMe" />
         <activity
-            android:name=".MaterialesActivity"
+            android:name="com.greencarson.reciclaapp.MaterialesActivity"
             android:exported="false" />
         <activity
-            android:name=".DireccionActivity"
+            android:name="com.greencarson.reciclaapp.DireccionActivity"
             android:exported="false" />
         <activity
-            android:name=".OrdenHorarioActivity"
+            android:name="com.greencarson.reciclaapp.OrdenHorarioActivity"
             android:exported="false" />
         <activity
-            android:name=".SelfLocationStreetMapActivity"
+            android:name="com.greencarson.reciclaapp.SelfLocationStreetMapActivity"
             android:exported="false" />
         <activity
-            android:name=".HistorialRecoleccionesActivity"
+            android:name="com.greencarson.reciclaapp.HistorialRecoleccionesActivity"
             android:exported="false" />
         <activity
-            android:name=".CompletarDatosActivity"
+            android:name="com.greencarson.reciclaapp.CompletarDatosActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.greencarson.reciclaapp.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".MapaActivity"
+            android:name="com.greencarson.reciclaapp.MapaActivity"
             android:exported="false" />
         <activity
-            android:name=".TerminosCondicionesActivity"
+            android:name="com.greencarson.reciclaapp.TerminosCondicionesActivity"
             android:exported="false" />
         <activity
-            android:name=".IniciativaActivity"
+            android:name="com.greencarson.reciclaapp.IniciativaActivity"
             android:exported="false" />
         <activity
-            android:name=".SociosyamigosActivity"
+            android:name="com.greencarson.reciclaapp.SociosyamigosActivity"
             android:exported="false" />
         <activity
-            android:name=".ContactoActivity"
+            android:name="com.greencarson.reciclaapp.ContactoActivity"
             android:exported="false" />
         <activity
-            android:name=".InformacionActivity"
+            android:name="com.greencarson.reciclaapp.InformacionActivity"
             android:exported="false" />
         <activity
-            android:name=".ListItem"
+            android:name="com.greencarson.reciclaapp.ListItem"
             android:exported="false" />
         <activity
-            android:name=".ListGroup"
+            android:name="com.greencarson.reciclaapp.ListGroup"
             android:exported="false" />
         <activity
-            android:name=".CuentaEliminada"
+            android:name="com.greencarson.reciclaapp.CuentaEliminada"
             android:exported="false" />
         <activity
-            android:name=".EliminaTuCuenta"
+            android:name="com.greencarson.reciclaapp.EliminaTuCuenta"
             android:exported="false" />
         <activity
-            android:name=".EliminarCuenta"
+            android:name="com.greencarson.reciclaapp.EliminarCuenta"
             android:exported="false" />
         <activity
-            android:name=".CerrarSesion"
+            android:name="com.greencarson.reciclaapp.CerrarSesion"
             android:exported="false" />
         <activity
-            android:name=".CuentaActivada"
+            android:name="com.greencarson.reciclaapp.CuentaActivada"
             android:exported="false" />
         <activity
-            android:name=".ActivatuCuenta"
+            android:name="com.greencarson.reciclaapp.ActivatuCuenta"
             android:exported="false" />
         <activity
-            android:name=".ConfirmarRegistro"
+            android:name="com.greencarson.reciclaapp.ConfirmarRegistro"
             android:exported="false" />
         <activity
-            android:name=".Contrasenaincorrrecta"
+            android:name="com.greencarson.reciclaapp.Contrasenaincorrrecta"
             android:exported="false" />
         <activity
-            android:name=".GuardarCambios"
+            android:name="com.greencarson.reciclaapp.GuardarCambios"
             android:exported="false" />
         <activity
-            android:name=".TutorialActivity5"
+            android:name="com.greencarson.reciclaapp.TutorialActivity5"
             android:exported="false" />
         <activity
-            android:name=".TutorialActivity4"
+            android:name="com.greencarson.reciclaapp.TutorialActivity4"
             android:exported="false" />
         <activity
-            android:name=".TutorialActivity3"
+            android:name="com.greencarson.reciclaapp.TutorialActivity3"
             android:exported="false" />
         <activity
-            android:name=".TutorialActivity2"
+            android:name="com.greencarson.reciclaapp.TutorialActivity2"
             android:exported="false" />
         <activity
-            android:name=".TutorialActivity1"
+            android:name="com.greencarson.reciclaapp.TutorialActivity1"
             android:exported="false" />
         <activity
-            android:name=".InicioActivity"
+            android:name="com.greencarson.reciclaapp.InicioActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity2"
+            android:name="com.greencarson.reciclaapp.MainActivity2"
             android:exported="false" />
         <activity
-            android:name=".CreditosActivity"
+            android:name="com.greencarson.reciclaapp.CreditosActivity"
             android:exported="false" />
         <activity
-            android:name=".AvisoprivacidadActivity"
+            android:name="com.greencarson.reciclaapp.AvisoprivacidadActivity"
             android:exported="false" />
         <activity
-            android:name=".FavoritosActivity"
+            android:name="com.greencarson.reciclaapp.FavoritosActivity"
             android:exported="false" />
         <activity
-            android:name=".FQAActivity"
+            android:name="com.greencarson.reciclaapp.FQAActivity"
             android:exported="false" />
         <activity
-            android:name=".ConfiguracionActivity"
+            android:name="com.greencarson.reciclaapp.ConfiguracionActivity"
             android:exported="false" />
         <activity
-            android:name=".PerfilActivity"
+            android:name="com.greencarson.reciclaapp.PerfilActivity"
             android:exported="false" />
         <activity
-            android:name=".SignupActivity"
+            android:name="com.greencarson.reciclaapp.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name="com.greencarson.reciclaapp.LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.greencarson.reciclaapp.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -214,7 +210,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.reciclaapp"
+            android:authorities="com.greencarson.reciclaapp"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
