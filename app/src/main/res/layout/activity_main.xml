@@ -9,12 +9,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="213dp"
-        android:layout_height="247dp"
+        android:layout_width="272dp"
+        android:layout_height="295dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.448"
-        app:srcCompat="@drawable/greencarsonlogo" />
+        app:layout_constraintVertical_bias="0.4"
+        app:srcCompat="@drawable/pueblarecicla" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

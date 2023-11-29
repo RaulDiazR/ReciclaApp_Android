@@ -11,7 +11,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:background="@drawable/shape_rounded"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +61,7 @@
             <EditText
                 android:id="@+id/nombres"
                 android:layout_width="255dp"
-                android:layout_height="46dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:inputType="text"
@@ -69,7 +70,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -88,7 +90,7 @@
             <EditText
                 android:id="@+id/apellidos"
                 android:layout_width="255dp"
-                android:layout_height="46dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:inputType="text"
@@ -97,7 +99,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -116,7 +119,7 @@
             <EditText
                 android:id="@+id/mail"
                 android:layout_width="255dp"
-                android:layout_height="46dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:inputType="textEmailAddress"
@@ -125,7 +128,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -144,7 +148,7 @@
             <EditText
                 android:id="@+id/phone"
                 android:layout_width="255dp"
-                android:layout_height="46dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:inputType="phone"
@@ -153,7 +157,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -202,7 +207,7 @@
             <EditText
                 android:id="@+id/password"
                 android:layout_width="255dp"
-                android:layout_height="46dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:inputType="textPassword"
@@ -211,7 +216,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                app:layout_constraintTop_toBottomOf="@+id/textView8"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/textView9"

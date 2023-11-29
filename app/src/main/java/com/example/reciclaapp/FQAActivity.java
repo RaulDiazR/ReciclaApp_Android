@@ -62,33 +62,29 @@ public class FQAActivity extends AppCompatActivity {
             answers = new HashMap<>();
 
             // Agregar tus preguntas y respuestas aquí
-            questions.add("¿Qué es Android?");
-            answers.put("¿Qué es Android?", "Android es un sistema operativo para dispositivos móviles desarrollado por Google.");
+            questions.add("¿Qué es Puebla Reecicla?");
+            answers.put("¿Qué es Puebla Reecicla?", "Puebla Reecicla es una aplicación para la recolección de materiales a la puerta de la casa por personas capacitadas y con la mejor atención y en el tiempo más rápido.");
 
-            questions.add("¿Cómo se crea una actividad en Android?");
-            answers.put("¿Cómo se crea una actividad en Android?", "Puedes crear una actividad extendiendo la clase AppCompatActivity y configurando su diseño en XML.");
+            questions.add("¿Qué puedo ver en el mapa?");
+            answers.put("¿Qué puedo ver en el mapa?", "Puedes ver los centros de recolección asociados con Green Carson, a los cuales puedes acudir a entregar tus desechos. Puedes consultar información esencial de cada centro, como su ubicación y los tipos de materiales que reciben.");
 
-            questions.add("¿Cómo puedo cambiar mi contraseña?");
-            answers.put("¿Cómo puedo cambiar mi contraseña?", "Para cambiar tu contraseña, inicia sesión en tu cuenta, ve a la sección de configuración de la cuenta y busca la opción de cambiar contraseña.");
+            questions.add("¿Cómo utilizar los filtros del mapa?");
+            answers.put("¿Cómo utilizar los filtros del mapa?", "Puedes personalizar tu búsqueda de centros de recolección eligiendo un tipo de centro en específico, haciendo que solo se muestren los centros de ese tipo. Puedes desactivar el filtro en el momento que desees.");
 
-            questions.add("¿Qué dispositivos son compatibles con nuestra aplicación?");
-            answers.put("¿Qué dispositivos son compatibles con nuestra aplicación?", "Nuestra aplicación es compatible con dispositivos Android con una versión de sistema operativo 4.4 (KitKat) o superior.");
+            questions.add("¿Cómo agendo una recolección?");
+            answers.put("¿Cómo agendo una recolección?", "En el menú Reciclaje, da click en el botón de + para agendar una nueva recolección, necesitarás seleccionar la fecha, horario y formato de entrega, y tendrás la opción de agregar algún comentario para el recolector. Posteriormente necesitarás introducir tu dirección y ubicación. Finalmente, debes elegir los materiales de tu recolección, de los cuales puedes introducir las cantidades y anexar imágenes. Finalmente, debes confirmar tu orden.");
 
-            questions.add("¿Puedo usar la aplicación sin conexión a internet?");
-            answers.put("¿Puedo usar la aplicación sin conexión a internet?", "Sí, algunas funciones de la aplicación se pueden utilizar sin conexión, pero ciertas características requerirán una conexión a internet.");
+            questions.add("¿Puedo calificar a mi recolector?");
+            answers.put("¿Puedo calificar a mi recolector?", "Si, para ello, la recolección debe estar completada y no se debe haber calificado al recolector en esa recolección.");
 
-            questions.add("¿Cómo contacto al soporte técnico?");
-            answers.put("¿Cómo contacto al soporte técnico?", "Puedes ponerte en contacto con nuestro equipo de soporte técnico a través del correo electrónico de soporte@example.com o llamando al número de soporte: +123456789.");
+            questions.add("¿Puedo cancelar una recolección?");
+            answers.put("¿Puedo cancelar una recolección?", "Si, solo se puede cancelar si la recolección está en Iniciada o en Proceso.");
 
-            questions.add("¿Cómo puedo actualizar la aplicación?");
-            answers.put("¿Cómo puedo actualizar la aplicación?", "Para actualizar la aplicación, ve a la tienda de aplicaciones de tu dispositivo (Google Play Store) y busca nuestra aplicación. Allí encontrarás la opción de actualizar.");
+            questions.add("¿Cómo poner una foto de perfil?");
+            answers.put("¿Cómo poner una foto de perfil?", "En el menú Ajustes da clic en el botón + ubicado debajo del ícono circular. Puedes subir una foto desde tu cámara o desde la galería de fotos de tu dispositivo. Antes asegúrate de tener activado para esta aplicación los permisos de acceso a la cámara y fotos.");
 
-            questions.add("¿Cuál es la política de devoluciones?");
-            answers.put("¿Cuál es la política de devoluciones?", "Nuestra política de devoluciones permite devoluciones dentro de los primeros 30 días desde la compra. Por favor, revisa nuestra página de políticas para obtener más detalles.");
-
-            questions.add("¿Cómo puedo restablecer mi PIN de acceso?");
-            answers.put("¿Cómo puedo restablecer mi PIN de acceso?", "Para restablecer tu PIN de acceso, ve a la sección de seguridad de tu cuenta y selecciona la opción para restablecer el PIN.");
-
+            questions.add("¿Puedo modificar mi información?");
+            answers.put("¿Puedo modificar mi información?", "Si, en la sección Ajustes -> Perfil, puedes consultar la información con la que te registraste y también modificarla si la deseas, únicamente no puedes modificar tu correo y tu contraseña.");
         }
 
         @Override

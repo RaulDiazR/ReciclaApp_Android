@@ -93,7 +93,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.829"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Switch
         android:id="@+id/switchNotificaciones"
@@ -108,7 +109,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.83"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchUbicacion" />
+        app:layout_constraintTop_toBottomOf="@+id/switchUbicacion"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Switch
         android:id="@+id/switch2step"
@@ -123,7 +125,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.83"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchNotificaciones" />
+        app:layout_constraintTop_toBottomOf="@+id/switchNotificaciones"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Switch
         android:id="@+id/switchCorreos"
@@ -138,6 +141,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.829"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch2step" />
+        app:layout_constraintTop_toBottomOf="@+id/switch2step"
+        tools:ignore="TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

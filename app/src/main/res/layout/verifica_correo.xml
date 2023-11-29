@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center">
+    >
 
     <TextView
-        android:layout_width="241dp"
+        android:layout_width="211dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:fontFamily="@font/plex_sans_condensed"
         android:paddingTop="20dp"
-        android:text="Elimina tu cuenta"
+        android:text="Correo No Verificado"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="24sp"
@@ -21,31 +19,36 @@
 
     <TextView
         android:id="@+id/textView50"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="Te hemos enviado un código a tu correo. Introduce el código a continuación para eliminar tu cuenta: "
+        android:layout_width="306dp"
+        android:layout_height="152dp"
+        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
+        android:text="Tu correo no está verificado. Activa tu cuenta para poder acceder a través del correo electrónico que te enviamos cuando te registraste, o bien, podemos enviarte uno nuevo. "
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/codigoNumber"
-        android:layout_width="200dp"
+    <Button
+        android:id="@+id/SendAgainButton"
+        android:layout_width="232dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:ems="10"
-        android:inputType="number"
-        android:textSize="24sp"
-        tools:ignore="SpeakableTextPresentCheck" />
+        android:layout_marginTop="10dp"
+        android:background="@drawable/variant3"
+        android:text="Enviar Nuevo Correo"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <Button
-        android:id="@+id/EnviarCodigo"
-        android:layout_width="211dp"
+        android:id="@+id/CancelarButton"
+        android:layout_width="232dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/variant3"
-        android:text="Enviar"
+        android:background="@drawable/variant1"
+        android:text="Cancelar"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"

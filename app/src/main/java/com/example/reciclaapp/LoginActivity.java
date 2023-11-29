@@ -122,10 +122,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(LoginActivity.this, VerNoticiasActivity.class);
-            startActivity(intent);
-            finish();
+        if(currentUser != null ){
+            if(currentUser.isEmailVerified()){
+                Intent intent = new Intent(LoginActivity.this, VerNoticiasActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 
@@ -141,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
                 // When google sign in successful initialize string
                 String s = "Google sign in successful";
                 // Display Toast
-                displayToast(s);
                 // Initialize sign in account
                 try {
                     // Initialize sign in account
@@ -199,11 +200,9 @@ public class LoginActivity extends AppCompatActivity {
                                     updateUI(user);
                                     // When task is successful redirect to profile activity display Toast
                                     startActivity(new Intent(LoginActivity.this, CompletarDatosActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                                    displayToast("Firebase authentication successful");
                                 } else {
                                     // When task is unsuccessful display Toast
                                     startActivity(new Intent(LoginActivity.this, VerNoticiasActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                                    displayToast("Firebase authentication successful");
                                 }
                             }
                         });
@@ -213,10 +212,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private void displayToast(String s) {
-        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
 
     public void goToRegistro(View v){
@@ -283,7 +278,63 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else{
-            Toast.makeText(getApplicationContext(), "Correo no verificado", Toast.LENGTH_SHORT).show();
+            final View backgroundView = new View(this);
+            backgroundView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            backgroundView.setBackgroundColor(Color.argb(150, 0, 0, 0)); // Color semitransparente
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // Inflar el diseño personalizado
+            View dialogView = getLayoutInflater().inflate(R.layout.verifica_correo, null);
+
+            // Configurar el diálogo
+            builder.setView(dialogView);
+
+            // Personalizar el diálogo
+            final AlertDialog alertDialog = builder.create();
+
+            // Configurar un fondo semitransparente
+            Window window = alertDialog.getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.gravity = Gravity.CENTER;
+                window.setAttributes(params);
+            }
+
+            alertDialog.show();
+
+            // Configurar acciones de los botones
+            Button btnConfirmar = dialogView.findViewById(R.id.SendAgainButton);
+            Button btnCancelar = dialogView.findViewById(R.id.CancelarButton);
+
+            btnConfirmar.setOnClickListener(v12 -> {
+                mAuth = FirebaseAuth.getInstance();
+                updateUI(user);
+                user.sendEmailVerification();
+                updateUI(user);
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
+                Toast.makeText(LoginActivity.this, "Correo enviado", Toast.LENGTH_SHORT).show();
+            });
+
+            btnCancelar.setOnClickListener(v1 -> {
+                // Lógica para Cancelar
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
+            });
+
+            alertDialog.setOnDismissListener(view -> {
+                alertDialog.dismiss();
+                FrameLayout rootView = findViewById(android.R.id.content);
+                rootView.removeView(backgroundView);
+            });
+
+            // Agregar la vista de fondo y mostrar el cuadro de diálogo
+            FrameLayout rootView = findViewById(android.R.id.content);
+            rootView.addView(backgroundView);
+            alertDialog.show();
         }
     }
 
