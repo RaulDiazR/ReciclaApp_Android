@@ -85,13 +85,13 @@ public class Center extends AppCompatActivity {
                 this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.accionesmunicipales));
                 break;
             case "Compra-venta":
-                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.compraventa));
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.reciclaje));
                 break;
             case "Donaciones":
                 this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.donaciones));
                 break;
             case "Estación de carga":
-                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.estaciondecarga));
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.centrocarga));
                 break;
             case "Membresía":
                 this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.membresia));
@@ -100,8 +100,10 @@ public class Center extends AppCompatActivity {
                 this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.puntoverde));
                 break;
             case "Reparación":
-                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.reparacion));
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.reparaciones));
                 break;
+            default:
+                this.Mark.setIcon(ContextCompat.getDrawable(context, R.drawable.icon_pin_map));
         }
 
         createInfoWindow();
@@ -120,15 +122,12 @@ public class Center extends AppCompatActivity {
 
                     TextView centerName = mView.findViewById(R.id.nameCenter);
                     TextView contactInfo = mView.findViewById(R.id.contactCenter);
-                    TextView addToFavorites = mView.findViewById(R.id.addToFavorites);
                     ImageView centerImage = mView.findViewById(R.id.iconImageView);
 
                     LinearLayout moreCenterLayout = mView.findViewById(R.id.moreCenterLayout);
-                    LinearLayout favoriteCenterLayout = mView.findViewById(R.id.favoriteCenterLayout);
                     LinearLayout contactCenterLayout = mView.findViewById(R.id.contactCenterLayout);
 
                     ImageButton phoneContact = mView.findViewById(R.id.phone_contact);
-                    ToggleButton favoriteCenter = mView.findViewById(R.id.add_button);
 
                     centerName.setText(nombre);
 
@@ -138,11 +137,6 @@ public class Center extends AppCompatActivity {
                         contactInfo.setText("Sin Numero");
                     }
 
-                    if (isFavorite) {
-                        addToFavorites.setText("Favorito");
-                    } else {
-                        addToFavorites.setText("Agregar a favoritos");
-                    }
                     centerImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                     if (!imagen.isEmpty()) {
@@ -157,25 +151,6 @@ public class Center extends AppCompatActivity {
                         }
                     });
 
-                    favoriteCenterLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            setFavorite(!isFavorite);
-
-                            if (isFavorite) {
-                                addToFavorites.setText("Favorito");
-                                parent.FavoriteMap.get(nombre).set(1, 1);
-                                favoriteCenter.setChecked(isFavorite);
-                            } else {
-                                addToFavorites.setText("Agregar a favoritos");
-                                parent.FavoriteMap.get(nombre).set(1, 0);
-                                favoriteCenter.setChecked(isFavorite);
-                            }
-
-                            System.out.println(parent.FavoriteMap);
-                            parent.udpateCollectionFavorites();
-                        }
-                    });
                     moreCenterLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

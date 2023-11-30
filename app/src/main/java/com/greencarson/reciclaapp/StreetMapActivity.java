@@ -102,7 +102,6 @@ public class StreetMapActivity extends AppCompatActivity {
     FavoriteModel Favorites;
     FirebaseAuth auth;
     FirebaseUser user;
-    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +128,6 @@ public class StreetMapActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(currentItemId);
 
         try {
-            //ProgressBar
-            progressBar = findViewById(R.id.ProgressBar);
 
             // Load Resources from Firebase
             db = FirebaseFirestore.getInstance();
@@ -168,7 +165,7 @@ public class StreetMapActivity extends AppCompatActivity {
             e.printStackTrace(); // Log the exception in Logcat
             String errorMessage = e.getMessage(); // Get the error message
             runOnUiThread(() -> {
-                Toast.makeText(this, "An error occurred: " + errorMessage, Toast.LENGTH_LONG).show();
+
             });
         }
 
@@ -314,70 +311,60 @@ public class StreetMapActivity extends AppCompatActivity {
     }
 
     public void createCenter() {
-
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         db.collection("centros").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        // after getting the data we are calling on success method
-                        // and inside this method we are checking if the received
-                        // query snapshot is empty or not.
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            // if the snapshot is not empty we are
-                            // hiding our progress bar and adding
-                            // our data in a list.
-                            //loadingPB.setVisibility(View.GONE);
-                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            int con = 0;
-                            for (DocumentSnapshot d : list) {
-                                // after getting this list we are passing
-                                // that list to our object class.
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // after getting the data we are calling on success method
+                    // and inside this method we are checking if the received
+                    // query snapshot is empty or not.
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        // if the snapshot is not empty we are
+                        // hiding our progress bar and adding
+                        // our data in a list.
+                        //loadingPB.setVisibility(View.GONE);
+                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                        int con = 0;
+                        for (DocumentSnapshot d : list) {
+                            // after getting this list we are passing
+                            // that list to our object class.
 
-                                CenterModel centerModel = new CenterModel(Objects.requireNonNull(d.getData()));
+                            CenterModel centerModel = new CenterModel(Objects.requireNonNull(d.getData()));
 
-                                if (centerModel.isValid()) {
+                            if (centerModel.isValid()) {
 
-                                    ArrayList<MaterialModel> mate = new ArrayList<>();
+                                ArrayList<MaterialModel> mate = new ArrayList<>();
 
-                                    for ( String j : centerModel.getMateriales()) {
-                                        if (MaterialMap.containsKey(j)) {
-                                            mate.add(Materials.get(MaterialMap.get(j)));
-                                        }
+                                for ( String j : centerModel.getMateriales()) {
+                                    if (MaterialMap.containsKey(j)) {
+                                        mate.add(Materials.get(MaterialMap.get(j)));
                                     }
-
-                                    Center center = new Center(centerModel.getNombre(), centerModel.getDireccion(), centerModel.getLatitud(), centerModel.getLongitud(), centerModel.getNum_telefonico(), centerModel.getHora_apertura(), centerModel.getHora_cierra(), centerModel.getImagen(), MapOS, context, centerModel.getCategoria(), activity, mate, centerModel.getDias(), father);
-                                    centerList.add(center);
-                                    FavoriteMap.put(center.getNombre(), new ArrayList<>(Arrays.asList(con, 0)));
-                                    if (CategoryCenterMap.containsKey(centerModel.getCategoria())) {
-                                        CategoryCenterMap.get(centerModel.getCategoria()).add(con);
-                                    } else {
-                                        CategoryCenterMap.put(centerModel.getCategoria(), new ArrayList<>());
-                                        CategoryCenterMap.get(centerModel.getCategoria()).add(con);
-                                    }
-                                    MapOS.getOverlays().add(center.getMark());
-                                    con++;
                                 }
 
+                                Center center = new Center(centerModel.getNombre(), centerModel.getDireccion(), centerModel.getLatitud(), centerModel.getLongitud(), centerModel.getNum_telefonico(), centerModel.getHora_apertura(), centerModel.getHora_cierra(), centerModel.getImagen(), MapOS, context, centerModel.getCategoria(), activity, mate, centerModel.getDias(), father);
+                                centerList.add(center);
+                                FavoriteMap.put(center.getNombre(), new ArrayList<>(Arrays.asList(con, 0)));
+                                if (CategoryCenterMap.containsKey(centerModel.getCategoria())) {
+                                    CategoryCenterMap.get(centerModel.getCategoria()).add(con);
+                                } else {
+                                    CategoryCenterMap.put(centerModel.getCategoria(), new ArrayList<>());
+                                    CategoryCenterMap.get(centerModel.getCategoria()).add(con);
+                                }
+                                MapOS.getOverlays().add(center.getMark());
+                                con++;
                             }
 
-                            Toast.makeText( context, "Centros Creados", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            // if the snapshot is empty we are displaying a toast message.
-                            Toast.makeText( context, "No data found in Database", Toast.LENGTH_SHORT).show();
                         }
+
+                        progressBar.setVisibility(View.GONE);
+
+                    } else {
+                        // if the snapshot is empty we are displaying a toast message.
+                        progressBar.setVisibility(View.GONE);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // if we do not get any data or any error we are displaying
-                        // a toast message that we do not get any data
-                        Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
-                    }
+                }).addOnFailureListener(e -> {
+                    // if we do not get any data or any error we are displaying
                 });
-
-
-        progressBar.setVisibility(View.GONE);
     }
 
     private void createCategoryList() {
@@ -413,19 +400,16 @@ public class StreetMapActivity extends AppCompatActivity {
 
                             }
 
-                            Toast.makeText( context, "Categorias Creadas", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            // if the snapshot is empty we are displaying a toast message.
-                            Toast.makeText( context, "No data found in Database", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // if we do not get any data or any error we are displaying
-                        // a toast message that we do not get any data
-                        Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
@@ -477,12 +461,12 @@ public class StreetMapActivity extends AppCompatActivity {
                     favoritesReferenceUser.set(data);
                     Favorites = new FavoriteModel(data);
                 }
-                Toast.makeText(context, "Centros Favoritos", Toast.LENGTH_SHORT).show();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@androidx.annotation.NonNull Exception e) {
-                Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -739,19 +723,16 @@ public class StreetMapActivity extends AppCompatActivity {
                                 }
                             }
 
-                            Toast.makeText( context, "Materiales Listos", Toast.LENGTH_SHORT).show();
+
 
                         } else {
                             // if the snapshot is empty we are displaying a toast message.
-                            Toast.makeText( context, "No data found in Database", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // if we do not get any data or any error we are displaying
-                        // a toast message that we do not get any data
-                        Toast.makeText(context, "Fail to get the data.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -862,7 +843,6 @@ public class StreetMapActivity extends AppCompatActivity {
                     requestLocationUpdates();
 
                 } else {
-                    Toast.makeText(this, "Permiso Denegado", Toast.LENGTH_LONG).show();
                 }
             }
         }

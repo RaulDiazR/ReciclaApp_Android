@@ -132,4 +132,5 @@
     <string name="imagen_noticia">Imagen Noticia</string>
     <string name="t_tulo">Título</string>
     <string name="foto_de_perfil">Foto de Perfil</string>
+    <string name="bot_n_para_tomar_foto">Botón para tomar foto</string>
 </resources>

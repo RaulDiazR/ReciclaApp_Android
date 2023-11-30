@@ -65,43 +65,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/favoriteCenterLayout"
-        android:layout_width="190dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/contactCenterLayout"
-        android:padding="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="start">
-
-        <ToggleButton
-            android:id="@+id/add_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:textOff=""
-            android:textOn=""
-            android:scaleType="centerCrop"
-            android:button="@drawable/selector_favorite"
-            android:background="#FFFFFF"
-            android:contentDescription="@string/add_favorites" />
-
-        <TextView
-            android:id="@+id/addToFavorites"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_favorites"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="10sp"
-            android:textSize="14sp"/>
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/moreCenterLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/favoriteCenterLayout"
+        android:layout_below="@id/contactCenterLayout"
         android:padding="8dp"
         android:gravity="center"
         android:clickable="true"
