@@ -134,21 +134,23 @@
         android:gravity="center">
 
 
-        <ImageButton
+        <Button
             android:id="@+id/imagenIndicacion1"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/maps"
+            android:background="@drawable/maps"
+            android:contentDescription="@string/indicaci_n_1"
             android:scaleType="centerCrop"
-            android:contentDescription="Indicación 1" />
+            android:src="@drawable/maps" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imagenIndicacion2"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/waze"
+            android:background="@drawable/waze"
             android:scaleType="centerCrop"
-            android:contentDescription="Indicación 2" />
+            android:contentDescription="@string/indicaci_n_2" />
 
     </LinearLayout>
 

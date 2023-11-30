@@ -1,5 +1,6 @@
 package com.greencarson.reciclaapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -123,7 +125,6 @@ public class Center extends AppCompatActivity {
                     TextView centerName = mView.findViewById(R.id.nameCenter);
                     TextView contactInfo = mView.findViewById(R.id.contactCenter);
                     ImageView centerImage = mView.findViewById(R.id.iconImageView);
-
                     LinearLayout moreCenterLayout = mView.findViewById(R.id.moreCenterLayout);
                     LinearLayout contactCenterLayout = mView.findViewById(R.id.contactCenterLayout);
 
@@ -142,7 +143,6 @@ public class Center extends AppCompatActivity {
                     if (!imagen.isEmpty()) {
                         Picasso.get().load(imagen).into(centerImage);
                     }
-
 
                     contactCenterLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -210,6 +210,37 @@ public class Center extends AppCompatActivity {
         }
     }
 
+    public void redirectToGoogleMaps() {
+
+        try {
+
+            double lat = this.latitud;
+            double lon = this.longitud;
+            String uri = String.format("https://www.google.com/maps?q=%f,%f", lat, lon);
+            System.out.println(Uri.parse(uri));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public void redirectToGoogleWaze() {
+
+            try {
+                double lat = this.latitud;
+                double lon = this.longitud;
+                @SuppressLint("DefaultLocale")
+                String uri = String.format("https://waze.com/ul?ll=%f,%f&navigate=yes", lat, lon);
+                String insta = "https://www.instagram.com/photocinematica/";
+                System.out.println(Uri.parse(insta));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(insta)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
+
     public void openMoreInfoCenter(){
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         View mView = LayoutInflater.from(context).inflate(R.layout.center_info,null);
@@ -224,6 +255,10 @@ public class Center extends AppCompatActivity {
         TextView centerHours = mView.findViewById(R.id.horarioTextView);
         TextView centerDays = mView.findViewById(R.id.diasTextView);
         ImageView centerImage = mView.findViewById(R.id.imageViewCenter);
+
+        Button maps = mView.findViewById(R.id.imagenIndicacion1);
+        Button waze = mView.findViewById(R.id.imagenIndicacion2);
+
         materialesRV = mView.findViewById(R.id.materialesRecyclerView);
 
 
@@ -246,6 +281,19 @@ public class Center extends AppCompatActivity {
 
         materialesRV.setAdapter(materialRVAdapter);
 
+        maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectToGoogleMaps();
+            }
+        });
+
+        waze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectToGoogleWaze();
+            }
+        });
 
         closeButton.setOnClickListener(view1 -> {
             if (alertDialog.isShowing()) {
