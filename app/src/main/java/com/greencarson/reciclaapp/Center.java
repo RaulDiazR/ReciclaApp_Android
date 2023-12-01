@@ -214,14 +214,20 @@ public class Center extends AppCompatActivity {
 
         try {
 
-            double lat = this.latitud;
-            double lon = this.longitud;
-            String uri = String.format("https://www.google.com/maps?q=%f,%f", lat, lon);
-            System.out.println(Uri.parse(uri));
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
+            double lat = this.latitud; // Reemplaza con tu valor de latitud
+            double lon = this.longitud; // Reemplaza con tu valor de longitud
+
+            String uri = String.format("geo:%f,%f?q=%f,%f", lat, lon, lat, lon);
+            Uri gmmIntentUri = Uri.parse(uri);
+
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps"); // Esto asegura que se abra en Google Maps
+            this.activity.startActivity(mapIntent);
+
 
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
 
@@ -231,11 +237,10 @@ public class Center extends AppCompatActivity {
             try {
                 double lat = this.latitud;
                 double lon = this.longitud;
-                @SuppressLint("DefaultLocale")
+
                 String uri = String.format("https://waze.com/ul?ll=%f,%f&navigate=yes", lat, lon);
-                String insta = "https://www.instagram.com/photocinematica/";
-                System.out.println(Uri.parse(insta));
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(insta)));
+                this.activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

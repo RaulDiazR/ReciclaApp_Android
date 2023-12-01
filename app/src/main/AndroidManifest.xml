@@ -56,7 +56,10 @@
             android:exported="false" />
         <activity
             android:name="com.greencarson.reciclaapp.StreetMapActivity"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
+
         <activity
             android:name="com.greencarson.reciclaapp.VerNoticiasActivity"
             android:exported="false" />

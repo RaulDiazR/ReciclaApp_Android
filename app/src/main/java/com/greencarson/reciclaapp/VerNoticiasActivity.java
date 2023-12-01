@@ -113,7 +113,7 @@ public class VerNoticiasActivity extends AppCompatActivity implements VerNoticia
         progressBar.setVisibility(View.VISIBLE);
 
         // Order by 'fecha' attribute in descending order (newest first)
-        newsRef.orderBy("fecha", Query.Direction.ASCENDING)
+        newsRef.orderBy("fecha", Query.Direction.DESCENDING )
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<VerNoticiasItem> dataList = new ArrayList<>();
