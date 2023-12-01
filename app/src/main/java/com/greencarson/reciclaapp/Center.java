@@ -134,8 +134,13 @@ public class Center extends AppCompatActivity {
 
                     if (num_telefonico != null && !TextUtils.isEmpty(num_telefonico) && TextUtils.isDigitsOnly(num_telefonico)) {
                         contactInfo.setText(num_telefonico);
+                        contactCenterLayout.setOnClickListener(view -> phoneCall());
                     } else {
-                        contactInfo.setText("Sin Numero");
+                        contactCenterLayout.setOnClickListener(view -> {
+
+                        });
+                        String msg = "Sin Numero";
+                        contactInfo.setText(msg);
                     }
 
                     centerImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -143,13 +148,6 @@ public class Center extends AppCompatActivity {
                     if (!imagen.isEmpty()) {
                         Picasso.get().load(imagen).into(centerImage);
                     }
-
-                    contactCenterLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            phoneCall();
-                        }
-                    });
 
                     moreCenterLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
